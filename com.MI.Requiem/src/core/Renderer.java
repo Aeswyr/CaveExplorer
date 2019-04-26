@@ -11,13 +11,13 @@ public class Renderer implements Runnable {
 	private int ticks;
 	private boolean capped = true;
 	private int frames;
-	protected Screen screen;
+	private Screen screen;
 	private BufferStrategy bs;
 	
 	private Handler handler;
 	
-	public Renderer(Handler handler) {
-		screen = new Screen(-1, -1);
+	public Renderer(Handler handler, Screen screen) {
+		this.screen = screen;
 		this.handler = handler;
 	}
 

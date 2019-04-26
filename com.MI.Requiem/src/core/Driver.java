@@ -9,9 +9,12 @@ public class Driver  implements Runnable{
 	private boolean running = false;
 	private Renderer render;
 	Handler handler;
+	Screen screen;
+	
 	public Driver(){
+		screen = new Screen(-1, -1);
 		handler = new Handler(this);
-		render = new Renderer(handler);
+		render = new Renderer(handler, screen);
 	}
 
 	@Override
@@ -52,11 +55,11 @@ public class Driver  implements Runnable{
 	}
 	
 	public int getWidth() {
-		return render.screen.getWidth();
+		return screen.getWidth();
 	}
 	
 	public int getHeight() {
-		return render.screen.getHeight();
+		return screen.getHeight();
 	}
 	
 	public void setCapped(boolean capped) {
@@ -64,11 +67,11 @@ public class Driver  implements Runnable{
 	}
 	
 	public void setKeyListener(KeyManager k) {
-		render.screen.addKeyListener(k);
+		screen.addKeyListener(k);
 	}
 	
 	public void setMouseListener(MouseManager m) {
-		render.screen.addMouseListener(m);
-		render.screen.addMouseMotionListener(m);
+		screen.addMouseListener(m);
+		screen.addMouseMotionListener(m);
 	}
 }
