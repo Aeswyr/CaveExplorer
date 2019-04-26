@@ -11,7 +11,7 @@ public class Renderer implements Runnable {
 	private int ticks;
 	private boolean capped = true;
 	private int frames;
-	private Screen screen;
+	protected Screen screen;
 	private BufferStrategy bs;
 	
 	private Handler handler;
@@ -35,7 +35,7 @@ public class Renderer implements Runnable {
 					frames++;
 					if (ticks > 0) ticks--;
 				}
-				lastTime = currentTime;
+				lastTime = System.nanoTime();
 			}
 
 		}
