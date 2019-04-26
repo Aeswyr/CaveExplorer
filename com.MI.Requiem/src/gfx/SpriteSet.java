@@ -10,7 +10,7 @@ package gfx;
  */
 public class SpriteSet {
 
-	Sprite[] sprites;
+	protected Sprite[] sprites;
 	
 	/**
 	 * Constructs a spriteset
@@ -29,6 +29,10 @@ public class SpriteSet {
 				sprites[j * size + i] = new Sprite(x + cell * i, y + cell * j, cell, sheet);
 			}
 		}
+	}
+	
+	public Sprite get(int index) {
+		return sprites[index];
 	}
 
 }

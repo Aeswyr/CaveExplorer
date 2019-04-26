@@ -92,7 +92,7 @@ public class Sound {
 	/**
 	 * initializes the sound thread pool and loop array
 	 */
-	public static void InitSound() {
+	public static void initSound() {
 		pool = Executors.newFixedThreadPool(5);
 		loops = new ArrayList<SoundInstance>();
 	}

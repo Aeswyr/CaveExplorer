@@ -6,6 +6,8 @@ import runtime.Handler;
 
 public class Driver  implements Runnable{
 
+	public static String saveDir;
+	
 	private boolean running = false;
 	private Renderer render;
 	Handler handler;
