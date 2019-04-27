@@ -1,13 +1,15 @@
 package world;
 
 import java.awt.Graphics;
+
+import core.Driver;
 import tiles.Tile_Test;
 
 public class Tile {
 
-	boolean wall;
-	TileSet tileSet;
-	public static int tileSize = 16;
+	protected boolean wall;
+	protected TileSet tileSet;
+	public static int tileSize = (int)(16 * Driver.scale);
 	
 	private static Tile[] tiles = {
 		new Tile_Test()

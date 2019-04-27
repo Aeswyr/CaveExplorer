@@ -23,7 +23,7 @@ public class SpriteSet {
 	 * @param height - height of set in cells
 	 */
 	public SpriteSet(int x, int y, int cell, int size, SpriteSheet sheet) {
-
+		sprites = new Sprite[size * size];
 		for (int j = 0; j < size; j++) {
 			for (int i = 0; i < size; i++) {
 				sprites[j * size + i] = new Sprite(x + cell * i, y + cell * j, cell, sheet);

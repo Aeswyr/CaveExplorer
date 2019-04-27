@@ -3,28 +3,37 @@ package runtime;
 import java.awt.Graphics;
 
 import core.Driver;
+import entity.Player;
 import input.KeyManager;
 import input.MouseManager;
+import world.World;
 
 public class Handler {
 
 	Driver driver;
 	MouseManager mouse;
 	KeyManager keys;
+	World world;
+	
+	Player player;
+	
 	public Handler(Driver d) {
 		driver = d;
 		mouse = new MouseManager();
 		keys = new KeyManager();
 		d.setMouseListener(mouse);
 		d.setKeyListener(keys);
+		world = new World(this);
+		player = new Player();
 	}
 	
 	public void update() {
 		keys.update();
+		world.update();
 	}
 
 	public void render(Graphics g) {
-
+		world.render(g);
 	}
 	
 	
@@ -37,5 +46,9 @@ public class Handler {
 	
 	public KeyManager getKeys() {
 		return keys;
+	}
+	
+	public Player getPlayer() {
+		return player;
 	}
 }

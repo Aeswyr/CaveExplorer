@@ -6,6 +6,7 @@ import runtime.Handler;
 
 public class Driver  implements Runnable{
 
+	public static double scale = 1.0;
 	public static String saveDir;
 	
 	private boolean running = false;
@@ -13,10 +14,11 @@ public class Driver  implements Runnable{
 	Handler handler;
 	Screen screen;
 	
+	
+	
 	public Driver(){
 		screen = new Screen(-1, -1);
-		handler = new Handler(this);
-		render = new Renderer(handler, screen);
+		
 	}
 
 	@Override
@@ -46,6 +48,9 @@ public class Driver  implements Runnable{
 	}
 	
 	public void start() {
+		handler = new Handler(this);
+		render = new Renderer(handler, screen);
+		
 		running = true;
 		Thread t = new Thread(this);
 		t.start();

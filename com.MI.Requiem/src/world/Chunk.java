@@ -42,7 +42,11 @@ public class Chunk {
 	 * @param g - the graphics component to draw with
 	 */
 	public void render(Graphics g) {
-		
+		for (int i = 0; i < chunkDim; i++) {
+			for (int j = 0; j < chunkDim; j++) {
+				Tile.toTile(chunk[i][j]).render(x * chunkDim + i, y * chunkDim + j, new int[0], g);
+			}
+		}
 	}
 
 	/**
