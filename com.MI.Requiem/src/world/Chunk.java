@@ -18,12 +18,12 @@ import world.World;
  *
  */
 public class Chunk {
+	
 	public static Handler handler;
 	protected int x, y;
 	boolean loaded = false;
 	int[][] chunk;
 	public static final int chunkDim = 16;
-
 
 	/**
 	 * initializes a chunk with the associated x and y coordinates
@@ -42,20 +42,24 @@ public class Chunk {
 	 * @param g - the graphics component to draw with
 	 */
 	public void render(Graphics g) {
-		
+
 		int offx = handler.getCamera().xOffset() / Tile.tileSize;
 		int offy = handler.getCamera().yOffset() / Tile.tileSize;
-		
-		int startX = offx - handler.getWidth() / 2;
-		int startY = offy - handler.getHeight() / 2;
-		int endX = offx + handler.getWidth() / 2;
-		int endY = offy + handler.getHeight() / 2;
-		
-		if (startX < x * chunkDim) startX = x * chunkDim;
-		if (startY < y * chunkDim) startY = y * chunkDim;
-		if (endX > x * chunkDim + chunkDim) endX = x * chunkDim + chunkDim;
-		if (endY > y * chunkDim + chunkDim) endY = y * chunkDim + chunkDim;
-		
+
+		int startX = offx + (int)(12 / Driver.scale);
+		int startY = offy;
+		int endX = offx + handler.getWidth() / Tile.tileSize - (int)(18 / Driver.scale);
+		int endY = offy + handler.getHeight() / Tile.tileSize + (int)(9 / Driver.scale);
+
+		if (startX < x * chunkDim)
+			startX = x * chunkDim;
+		if (startY < y * chunkDim)
+			startY = y * chunkDim;
+		if (endX > x * chunkDim + chunkDim)
+			endX = x * chunkDim + chunkDim;
+		if (endY > y * chunkDim + chunkDim)
+			endY = y * chunkDim + chunkDim;
+
 		for (int i = startX; i < endX; i++) {
 			for (int j = startY; j < endY; j++) {
 				Tile.toTile(chunk[i - x * chunkDim][j - y * chunkDim]).render(i, j, new int[0], g);

@@ -50,7 +50,8 @@ public class Player extends Mob {
 
 	@Override
 	public void renderUI(Graphics g) {
-		// TODO Auto-generated method stub
+		g.fillRect(0, 0, handler.getWidth() / 6, handler.getHeight());
+		g.fillRect(handler.getWidth() - handler.getWidth() / 6, 0, handler.getWidth() / 6, handler.getHeight());
 
 	}
 

@@ -39,6 +39,7 @@ public class World {
 			chunks.get(i).render(g);
 		}
 		entities.render(g);
+		entities.renderEntityUI(g);
 	}
 
 	public void update() {

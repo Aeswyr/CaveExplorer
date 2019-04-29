@@ -6,7 +6,7 @@ import runtime.Handler;
 
 public class Driver  implements Runnable{
 
-	public static double scale = 3.0;
+	public static double scale = 2.0;
 	public static String saveDir;
 	
 	private boolean running = false;
