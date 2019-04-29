@@ -7,11 +7,20 @@ import world.Tile;
 
 public abstract class Entity {
 	protected double x, y;
-
+	protected Hitbox hitbox;
+	
 	public abstract void update();
 
 	public abstract void render(Graphics g);
 
+	
+	// Getters and setters;
+	
+	
+	public Hitbox getHitbox() {
+		return hitbox;
+	}
+	
 	public int getX() {
 		return (int)x;
 	}

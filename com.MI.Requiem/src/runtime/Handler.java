@@ -11,6 +11,8 @@ import world.World;
 
 public class Handler {
 
+	public boolean devMode = false;
+	
 	private Driver driver;
 	private MouseManager mouse;
 	private KeyManager keys;
@@ -65,12 +67,15 @@ public class Handler {
 		return camera;
 	}
 	
+	public World getWorld() {
+		return world;
+	}
+	
 	public int getWidth() {
 		return driver.getWidth();
 	}
 	
 	public int getHeight() {
 		return driver.getHeight();
-		
 	}
 }

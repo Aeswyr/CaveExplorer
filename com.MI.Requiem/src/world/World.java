@@ -72,4 +72,23 @@ public class World {
 		}
 		chunks = chunkLoader.getActive();
 	}
+	
+	/**
+	 * returns the tile at the given position
+	 * @param x - the x coordinate of the tile (screen position)
+	 * @param y - the y coordinate of the tile (screen position)
+	 */
+	public Tile getTile(int x, int y) {
+		int id = -1;
+		for (int i = 0; i < chunks.size(); i++) {
+			int pos = chunks.get(i).tileAt(x / Tile.tileSize, y / Tile.tileSize);
+			if (pos != -1) id = pos;
+		}
+		if (id == -1) return Tile.toTile(0);
+		return Tile.toTile(id);
+	}
+	
+	public EntityManager getEntities() {
+		return entities;
+	}
 }

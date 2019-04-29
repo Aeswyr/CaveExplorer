@@ -10,4 +10,5 @@ public abstract class Mob extends Entity{
 	
 	public abstract void renderUI(Graphics g);
 	
+	public abstract void move();
 }

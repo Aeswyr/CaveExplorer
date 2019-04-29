@@ -13,27 +13,34 @@ public class Player extends Mob {
 	Handler handler;
 
 	public Player(Handler handler) {
+		this.hitbox = new Hitbox(10, 22, 10, 10, this, handler);
 		this.handler = handler;
 		activeSprite = Assets.player_still;
 	}
 
 	@Override
 	public void update() {
+		hitbox.update();
+		move();
+	}
+	
+	@Override
+	public void move() {
 		moving = false;
 		if (handler.getKeys().w || handler.getKeys().up) {
-			y -= speed;
+			if (!hitbox.tileYCollide(-speed)) y -= speed;
 			moving = true;
 		}
 		if (handler.getKeys().s || handler.getKeys().down) {
-			y += speed;
+			if (!hitbox.tileYCollide(speed)) y += speed;
 			moving = true;
 		}
 		if (handler.getKeys().a || handler.getKeys().left) {
-			x -= speed;
+			if (!hitbox.tileXCollide(-speed)) x -= speed;
 			moving = true;
 		}
 		if (handler.getKeys().d || handler.getKeys().right) {
-			x += speed;
+			if (!hitbox.tileXCollide(speed)) x += speed;
 			moving = true;
 		}
 		if (moving) {

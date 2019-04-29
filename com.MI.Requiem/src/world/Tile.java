@@ -27,4 +27,8 @@ public class Tile {
 	public static Tile toTile(int id) {
 		return tiles[id];
 	}
+	
+	public boolean isSolid() {
+		return wall;
+	}
 }
