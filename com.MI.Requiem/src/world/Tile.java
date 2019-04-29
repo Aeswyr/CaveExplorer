@@ -3,7 +3,8 @@ package world;
 import java.awt.Graphics;
 
 import core.Driver;
-import tiles.Tile_Test;
+import tiles.Tile_DirtFloor;
+import tiles.Tile_DirtWall;
 
 public class Tile {
 
@@ -12,7 +13,8 @@ public class Tile {
 	public static int tileSize = (int)(16 * Driver.scale);
 	
 	private static Tile[] tiles = {
-		new Tile_Test()
+		new Tile_DirtFloor(),
+		new Tile_DirtWall()
 	};
 	
 	

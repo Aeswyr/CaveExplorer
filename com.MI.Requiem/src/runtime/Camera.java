@@ -16,8 +16,8 @@ public class Camera {
 		if (target != null) {
 			xOffset += (target.getX() - xOffset) / 4;
 			yOffset += (target.getY() - yOffset) / 4;
-			if (xOffset < handler.getWidth() / 2)
-				xOffset = handler.getWidth() / 2;
+			if (xOffset < handler.getWidth() / 2 - handler.getWidth() / 6)
+				xOffset = handler.getWidth() / 2 - handler.getWidth() / 6;
 			if (yOffset < handler.getHeight() / 2)
 				yOffset = handler.getHeight() / 2;
 		}

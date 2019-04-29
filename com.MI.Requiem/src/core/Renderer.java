@@ -35,6 +35,7 @@ public class Renderer implements Runnable {
 					frames++;
 					if (capped) ticks--;
 				}
+				System.out.print("");
 				lastTime = System.nanoTime();
 			}
 

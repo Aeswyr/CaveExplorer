@@ -4,11 +4,12 @@ import java.awt.Graphics;
 
 import core.Assets;
 import runtime.Handler;
+import world.Tile;
 
 public class Player extends Mob {
 
 	boolean moving = false;
-	double speed = 4;
+	double speed = Tile.tileSize / 8;
 	Handler handler;
 
 	public Player(Handler handler) {
