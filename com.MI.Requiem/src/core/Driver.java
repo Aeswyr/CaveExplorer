@@ -6,7 +6,7 @@ import runtime.Handler;
 
 public class Driver  implements Runnable{
 
-	public static double scale = 1.0;
+	public static double scale = 3.0;
 	public static String saveDir;
 	
 	private boolean running = false;
@@ -47,7 +47,7 @@ public class Driver  implements Runnable{
 		
 	}
 	
-	public void start() {
+	public synchronized void start() {
 		handler = new Handler(this);
 		render = new Renderer(handler, screen);
 		

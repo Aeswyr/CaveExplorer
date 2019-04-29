@@ -6,30 +6,39 @@ import core.Driver;
 import entity.Player;
 import input.KeyManager;
 import input.MouseManager;
+import world.TileSet;
 import world.World;
 
 public class Handler {
 
-	Driver driver;
-	MouseManager mouse;
-	KeyManager keys;
-	World world;
+	private Driver driver;
+	private MouseManager mouse;
+	private KeyManager keys;
+	private World world;
 	
-	Player player;
+	private Camera camera;
+	private Player player;
 	
 	public Handler(Driver d) {
 		driver = d;
+		TileSet.handler = this;
+		
+		camera = new Camera(this);
+		player = new Player(this);
+		camera.centerOnEntity(player);
+		
 		mouse = new MouseManager();
 		keys = new KeyManager();
 		d.setMouseListener(mouse);
 		d.setKeyListener(keys);
 		world = new World(this);
-		player = new Player();
+		
 	}
 	
 	public void update() {
 		keys.update();
 		world.update();
+		camera.update();
 	}
 
 	public void render(Graphics g) {
@@ -50,5 +59,18 @@ public class Handler {
 	
 	public Player getPlayer() {
 		return player;
+	}
+	
+	public Camera getCamera() {
+		return camera;
+	}
+	
+	public int getWidth() {
+		return driver.getWidth();
+	}
+	
+	public int getHeight() {
+		return driver.getHeight();
+		
 	}
 }

@@ -42,9 +42,23 @@ public class Chunk {
 	 * @param g - the graphics component to draw with
 	 */
 	public void render(Graphics g) {
-		for (int i = 0; i < chunkDim; i++) {
-			for (int j = 0; j < chunkDim; j++) {
-				Tile.toTile(chunk[i][j]).render(x * chunkDim + i, y * chunkDim + j, new int[0], g);
+		
+		int offx = handler.getCamera().xOffset() / Tile.tileSize;
+		int offy = handler.getCamera().yOffset() / Tile.tileSize;
+		
+		int startX = offx - handler.getWidth() / 2;
+		int startY = offy - handler.getHeight() / 2;
+		int endX = offx + handler.getWidth() / 2;
+		int endY = offy + handler.getHeight() / 2;
+		
+		if (startX < x * chunkDim) startX = x * chunkDim;
+		if (startY < y * chunkDim) startY = y * chunkDim;
+		if (endX > x * chunkDim + chunkDim) endX = x * chunkDim + chunkDim;
+		if (endY > y * chunkDim + chunkDim) endY = y * chunkDim + chunkDim;
+		
+		for (int i = startX; i < endX; i++) {
+			for (int j = startY; j < endY; j++) {
+				Tile.toTile(chunk[i - x * chunkDim][j - y * chunkDim]).render(i, j, new int[0], g);
 			}
 		}
 	}

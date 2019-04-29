@@ -2,11 +2,14 @@ package world;
 
 import java.awt.Graphics;
 
+import gfx.Sprite;
 import gfx.SpriteSet;
 import gfx.SpriteSheet;
+import runtime.Handler;
 
-public class TileSet extends SpriteSet {
+public class TileSet {
 
+	public static Handler handler;
 	private int[] u = { 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0,
 			1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0,
 			1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1,
@@ -15,34 +18,35 @@ public class TileSet extends SpriteSet {
 			1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 			1 };
 
+	Sprite[] floor;
+	Sprite[] wall;
+	Sprite[] ceiling;
+
 	public TileSet(int x, int y, SpriteSheet sheet) {
-		super(x, y, 8, 8, sheet);
+		floor = new Sprite[2];
+		floor[0] = new Sprite(x + 48, y + 32, 16, sheet);
+		floor[1] = new Sprite(x + 48, y + 48, 16, sheet);
+		wall = new Sprite[2];
+		wall[0] = new Sprite(x + 32, y + 24, 16, sheet);
+		wall[1] = new Sprite(x + 48, y + 24, 16, sheet);
+		ceiling = new Sprite[2];
+		ceiling[0] = new Sprite(x + 48, y + 0, 16, sheet);
+		ceiling[1] = new Sprite(x + 48, 16, 16, sheet);
+
 	}
 
-	public void render(int x, int y, int[] edges, boolean wall, Graphics g) {
+	public void render(int x, int y, int[] edges, boolean w, Graphics g) {
 		int p1 = u[((x + 1) * (y + x + 1)) % u.length];
-		int p2 = u[(x + (y + x) ^ 2) % u.length];
+		int p2 = u[(x + (y + x + 1)) % u.length];
 
-		if (wall) {
-			sprites[(p1 * 16 + 6)].render(x * Tile.tileSize, y * Tile.tileSize - Tile.tileSize, g);
-			sprites[(p1 * 16 + 7)].render(x * Tile.tileSize + Tile.tileSize / 2, y * Tile.tileSize - Tile.tileSize, g);
-			sprites[(p1 * 16 + 14)].render(x * Tile.tileSize, y * Tile.tileSize - Tile.tileSize / 2, g);
-			sprites[(p1 * 16 + 15)].render(x * Tile.tileSize + Tile.tileSize / 2, y * Tile.tileSize - Tile.tileSize / 2,
-					g);
-
-			sprites[3 * 8 + 2 * (p2 + 2)].render(x * Tile.tileSize, y * Tile.tileSize, g);
-			sprites[4 * 8 + 2 * (p2 + 3)].render(x * Tile.tileSize + Tile.tileSize / 2, y * Tile.tileSize, g);
-			sprites[3 * 8 + 2 * (p2 + 2)].render(x * Tile.tileSize, y * Tile.tileSize + Tile.tileSize / 2, g);
-			sprites[4 * 8 + 2 * (p2 + 3)].render(x * Tile.tileSize + Tile.tileSize / 2,
-					y * Tile.tileSize + Tile.tileSize / 2, g);
-
+		if (w) {
+			ceiling[p1].render(x * Tile.tileSize - handler.getCamera().xOffset(),
+					y * Tile.tileSize - Tile.tileSize - handler.getCamera().yOffset(), g);
+			wall[p2].render(x * Tile.tileSize - handler.getCamera().xOffset(),
+					y * Tile.tileSize - handler.getCamera().yOffset(), g);
 		} else {
-			sprites[((p1 + 2) * 16 + 6)].render(x * Tile.tileSize, y * Tile.tileSize - Tile.tileSize, g);
-			sprites[((p1 + 2) * 16 + 7)].render(x * Tile.tileSize + Tile.tileSize / 2,
-					y * Tile.tileSize - Tile.tileSize, g);
-			sprites[((p1 + 2) * 16 + 14)].render(x * Tile.tileSize, y * Tile.tileSize - Tile.tileSize / 2, g);
-			sprites[((p1 + 2) * 16 + 15)].render(x * Tile.tileSize + Tile.tileSize / 2,
-					y * Tile.tileSize - Tile.tileSize / 2, g);
+			floor[p1].render(x * Tile.tileSize - handler.getCamera().xOffset(),
+					y * Tile.tileSize - Tile.tileSize - handler.getCamera().yOffset(), g);
 		}
 	}
 

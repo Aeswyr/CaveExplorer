@@ -2,23 +2,27 @@ package world;
 
 import java.awt.Graphics;
 import java.util.ArrayList;
+
+import entity.EntityManager;
 import runtime.Handler;
 
 public class World {
 
 	Handler handler;
 
+	EntityManager entities;
+	
 	ChunkLoader chunkLoader;
 	ArrayList<Chunk> chunks;
 	Chunk currChunk;
 	public static int maxChunks;
-	int chunkRadius = 5;
+
 
 	public World(Handler handler) {
 		this.handler = handler;
-		maxChunks = 16;
-		
-		
+		maxChunks = 64;
+		entities = new EntityManager();
+		entities.addEntity(handler.getPlayer());
 		MapGenerator.generateMap();
 		
 		Chunk.handler = this.handler;
@@ -34,10 +38,12 @@ public class World {
 		for (int i = 0; i < chunks.size(); i++) {
 			chunks.get(i).render(g);
 		}
+		entities.render(g);
 	}
 
 	public void update() {
 		updateChunks();
+		entities.update();
 	}
 
 	private void updateChunks() {

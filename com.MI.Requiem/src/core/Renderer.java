@@ -42,7 +42,7 @@ public class Renderer implements Runnable {
 
 	}
 
-	public void start() {
+	public synchronized void start() {
 		running = true;
 		Thread t = new Thread(this);
 		t.start();
