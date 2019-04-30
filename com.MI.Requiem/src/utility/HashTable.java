@@ -1,13 +1,16 @@
 package utility;
 
+import java.lang.reflect.Array;
+
 /**
  * A hash table implementation
+ * 
  * @author Pascal
  *
  * @param <K>
  * @param <T>
  */
-public class HashTable<K extends Comparable<K>, T> {
+public class HashTable<K, T> {
 
 	int size, count;
 	double threshold, max;
@@ -21,7 +24,7 @@ public class HashTable<K extends Comparable<K>, T> {
 	public HashTable() {
 		size = 10;
 		max = 0.8;
-		list = (HashTable<K, T>.Node[]) new Object[size];
+		list = (Node[]) Array.newInstance(Node.class, size);
 	}
 
 	/**
@@ -34,7 +37,7 @@ public class HashTable<K extends Comparable<K>, T> {
 	public HashTable(int size, double threshold) {
 		this.size = size;
 		max = threshold;
-		list = (HashTable<K, T>.Node[]) new Object[size];
+		list = (Node[]) Array.newInstance(Node.class, size);
 	}
 
 	/**
@@ -91,6 +94,7 @@ public class HashTable<K extends Comparable<K>, T> {
 	public T get(K key) {
 		int location = key.hashCode() % size;
 		Node find = list[location];
+		if (find == null) return null;
 		while (!find.key.equals(key)) {
 			find = find.next;
 			if (find == null)
@@ -118,7 +122,7 @@ public class HashTable<K extends Comparable<K>, T> {
 	private void resize() {
 		size = size * 2 + 1;
 		Node[] store = list;
-		list = (HashTable<K, T>.Node[]) new Object[size];
+		list = (Node[]) Array.newInstance(Node.class, size);
 		for (int i = 0; i < store.length; i++) {
 			Node find = store[i];
 			while (find != null) {

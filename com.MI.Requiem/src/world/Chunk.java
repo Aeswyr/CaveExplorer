@@ -18,7 +18,7 @@ import world.World;
  *
  */
 public class Chunk {
-	
+
 	public static Handler handler;
 	protected int x, y;
 	boolean loaded = false;
@@ -46,10 +46,10 @@ public class Chunk {
 		int offx = handler.getCamera().xOffset() / Tile.tileSize;
 		int offy = handler.getCamera().yOffset() / Tile.tileSize;
 
-		int startX = offx + (int)(12 / Driver.scale);
+		int startX = offx + (int) (12 / Driver.scale);
 		int startY = offy;
-		int endX = offx + handler.getWidth() / Tile.tileSize - (int)(18 / Driver.scale);
-		int endY = offy + handler.getHeight() / Tile.tileSize + (int)(9 / Driver.scale);
+		int endX = offx + handler.getWidth() / Tile.tileSize - (int) (18 / Driver.scale);
+		int endY = offy + handler.getHeight() / Tile.tileSize + (int) (9 / Driver.scale);
 
 		if (startX < x * chunkDim)
 			startX = x * chunkDim;
@@ -62,7 +62,16 @@ public class Chunk {
 
 		for (int i = startX; i < endX; i++) {
 			for (int j = startY; j < endY; j++) {
-				Tile.toTile(chunk[i - x * chunkDim][j - y * chunkDim]).render(i, j, new int[0], g);
+				if (!Tile.toTile(chunk[i - x * chunkDim][j - y * chunkDim]).isSolid())
+					Tile.toTile(chunk[i - x * chunkDim][j - y * chunkDim]).render(i, j, new int[0], g);
+			}
+		}
+
+		for (int j = startY; j < endY; j++) {
+			for (int i = startX; i < endX; i++) {
+				if (Tile.toTile(chunk[i - x * chunkDim][j - y * chunkDim]).isSolid())
+					Tile.toTile(chunk[i - x * chunkDim][j - y * chunkDim]).render(i, j, new int[0], g);
+				handler.getWorld().getEntities().renderInOrder(i, j, g);
 			}
 		}
 	}

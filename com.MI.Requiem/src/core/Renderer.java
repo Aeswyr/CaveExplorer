@@ -59,6 +59,7 @@ public class Renderer implements Runnable {
 		
 		g = bs.getDrawGraphics();
 		g.clearRect(0, 0, screen.getWidth(), screen.getHeight());
+
 		handler.render(g);
 		
 		bs.show();

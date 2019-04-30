@@ -2,47 +2,60 @@ package entity;
 
 import java.awt.Graphics;
 
+import runtime.Handler;
 import world.Chunk;
 import world.Tile;
 
 public abstract class Entity {
 	protected double x, y;
+	protected int xOff, yOff;
 	protected Hitbox hitbox;
-	
+	protected Handler handler;
+
 	public abstract void update();
 
 	public abstract void render(Graphics g);
 
-	
+	public void die() {
+		handler.getWorld().getEntities().removeEntity(this);
+	}
+
 	// Getters and setters;
-	
-	
+
 	public Hitbox getHitbox() {
 		return hitbox;
 	}
-	
+
 	public int getX() {
-		return (int)x;
+		return (int) x;
 	}
 
 	public int getY() {
-		return (int)y;
+		return (int) y;
 	}
 
 	public int getTileX() {
-		return (int)(x / Tile.tileSize);
+		return (int) (x / Tile.tileSize);
 	}
 
 	public int getTileY() {
-		return (int)(y / Tile.tileSize);
+		return (int) (y / Tile.tileSize);
 	}
 
 	public int getChunkX() {
-		return (int)(x / Tile.tileSize / Chunk.chunkDim);
+		return (int) (x / Tile.tileSize / Chunk.chunkDim);
 	}
 
 	public int getChunkY() {
-		return (int)(y / Tile.tileSize / Chunk.chunkDim);
+		return (int) (y / Tile.tileSize / Chunk.chunkDim);
+	}
+
+	public int getAdjX() {
+		return (int) (x) / Tile.tileSize;
+	}
+
+	public int getAdjY() {
+		return (int) (y - yOff / 2) / Tile.tileSize;
 	}
 
 }

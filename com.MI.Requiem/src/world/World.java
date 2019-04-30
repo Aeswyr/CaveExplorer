@@ -11,12 +11,11 @@ public class World {
 	Handler handler;
 
 	EntityManager entities;
-	
+
 	ChunkLoader chunkLoader;
 	ArrayList<Chunk> chunks;
 	Chunk currChunk;
 	public static int maxChunks;
-
 
 	public World(Handler handler) {
 		this.handler = handler;
@@ -24,21 +23,21 @@ public class World {
 		entities = new EntityManager();
 		entities.addEntity(handler.getPlayer());
 		MapGenerator.generateMap();
-		
+
 		Chunk.handler = this.handler;
 		chunkLoader = new ChunkLoader();
 		chunks = chunkLoader.getActive();
 		currChunk = new Chunk(-1, -1);
-		
+
 		chunkLoader.start();
 
 	}
 
 	public void render(Graphics g) {
+
 		for (int i = 0; i < chunks.size(); i++) {
 			chunks.get(i).render(g);
 		}
-		entities.render(g);
 		entities.renderEntityUI(g);
 	}
 
@@ -72,22 +71,27 @@ public class World {
 		}
 		chunks = chunkLoader.getActive();
 	}
-	
+
 	/**
 	 * returns the tile at the given position
+	 * 
 	 * @param x - the x coordinate of the tile (screen position)
 	 * @param y - the y coordinate of the tile (screen position)
 	 */
 	public Tile getTile(int x, int y) {
 		int id = -1;
 		for (int i = 0; i < chunks.size(); i++) {
-			int pos = chunks.get(i).tileAt(x / Tile.tileSize, y / Tile.tileSize);
-			if (pos != -1) id = pos;
+			if (chunks.get(i) != null) {
+				int pos = chunks.get(i).tileAt(x / Tile.tileSize, y / Tile.tileSize);
+				if (pos != -1)
+					id = pos;
+			}
 		}
-		if (id == -1) return Tile.toTile(0);
+		if (id == -1)
+			return Tile.toTile(0);
 		return Tile.toTile(id);
 	}
-	
+
 	public EntityManager getEntities() {
 		return entities;
 	}

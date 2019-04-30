@@ -15,6 +15,7 @@ public class ChunkLoader implements Runnable {
 	Queue<Chunk> load;
 	Queue<Chunk> unload;
 	ArrayList<Chunk> active;
+	ArrayList<Chunk> loading;
 	long time;
 
 	/**
@@ -24,6 +25,7 @@ public class ChunkLoader implements Runnable {
 		load = new Queue<Chunk>();
 		unload = new Queue<Chunk>();
 		active = new ArrayList<Chunk>();
+		loading = new ArrayList<Chunk>();
 	}
 
 	/**
@@ -66,7 +68,9 @@ public class ChunkLoader implements Runnable {
 	 * @returns all currently loaded chunks
 	 */
 	public ArrayList<Chunk> getActive() {
-		return this.active;
+		synchronized (active) {
+			return this.active;
+		}
 	}
 
 	/**
@@ -88,15 +92,16 @@ public class ChunkLoader implements Runnable {
 	 * handles loading and unloading each chunk inserted into the load and unload
 	 * queues
 	 */
+	@SuppressWarnings("unchecked")
 	private void tick() {
 		if (!load.isEmpty() || !unload.isEmpty()) {
 			if (!load.isEmpty()) {
 				time = System.nanoTime();
 				while (!this.load.isEmpty()) {
 
-					if (!this.active.contains(this.load.peek())) {
+					if (!this.loading.contains(this.load.peek())) {
 						this.load.peek().load();
-						this.active.add(this.load.dequeue());
+						this.loading.add(this.load.dequeue());
 					} else
 						load.dequeue();
 				}
@@ -107,38 +112,43 @@ public class ChunkLoader implements Runnable {
 			if (!unload.isEmpty()) {
 				time = System.nanoTime();
 				while (!unload.isEmpty()) {
-					if (active.contains(unload.peek())) {
+					if (loading.contains(unload.peek())) {
 						unload.peek().unload();
-						active.remove(unload.dequeue());
+						loading.remove(unload.dequeue());
 					} else
 						unload.dequeue();
 				}
 				System.out.println("time for unload operation: " + (System.nanoTime() - time) / 1000000.0 + "ms");
 			}
 			organizeChunks();
+			synchronized (active) {
+				active = (ArrayList<Chunk>) loading.clone();
+			}
 		}
 	}
 
 	public void organizeChunks() {
-		for (int i = 1; i < active.size(); i++) {
+		for (int i = 1; i < loading.size(); i++) {
 			int pos = i;
-			Chunk test = active.get(i);
-			active.remove(test);
-			while (test.y < active.get(pos - 1).y) {
+			Chunk test = loading.get(i);
+			loading.remove(test);
+			while (test.y < loading.get(pos - 1).y) {
 				pos = pos - 1;
-				if (pos == 0) break;
+				if (pos == 0)
+					break;
 			}
-			active.add(pos, test);
+			loading.add(pos, test);
 		}
-		for (int i = 1; i < active.size(); i++) {
+		for (int i = 1; i < loading.size(); i++) {
 			int pos = i;
-			Chunk test = active.get(i);
-			active.remove(test);
-			while (test.x < active.get(pos - 1).x && test.y == active.get(pos - 1).y) {
+			Chunk test = loading.get(i);
+			loading.remove(test);
+			while (test.x < loading.get(pos - 1).x && test.y == loading.get(pos - 1).y) {
 				pos = pos - 1;
-				if (pos == 0) break;
+				if (pos == 0)
+					break;
 			}
-			active.add(pos, test);
+			loading.add(pos, test);
 		}
 	}
 

@@ -8,6 +8,11 @@ import javax.swing.JFrame;
 
 public class Screen extends Canvas{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private JFrame frame;
 	private Dimension d;
 	public Screen(int width, int height) {

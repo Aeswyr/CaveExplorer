@@ -11,7 +11,7 @@ public class Driver  implements Runnable{
 	
 	private boolean running = false;
 	private Renderer render;
-	Handler handler;
+	volatile Handler handler;
 	Screen screen;
 	
 	
@@ -29,14 +29,18 @@ public class Driver  implements Runnable{
 		long lastReport = System.nanoTime();
 		long deltaR = 1000000000;
 		
+		long updateTime = 0;
 		
 		while (running) {
 			currentTime = System.nanoTime();
 			if (currentTime - lastTime > delta) {
 				update();
 				render.tick();
+				updateTime += System.nanoTime() - currentTime;
 				if (currentTime - lastReport > deltaR) {
-					System.out.println("FPS: " + render.getFrames() + " Update Time (ns): " + (System.nanoTime() - currentTime));
+					int fps = render.getFrames();
+					System.out.println("FPS: " + fps + " Avg update time (ns): " + (updateTime / (fps + 1)));
+					updateTime = 0;
 					lastReport = System.nanoTime();
 				}
 				currentTime = System.nanoTime();

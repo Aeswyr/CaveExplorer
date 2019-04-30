@@ -1,9 +1,7 @@
 package world;
 
 import java.awt.Graphics;
-
 import gfx.Sprite;
-import gfx.SpriteSet;
 import gfx.SpriteSheet;
 import runtime.Handler;
 

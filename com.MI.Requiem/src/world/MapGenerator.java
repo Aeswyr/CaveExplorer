@@ -13,7 +13,7 @@ import utility.NoiseGenerator;
 public class MapGenerator {
 
 	public static void generateMap() {
-		Random rng = new Random();
+		Random rng = new Random(12);
 		BufferedWriter write = null;
 		try {
 			File f = new File(Driver.saveDir + "saves/world/world.dat");
