@@ -1,11 +1,9 @@
 package entity;
 
-import java.awt.Color;
-import java.awt.Graphics;
-
 import core.Assets;
-import core.Driver;
+import gfx.DrawGraphics;
 import runtime.Handler;
+import runtime.Light;
 import world.Tile;
 
 public class Player extends Mob {
@@ -16,11 +14,13 @@ public class Player extends Mob {
 	int wounds;
 	int woundMax;
 
+	Light lamp;
+
 	public Player(Handler handler) {
 		this.x = 10 * Tile.tileSize;
 		this.y = 10 * Tile.tileSize;
-		this.xOff = (int) (32 * Driver.scale);
-		this.yOff = (int) (32 * Driver.scale);
+		this.xOff = (int) (32);
+		this.yOff = (int) (32);
 		this.hitbox = new Hitbox(-22, -8, 10, 10, this, handler);
 		this.handler = handler;
 		activeSprite = Assets.player_still;
@@ -29,17 +29,21 @@ public class Player extends Mob {
 		healthMax = 100;
 		woundMax = 1;
 		wounds = 0;
+
+		lamp = new Light(128, 0xffffffAA, handler);
+		lamp.light();
 	}
 
 	@Override
 	public void update() {
+		lamp.setPos((int) x - xOff / 2, (int) y - xOff / 2);
 		super.update();
 		if (health < healthMax)
 			heal(healthMax / (5 * 60 * 60));
 	}
 
 	@Override
-	public void render(Graphics g) {
+	public void render(DrawGraphics g) {
 		super.render(g);
 	}
 
@@ -68,44 +72,41 @@ public class Player extends Mob {
 		}
 		if (moving) {
 			activeSprite = Assets.player_run;
+
 		} else {
 			activeSprite = Assets.player_still;
 		}
 	}
 
 	@Override
-	public void renderUI(Graphics g) {
+	public void renderUI(DrawGraphics g) {
 
 		int posX = 16;
 		int posY = 24;
 
-		g.fillRect(0, 0, handler.getWidth() / 6, handler.getHeight());
-		g.fillRect(handler.getWidth() - handler.getWidth() / 6, 0, handler.getWidth() / 6, handler.getHeight());
-		Assets.healthBar.render((int) (posX * Driver.scale), (int) (posY * Driver.scale), g);
-		g.setColor(new Color(105, 25, 32));
-		g.fillRect((int) ((posX + 5) * Driver.scale), (int) ((posY + 5) * Driver.scale),
-				(int) (118 * Driver.scale * health / healthMax), (int) (26 * Driver.scale));
-		g.setColor(Color.BLACK);
+		g.fillRect(0, 0, handler.getWidth() / 6, handler.getHeight(), 0xff202020);
+		g.fillRect(handler.getWidth() - handler.getWidth() / 6, 0, handler.getWidth() / 6, handler.getHeight(),
+				0xff202020);
+		Assets.healthBar.render((int) (posX), (int) (posY), g);
+		g.fillRect((int) ((posX + 5)), (int) ((posY + 5)), (int) (118 * health / healthMax), (int) (26), 0xff691920);
 
 		for (int i = 0; i < woundMax; i++) {
 			int pos = (int) (i * 24) + posX;
 			int pos2 = 35 + posY;
 			if (i == 0)
-				Assets.heartContainer_Left.render((int) ((10 + pos) * Driver.scale), (int) (pos2 * Driver.scale), g);
+				Assets.heartContainer_Left.render((int) ((10 + pos)), (int) (pos2), g);
 			else
-				Assets.heartContainer_Mid.render((int) ((10 + pos) * Driver.scale), (int) (pos2 * Driver.scale), g);
-			Assets.heartContainer_Mid.render((int) ((10 + pos + 8) * Driver.scale), (int) (pos2 * Driver.scale), g);
+				Assets.heartContainer_Mid.render((int) ((10 + pos)), (int) (pos2), g);
+			Assets.heartContainer_Mid.render((int) ((10 + pos + 8)), (int) (pos2), g);
 			if (i == woundMax - 1)
-				Assets.heartContainer_Right.render((int) ((10 + pos + 16) * Driver.scale), (int) (pos2 * Driver.scale),
-						g);
+				Assets.heartContainer_Right.render((int) ((10 + pos + 16)), (int) (pos2), g);
 			else
-				Assets.heartContainer_Mid.render((int) ((10 + pos + 16) * Driver.scale), (int) (pos2 * Driver.scale),
-						g);
+				Assets.heartContainer_Mid.render((int) ((10 + pos + 16)), (int) (pos2), g);
 
 			if (i >= woundMax - wounds)
-				Assets.heartDead.render((int) ((12 + pos) * Driver.scale), (int) ((pos2 + 3) * Driver.scale), g);
+				Assets.heartDead.render((int) ((12 + pos)), (int) ((pos2 + 3)), g);
 			else
-				Assets.heart.render((int) ((12 + pos) * Driver.scale), (int) ((pos2 + 3) * Driver.scale), g);
+				Assets.heart.render((int) ((12 + pos)), (int) ((pos2 + 3)), g);
 
 		}
 

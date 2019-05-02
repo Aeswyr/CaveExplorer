@@ -1,9 +1,10 @@
 package entity;
 
-import java.awt.Graphics;
 import utility.CoordKey;
 import utility.HashTable;
 import java.util.ArrayList;
+
+import gfx.DrawGraphics;
 
 public class EntityManager {
 
@@ -27,7 +28,7 @@ public class EntityManager {
 	 * 
 	 * @param g - The graphics object used to render the game
 	 */
-	public void render(Graphics g) {
+	public void render(DrawGraphics g) {
 		for (int i = entities.size() - 1; i >= 0; i--) {
 			entities.get(i).render(g);
 		}
@@ -40,7 +41,7 @@ public class EntityManager {
 	 * @param y - the current y position to check
 	 * @param g - the graphics object of the screen
 	 */
-	public void renderInOrder(int x, int y, Graphics g) {
+	public void renderInOrder(int x, int y, DrawGraphics g) {
 		for (int i = entities.size() - 1; i >= 0; i--) {
 			Entity e = inorder.get(new CoordKey(x, y));
 			if (e != null)
@@ -53,7 +54,7 @@ public class EntityManager {
 	 * 
 	 * @param g - The graphics component used to render the game
 	 */
-	public void renderEntityUI(Graphics g) {
+	public void renderEntityUI(DrawGraphics g) {
 		for (int i = mobs.size() - 1; i >= 0; i--)
 			mobs.get(i).renderUI(g);
 	}

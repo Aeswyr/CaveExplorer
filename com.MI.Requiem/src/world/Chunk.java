@@ -1,11 +1,10 @@
 package world;
 
-import java.awt.Graphics;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.StringTokenizer;
 import core.Driver;
+import gfx.DrawGraphics;
 import runtime.Handler;
 import utility.Loader;
 import world.Tile;
@@ -41,7 +40,7 @@ public class Chunk {
 	 * 
 	 * @param g - the graphics component to draw with
 	 */
-	public void render(Graphics g) {
+	public void render(DrawGraphics g) {
 
 		int offx = handler.getCamera().xOffset() / Tile.tileSize;
 		int offy = handler.getCamera().yOffset() / Tile.tileSize;

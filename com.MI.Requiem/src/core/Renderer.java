@@ -3,6 +3,7 @@ package core;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 
+import gfx.DrawGraphics;
 import runtime.Handler;
 
 public class Renderer implements Runnable {
@@ -13,12 +14,13 @@ public class Renderer implements Runnable {
 	private int frames;
 	protected Screen screen;
 	private BufferStrategy bs;
-	
+	protected DrawGraphics draw;
 	private Handler handler;
 	
-	public Renderer(Handler handler, Screen screen) {
+	public Renderer(Handler handler, Screen screen, DrawGraphics canvas) {
 		this.screen = screen;
 		this.handler = handler;
+		this.draw = canvas;
 	}
 
 	@Override
@@ -58,10 +60,10 @@ public class Renderer implements Runnable {
 		}
 		
 		g = bs.getDrawGraphics();
-		g.clearRect(0, 0, screen.getWidth(), screen.getHeight());
+		draw.clear();
 
-		handler.render(g);
-		
+		handler.render(draw);
+		draw.render(g);
 		bs.show();
 		g.dispose();
 	}

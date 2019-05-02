@@ -1,13 +1,13 @@
 package gfx;
 
-import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-
-import core.Driver;
+import runtime.Light;
 
 public class Sprite {
 
-	BufferedImage[] raw;
+	int lightInteraction = Light.NONE;
+
+	int[][] raw;
 	int width, height;
 
 	int xOff, yOff;
@@ -17,19 +17,23 @@ public class Sprite {
 
 	public Sprite(int x, int y, int size, SpriteSheet sheet) {
 		frames = 1;
-		raw = new BufferedImage[frames];
-		raw[0] = sheet.cut(x, y, size);
 
 		width = size;
 		height = size;
+		BufferedImage b = sheet.cut(x, y, size);
+
+		raw = new int[frames][];
+		raw[0] = b.getRGB(0, 0, width, height, null, 0, width);
 
 		lastTime = System.nanoTime();
 	}
 
 	public Sprite(int x, int y, int width, int height, SpriteSheet sheet) {
 		frames = 1;
-		raw = new BufferedImage[frames];
-		raw[0] = sheet.cut(x, y, width, height);
+		BufferedImage b = sheet.cut(x, y, width, height);
+
+		raw = new int[frames][];
+		raw[0] = b.getRGB(0, 0, width, height, null, 0, width);
 
 		this.width = width;
 		this.height = height;
@@ -44,9 +48,10 @@ public class Sprite {
 		this.width = width;
 		this.height = height;
 
-		raw = new BufferedImage[frames];
+		raw = new int[frames][];
 		for (int i = 0; i < frames; i++) {
-			raw[i] = sheet.cut(x, y + height * i, width, height);
+			BufferedImage b = sheet.cut(x, y + height * i, width, height);
+			raw[i] = b.getRGB(0, 0, width, height, null, 0, width);
 		}
 
 		lastTime = System.nanoTime();
@@ -55,7 +60,7 @@ public class Sprite {
 
 	byte frame;
 
-	public void render(int x, int y, Graphics g) {
+	public void render(int x, int y, DrawGraphics g) {
 
 		if (frames > 1) {
 			if (System.nanoTime() - lastTime > delta) {
@@ -65,11 +70,26 @@ public class Sprite {
 					frame = 0;
 			}
 		}
-		g.drawImage(raw[frame], x - xOff, y - yOff, (int) (width * Driver.scale), (int) (height * Driver.scale), null);
+		g.draw(this, x - xOff, y - yOff);
 	}
 
-	public BufferedImage[] getRaw() {
-		return raw;
+	protected int[] getRawFrame() {
+		return raw[frame];
 	}
 
+	public int getWidth() {
+		return width;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public void setLightInteraction(int value) {
+		this.lightInteraction = value;
+	}
+
+	public int getLightInteraction() {
+		return lightInteraction;
+	}
 }

@@ -37,11 +37,12 @@ public class Screen extends Canvas{
 	}
 	
 	
+	
 	public int getWidth() {
-		return d.width;
+		return (int) (d.width / Driver.scale);
 	}
 	
 	public int getHeight() {
-		return d.height;
+		return (int) (d.height / Driver.scale);
 	}
 }

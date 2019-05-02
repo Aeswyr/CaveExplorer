@@ -1,7 +1,6 @@
 package entity;
 
-import java.awt.Graphics;
-
+import gfx.DrawGraphics;
 import gfx.Sprite;
 
 public abstract class Mob extends Entity {
@@ -10,7 +9,7 @@ public abstract class Mob extends Entity {
 	protected double health, healthMax;
 
 	@Override
-	public void render(Graphics g) {
+	public void render(DrawGraphics g) {
 		activeSprite.render((int) x - handler.getCamera().xOffset() - xOff,
 				(int) y - handler.getCamera().yOffset() - yOff, g);
 	}
@@ -21,7 +20,7 @@ public abstract class Mob extends Entity {
 		move();
 	}
 
-	public abstract void renderUI(Graphics g);
+	public abstract void renderUI(DrawGraphics g);
 
 	public abstract void move();
 

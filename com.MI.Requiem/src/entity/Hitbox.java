@@ -1,13 +1,11 @@
 package entity;
 
-import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.ArrayList;
-
-import core.Driver;
 import entity.Entity;
 import entity.EntityManager;
 import entity.Mob;
+import gfx.DrawGraphics;
 import runtime.Handler;
 
 public class Hitbox {
@@ -20,19 +18,19 @@ public class Hitbox {
 
 	public Hitbox(int xOffset, int yOffset, int width, int height, Entity e, Handler handler) {
 		this.e = e;
-		this.width = (int) (width * Driver.scale);
-		this.height = (int) (height * Driver.scale);
-		xoff = (int) (xOffset * Driver.scale);
-		yoff = (int) (yOffset * Driver.scale);
+		this.width = width;
+		this.height = height;
+		xoff = xOffset;
+		yoff = yOffset;
 		this.handler = handler;
 	}
 
 	public Hitbox(int xOffset, int yOffset, int size, Entity e, Handler handler) {
 		this.e = e;
-		this.width = (int) (size * Driver.scale);
-		this.height = (int) (size * Driver.scale);
-		xoff = (int) (xOffset * Driver.scale);
-		yoff = (int) (yOffset * Driver.scale);
+		this.width = size;
+		this.height = size;
+		xoff = xOffset;
+		yoff = yOffset;
 		this.handler = handler;
 
 	}
@@ -40,8 +38,8 @@ public class Hitbox {
 	public Hitbox(int x, int y, int width, int height, Handler handler) {
 		this.x = x;
 		this.y = y;
-		this.width = (int) (width * Driver.scale);
-		this.height = (int) (height * Driver.scale);
+		this.width = width;
+		this.height = height;
 		this.handler = handler;
 	}
 
@@ -51,19 +49,12 @@ public class Hitbox {
 	}
 
 	public boolean contains(Hitbox h) {
-		int[] thisBound = this.getBounds();
-		int[] newBound = h.getBounds();
+		int[] thisC = this.getCenter();
+		int[] newC = h.getCenter();
 
-		if ((newBound[0] >= thisBound[0] && newBound[0] <= thisBound[1])
-				|| (newBound[1] >= thisBound[0] && newBound[1] <= thisBound[1])
-				|| (thisBound[0] >= newBound[0] && thisBound[0] <= newBound[1])
-				|| (thisBound[1] >= newBound[0] && thisBound[1] <= newBound[1])) {
-			if ((newBound[2] >= thisBound[2] && newBound[2] <= thisBound[3])
-					|| (newBound[3] >= thisBound[2] && newBound[3] <= thisBound[3])
-					|| (thisBound[2] >= newBound[2] && thisBound[2] <= newBound[3])
-					|| (thisBound[3] >= newBound[2] && thisBound[3] <= newBound[3]))
-				return true;
-		}
+		if (Math.abs(thisC[0] - newC[0]) < (this.width + h.width) / 2
+				|| Math.abs(thisC[1] - newC[1]) < (this.height + h.height) / 2)
+			return true;
 
 		return false;
 	}
@@ -139,18 +130,23 @@ public class Hitbox {
 		return bounds;
 	}
 
+	private int[] getCenter() {
+		int[] bounds = { x + xoff + width / 2, y + yoff + height / 2 };
+		return bounds;
+	}
+
 	public void updatePos(int x, int y) {
 		this.x = x;
 		this.y = y;
 	}
 
-	public void render(Graphics g) {
+	public void render(DrawGraphics g) {
 		if (handler.devMode)
-			g.drawRect(x - handler.getCamera().xOffset(), y - handler.getCamera().yOffset(), width, height);
+			g.fillRect(x - handler.getCamera().xOffset(), y - handler.getCamera().yOffset(), width, height, 0xff0000ff);
 	}
 
-	public void renderStill(Graphics g) {
+	public void renderStill(DrawGraphics g) {
 		if (handler.devMode)
-			g.drawRect(x, y, width, height);
+			g.fillRect(x, y, width, height, 0xff0000ff);
 	}
 }

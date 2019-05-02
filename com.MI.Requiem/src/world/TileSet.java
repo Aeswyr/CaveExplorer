@@ -1,9 +1,10 @@
 package world;
 
-import java.awt.Graphics;
+import gfx.DrawGraphics;
 import gfx.Sprite;
 import gfx.SpriteSheet;
 import runtime.Handler;
+import runtime.Light;
 
 public class TileSet {
 
@@ -29,11 +30,13 @@ public class TileSet {
 		wall[1] = new Sprite(x + 32, y + 24, 16, sheet);
 		ceiling = new Sprite[2];
 		ceiling[0] = new Sprite(x + 48, y + 0, 16, sheet);
+		ceiling[0].setLightInteraction(Light.FULL);
 		ceiling[1] = new Sprite(x + 48, y + 16, 16, sheet);
+		ceiling[1].setLightInteraction(Light.FULL);
 
 	}
 
-	public void render(int x, int y, int[] edges, boolean w, Graphics g) {
+	public void render(int x, int y, int[] edges, boolean w, DrawGraphics g) {
 		int p1 = u[((x + 1) * (y + x + 1)) % u.length];
 
 		if (w) {

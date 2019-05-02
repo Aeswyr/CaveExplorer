@@ -5,8 +5,8 @@ import entity.Entity;
 public class Camera {
 	Handler handler;
 	Entity target;
-	int xOffset;
-	int yOffset;
+	private int xOffset;
+	private int yOffset;
 
 	public Camera(Handler handler) {
 		this.handler = handler;

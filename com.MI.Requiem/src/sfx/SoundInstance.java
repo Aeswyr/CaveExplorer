@@ -1,6 +1,7 @@
 package sfx;
 
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 
 /**
  * An instance of executed sound
@@ -13,6 +14,7 @@ public class SoundInstance implements Runnable {
 	 * the clip played when this SoundInstance is executed
 	 */
 	public Clip clip;
+	private FloatControl gain;
 
 	/**
 	 * initializes a new SoundInstance containing a clip from the originating Sound object
@@ -20,6 +22,7 @@ public class SoundInstance implements Runnable {
 	 */
 	public SoundInstance(Clip clip) {
 		this.clip = clip;
+		gain = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
 	}
 
 	/**
@@ -43,8 +46,16 @@ public class SoundInstance implements Runnable {
 	/**
 	 * forcefully stop the contained clip, allowing the run method to end
 	 */
-	public void stopLoop() {
+	public void stop() {
 		clip.stop();
 	}
 
+	/**
+	 * sets the volume of the clip
+	 * @param decibel - desired volume in decibles
+	 */
+	public void volume(float decibel) {
+		gain.setValue(decibel);
+	}
+	
 }

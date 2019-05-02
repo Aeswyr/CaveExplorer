@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
@@ -40,8 +43,18 @@ public class Sound {
 		
 		for (int i = 0; i < MAX_CHANNELS; i++) {
 			try {
+				
+				AudioInputStream baseInput = Loader.loadURLAudio(path);
+				AudioFormat baseFormat = baseInput.getFormat();
+				AudioFormat decodeFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED,
+															baseFormat.getSampleRate(), 16,
+															baseFormat.getChannels(),
+															baseFormat.getChannels() * 2,
+															baseFormat.getSampleRate(),
+															false);
+				AudioInputStream decodeInput = AudioSystem.getAudioInputStream(decodeFormat, baseInput);
 				clips[i] = AudioSystem.getClip();
-				clips[i].open(Loader.loadURLAudio(path));
+				clips[i].open(decodeInput);
 			} catch (LineUnavailableException | IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -53,13 +66,15 @@ public class Sound {
 	/**
 	 * Creates a SoundInstance using an unused clip and adds that clip to the thread pool to play
 	 */
-	public void play() {
+	public SoundInstance play() {
 		for (Clip c : clips) {
 			if (!c.isActive()) {
-				Sound.add(new SoundInstance(c));
-				break;
+				SoundInstance s = new SoundInstance(c);
+				Sound.add(s);
+				return s;
 			}
 		}
+		return null;
 	}
 
 	/**
@@ -110,7 +125,7 @@ public class Sound {
 	 */
 	public static void shutdown() {
 		for (SoundInstance instance : loops) {
-			instance.stopLoop();
+			instance.stop();
 		}
 		
 		pool.shutdown();

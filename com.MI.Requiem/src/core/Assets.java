@@ -27,6 +27,7 @@ public class Assets {
 	public static Sprite player_run;
 
 	public static void init() {
+
 		initSheet();
 		initSprite();
 	}

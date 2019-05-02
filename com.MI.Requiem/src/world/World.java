@@ -1,9 +1,8 @@
 package world;
 
-import java.awt.Graphics;
 import java.util.ArrayList;
-
 import entity.EntityManager;
+import gfx.DrawGraphics;
 import runtime.Handler;
 
 public class World {
@@ -33,11 +32,15 @@ public class World {
 
 	}
 
-	public void render(Graphics g) {
+	public void render(DrawGraphics g) {
 
-		for (int i = 0; i < chunks.size(); i++) {
-			chunks.get(i).render(g);
+		synchronized (chunks) {
+			for (int i = 0; i < chunks.size(); i++) {
+				chunks.get(i).render(g);
+			}
 		}
+		handler.getLights().render(g);
+
 		entities.renderEntityUI(g);
 	}
 
@@ -69,7 +72,10 @@ public class World {
 			}
 
 		}
-		chunks = chunkLoader.getActive();
+		synchronized (chunks) {
+			chunks.clear();
+			chunks.addAll(chunkLoader.getActive());
+		}
 	}
 
 	/**
@@ -95,4 +101,5 @@ public class World {
 	public EntityManager getEntities() {
 		return entities;
 	}
+
 }

@@ -1,7 +1,6 @@
 package entity;
 
-import java.awt.Graphics;
-
+import gfx.DrawGraphics;
 import runtime.Handler;
 import world.Chunk;
 import world.Tile;
@@ -14,7 +13,7 @@ public abstract class Entity {
 
 	public abstract void update();
 
-	public abstract void render(Graphics g);
+	public abstract void render(DrawGraphics g);
 
 	public void die() {
 		handler.getWorld().getEntities().removeEntity(this);

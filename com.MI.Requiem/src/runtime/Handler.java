@@ -1,9 +1,9 @@
 package runtime;
 
-import java.awt.Graphics;
-
 import core.Driver;
+import core.Screen;
 import entity.Player;
+import gfx.DrawGraphics;
 import input.KeyManager;
 import input.MouseManager;
 import world.TileSet;
@@ -21,9 +21,13 @@ public class Handler {
 	private Camera camera;
 	private Player player;
 
+	private LightManager lightManager;
+
 	public Handler(Driver d) {
 		driver = d;
 		TileSet.handler = this;
+
+		lightManager = new LightManager(this);
 
 		camera = new Camera(this);
 		player = new Player(this);
@@ -42,10 +46,12 @@ public class Handler {
 		world.update();
 		synchronized (camera) {
 			camera.update();
+			lightManager.update();
 		}
+
 	}
 
-	public void render(Graphics g) {
+	public void render(DrawGraphics g) {
 		synchronized (camera) {
 			world.render(g);
 		}
@@ -79,5 +85,17 @@ public class Handler {
 
 	public int getHeight() {
 		return driver.getHeight();
+	}
+
+	public Screen getScreen() {
+		return driver.getScreen();
+	}
+
+	public DrawGraphics getCanvas() {
+		return driver.getCanvas();
+	}
+
+	public LightManager getLights() {
+		return lightManager;
 	}
 }

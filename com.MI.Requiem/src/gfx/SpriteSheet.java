@@ -14,11 +14,6 @@ public class SpriteSheet {
 	 * BufferedImage to hold the processed SpriteSheet
 	 */
   BufferedImage b;
-  
-  //Filter numbers referring to the color hexes FF00FF and 7F007F
-  static final int FILTER_A = -8454017;
-  static final int FILTER_B = -65281;
-
 
   /**
    * initializes a new SpriteSheet by assigning the image located at the path to the BufferedImage
@@ -31,9 +26,7 @@ public class SpriteSheet {
         BufferedImage.TYPE_INT_ARGB);
     for (int x = 0; x < b.getWidth(); x++) {
       for (int y = 0; y < b.getHeight(); y++) {
-        if (imageBuffer.getRGB(x, y) != FILTER_A && imageBuffer.getRGB(x, y) != FILTER_B) {
           b.setRGB(x, y, imageBuffer.getRGB(x, y));
-        }
       }
     }
   }
