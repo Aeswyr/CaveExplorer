@@ -50,15 +50,21 @@ public class World {
 	}
 
 	private void updateChunks() {
-		if (currChunk.getX() != handler.getPlayer().getChunkX()
-				|| currChunk.getY() != handler.getPlayer().getChunkY()) {
-			currChunk = new Chunk(handler.getPlayer().getChunkX(), handler.getPlayer().getChunkY());
+
+		int pcx = handler.getPlayer().getChunkX();
+		int pcy = handler.getPlayer().getChunkY();
+
+		if (currChunk.getX() != pcx || currChunk.getY() != pcy) {
+			currChunk = new Chunk(pcx, pcy);
+
+			int cx = currChunk.getX();
+			int cy = currChunk.getY();
+
 			ArrayList<Chunk> test = new ArrayList<Chunk>();
 			for (int x = -2; x < 3; x++) {
 				for (int y = -2; y < 3; y++) {
-					if (currChunk.getX() + x >= 0 && currChunk.getX() < maxChunks && currChunk.getY() + y >= 0
-							&& currChunk.getY() < maxChunks)
-						test.add(new Chunk(currChunk.getX() + x, currChunk.getY() + y));
+					if (cx + x >= 0 && cx < maxChunks && cy + y >= 0 && cy < maxChunks)
+						test.add(new Chunk(cx + x, cy + y));
 				}
 			}
 

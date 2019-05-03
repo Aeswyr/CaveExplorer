@@ -46,8 +46,8 @@ public class Handler {
 		world.update();
 		synchronized (camera) {
 			camera.update();
-			lightManager.update();
 		}
+		lightManager.update();
 
 	}
 

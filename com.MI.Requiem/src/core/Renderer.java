@@ -16,7 +16,7 @@ public class Renderer implements Runnable {
 	private BufferStrategy bs;
 	protected DrawGraphics draw;
 	private Handler handler;
-	
+
 	public Renderer(Handler handler, Screen screen, DrawGraphics canvas) {
 		this.screen = screen;
 		this.handler = handler;
@@ -34,10 +34,11 @@ public class Renderer implements Runnable {
 			if (currentTime - lastTime > delta) {
 				if (ticks > 0 || !capped) {
 					render();
+					System.out.print("");
 					frames++;
-					if (capped) ticks--;
+					if (capped)
+						ticks--;
 				}
-				System.out.print("");
 				lastTime = System.nanoTime();
 			}
 
@@ -52,13 +53,14 @@ public class Renderer implements Runnable {
 	}
 
 	Graphics g;
+
 	public void render() {
 		bs = screen.getBufferStrategy();
 		if (bs == null) {
 			screen.createBufferStrategy(3);
 			return;
 		}
-		
+
 		g = bs.getDrawGraphics();
 		draw.clear();
 
@@ -71,11 +73,11 @@ public class Renderer implements Runnable {
 	public void tick() {
 		ticks++;
 	}
-	
+
 	protected void setCapped(boolean capped) {
 		this.capped = capped;
 	}
-	
+
 	protected int getFrames() {
 		int hold = frames;
 		frames = 0;

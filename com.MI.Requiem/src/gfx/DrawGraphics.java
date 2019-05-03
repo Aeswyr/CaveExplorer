@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import core.Driver;
+import geometry.Shape;
 import runtime.Light;
 
 public class DrawGraphics {
@@ -178,6 +179,35 @@ public class DrawGraphics {
 			}
 		}
 
+	}
+	
+	public void draw(Shape s, int xOff, int yOff) {
+		int xCap = 0;
+		int yCap = 0;
+		int widthCap = s.getWidth();
+		int heightCap = s.getHeight();
+
+		if (widthCap + xOff > width) {
+			widthCap -= widthCap + xOff - width;
+		}
+		if (heightCap + yOff > height) {
+			heightCap -= heightCap + yOff - height;
+		}
+
+		if (xCap + xOff < 0) {
+			xCap -= xOff;
+		}
+		if (yCap + yOff < 0) {
+			yCap -= yOff;
+		}
+
+		int[] r = s.getRaster();
+		int w = s.getWidth();
+		for (int y = yCap; y < heightCap; y++) {
+			for (int x = xCap; x < widthCap; x++) {
+				drawPixel(x + xOff, y + yOff, r[y * w + x]);
+			}
+		}
 	}
 
 	// TODO shape objects and drawshape method

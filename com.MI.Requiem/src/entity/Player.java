@@ -32,6 +32,10 @@ public class Player extends Mob {
 
 		lamp = new Light(128, 0xffffffAA, handler);
 		lamp.light();
+		
+		Light torch = new Light(128, 0xffff00ff, handler);
+		torch.setPos(10 * Tile.tileSize, 10 * Tile.tileSize);
+		torch.light();
 	}
 
 	@Override
@@ -84,9 +88,11 @@ public class Player extends Mob {
 		int posX = 16;
 		int posY = 24;
 
-		g.fillRect(0, 0, handler.getWidth() / 6, handler.getHeight(), 0xff202020);
-		g.fillRect(handler.getWidth() - handler.getWidth() / 6, 0, handler.getWidth() / 6, handler.getHeight(),
-				0xff202020);
+		int w = handler.getWidth();
+		int h = handler.getHeight();
+
+		g.fillRect(0, 0, w / 6, h, 0xff202020);
+		g.fillRect(w - w / 6, 0, w / 6, h, 0xff202020);
 		Assets.healthBar.render((int) (posX), (int) (posY), g);
 		g.fillRect((int) ((posX + 5)), (int) ((posY + 5)), (int) (118 * health / healthMax), (int) (26), 0xff691920);
 
