@@ -44,17 +44,13 @@ public class Handler {
 	public void update() {
 		keys.update();
 		world.update();
-		synchronized (camera) {
-			camera.update();
-		}
 		lightManager.update();
+		camera.update();
 
 	}
 
 	public void render(DrawGraphics g) {
-		synchronized (camera) {
-			world.render(g);
-		}
+		world.render(g);
 	}
 
 	// Getters and Setters

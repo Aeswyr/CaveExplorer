@@ -30,7 +30,7 @@ public class Player extends Mob {
 		woundMax = 1;
 		wounds = 0;
 
-		lamp = new Light(128, 0xffffffAA, handler);
+		lamp = new Light(256, 0xffffffAA, handler);
 		lamp.light();
 		
 		Light torch = new Light(128, 0xffff00ff, handler);

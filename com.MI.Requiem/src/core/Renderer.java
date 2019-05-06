@@ -34,7 +34,6 @@ public class Renderer implements Runnable {
 			if (currentTime - lastTime > delta) {
 				if (ticks > 0 || !capped) {
 					render();
-					System.out.print("");
 					frames++;
 					if (capped)
 						ticks--;

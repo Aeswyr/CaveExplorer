@@ -14,7 +14,7 @@ public class ChunkLoader implements Runnable {
 	boolean running = false;
 	Queue<Chunk> load;
 	Queue<Chunk> unload;
-	ArrayList<Chunk> active;
+	volatile ArrayList<Chunk> active;
 	ArrayList<Chunk> loading;
 	long time;
 
@@ -68,9 +68,7 @@ public class ChunkLoader implements Runnable {
 	 * @returns all currently loaded chunks
 	 */
 	public ArrayList<Chunk> getActive() {
-		synchronized (active) {
 			return this.active;
-		}
 	}
 
 	/**
@@ -121,9 +119,8 @@ public class ChunkLoader implements Runnable {
 				System.out.println("time for unload operation: " + (System.nanoTime() - time) / 1000000.0 + "ms");
 			}
 			organizeChunks();
-			synchronized (active) {
 				active = (ArrayList<Chunk>) loading.clone();
-			}
+
 		}
 	}
 

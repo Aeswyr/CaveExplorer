@@ -12,7 +12,7 @@ public class Driver implements Runnable {
 
 	private boolean running = false;
 	private Renderer render;
-	volatile Handler handler;
+	Handler handler;
 	Screen screen;
 	DrawGraphics canvas;
 
@@ -32,21 +32,24 @@ public class Driver implements Runnable {
 		long deltaR = 1000000000;
 
 		long updateTime = 0;
+		int upd = 0;
 
 		while (running) {
 			currentTime = System.nanoTime();
 			if (currentTime - lastTime > delta) {
 				update();
+				upd++;
 				render.tick();
 				updateTime += System.nanoTime() - currentTime;
 				if (currentTime - lastReport > deltaR) {
-					int fps = render.getFrames();
-					System.out.println("FPS: " + fps + " Avg update time (ns): " + (updateTime / (fps + 1)));
+					System.out.println("FPS: " + render.getFrames() + " Updates:" + upd + " Avg update time (ns): "
+							+ updateTime / upd);
 					updateTime = 0;
+					upd = 0;
 					lastReport = System.nanoTime();
 				}
 				currentTime = System.nanoTime();
-				lastTime = System.nanoTime();
+				lastTime = currentTime;
 			}
 
 		}
@@ -55,11 +58,11 @@ public class Driver implements Runnable {
 
 	public synchronized void start() {
 		handler = new Handler(this);
-		render = new Renderer(handler, screen, canvas);
 
 		running = true;
 		Thread t = new Thread(this);
 		t.start();
+		render = new Renderer(handler, screen, canvas);
 		render.start();
 	}
 
