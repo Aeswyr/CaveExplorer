@@ -171,11 +171,12 @@ public class DrawGraphics {
 
 		int[] r = s.getRawFrame();
 		int w = s.getWidth();
+		int l = s.getLightInteraction();
 		for (int y = yCap; y < heightCap; y++) {
 			for (int x = xCap; x < widthCap; x++) {
 				drawPixel(x + xOff, y + yOff, r[y * w + x]);
 				if (r[y * w + x] != 0xffff00ff)
-					setLightCollision(x + xOff, y + yOff, s.getLightInteraction());
+					setLightCollision(x + xOff, y + yOff, l);
 			}
 		}
 
