@@ -113,8 +113,8 @@ public class Hitbox {
 	}
 
 	public boolean containsMouse() {
-		int mouseX = handler.getMouse().getX();
-		int mouseY = handler.getMouse().getY();
+		int mouseX = handler.getMouse().getAdjX();
+		int mouseY = handler.getMouse().getAdjY();
 		int[] bound = this.getBounds();
 
 		if (mouseX > bound[0] && mouseX < bound[1] && mouseY > bound[2] && mouseY < bound[3])

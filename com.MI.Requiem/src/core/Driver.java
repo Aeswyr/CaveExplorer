@@ -58,11 +58,10 @@ public class Driver implements Runnable {
 
 	public synchronized void start() {
 		handler = new Handler(this);
-
 		running = true;
 		Thread t = new Thread(this);
-		t.start();
 		render = new Renderer(handler, screen, canvas);
+		t.start();
 		render.start();
 	}
 

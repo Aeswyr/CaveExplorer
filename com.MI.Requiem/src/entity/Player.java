@@ -2,6 +2,10 @@ package entity;
 
 import core.Assets;
 import gfx.DrawGraphics;
+import item.Inventory;
+import item.Item;
+import item.ItemContainer;
+import items.Torch;
 import runtime.Handler;
 import runtime.Light;
 import world.Tile;
@@ -14,13 +18,14 @@ public class Player extends Mob {
 	int wounds;
 	int woundMax;
 
-	Light lamp;
+	// Inventory
+	Inventory inventory;
 
 	public Player(Handler handler) {
 		this.x = 10 * Tile.tileSize;
 		this.y = 10 * Tile.tileSize;
-		this.xOff = (int) (32);
-		this.yOff = (int) (32);
+		this.xOff = 32;
+		this.yOff = 32;
 		this.hitbox = new Hitbox(-22, -8, 10, 10, this, handler);
 		this.handler = handler;
 		activeSprite = Assets.player_still;
@@ -30,9 +35,17 @@ public class Player extends Mob {
 		woundMax = 1;
 		wounds = 0;
 
-		lamp = new Light(256, 0xffffffAA, handler);
-		lamp.light();
-		
+		inventory = new Inventory(824, 16, 9, handler);
+		inventory.appendContainer(new ItemContainer<Item>(44, 192, Assets.inventory_Empty, Assets.inventory_Mainhand, "hand mainhand", handler));
+		inventory.appendContainer(new ItemContainer<Item>(84, 192, Assets.inventory_Empty, Assets.inventory_Offhand, "hand offhand", handler));
+		inventory.appendContainer(new ItemContainer<Item>(44, 296, Assets.inventory_Empty, Assets.inventory_Head, "head", handler));
+		inventory.appendContainer(new ItemContainer<Item>(84, 296, Assets.inventory_Empty, Assets.inventory_Body, "body", handler));
+		inventory.appendContainer(new ItemContainer<Item>(24, 256, Assets.inventory_Empty, Assets.inventory_Trinket, "trinket", handler));
+		inventory.appendContainer(new ItemContainer<Item>(64, 256, Assets.inventory_Empty, Assets.inventory_Trinket, "trinket", handler));
+		inventory.appendContainer(new ItemContainer<Item>(104, 256, Assets.inventory_Empty, Assets.inventory_Trinket, "trinket", handler));
+
+		inventory.add(new Torch(handler, this));
+
 		Light torch = new Light(128, 0xffff00ff, handler);
 		torch.setPos(10 * Tile.tileSize, 10 * Tile.tileSize);
 		torch.light();
@@ -40,7 +53,7 @@ public class Player extends Mob {
 
 	@Override
 	public void update() {
-		lamp.setPos((int) x - xOff / 2, (int) y - xOff / 2);
+		inventory.update();
 		super.update();
 		if (health < healthMax)
 			heal(healthMax / (5 * 60 * 60));
@@ -116,6 +129,8 @@ public class Player extends Mob {
 
 		}
 
+		inventory.render(g);
+
 	}
 
 	@Override
@@ -126,6 +141,20 @@ public class Player extends Mob {
 			if (wounds > woundMax) {
 				this.die();
 			}
+		}
+	}
+
+	@Override
+	public void equip(Item i) {
+		if (inventory.equip(i)) {
+			i.setHolder(this);
+		}
+	}
+
+	@Override
+	public void pickup(Item i) {
+		if (inventory.add(i)) {
+			i.setHolder(this);
 		}
 	}
 

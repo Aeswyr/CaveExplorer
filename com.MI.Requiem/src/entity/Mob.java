@@ -2,6 +2,7 @@ package entity;
 
 import gfx.DrawGraphics;
 import gfx.Sprite;
+import item.Item;
 
 public abstract class Mob extends Entity {
 
@@ -34,4 +35,9 @@ public abstract class Mob extends Entity {
 		if (health > healthMax)
 			health = healthMax;
 	}
+	
+	
+	public abstract void equip(Item i);
+	
+	public abstract void pickup(Item i);
 }
