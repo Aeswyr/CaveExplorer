@@ -3,11 +3,9 @@ package input;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-
 import core.Driver;
 import item.Item;
 import item.ItemContainer;
-import utility.Storeable;
 
 public class MouseManager implements MouseListener, MouseMotionListener {
 
@@ -86,8 +84,11 @@ public class MouseManager implements MouseListener, MouseMotionListener {
 			break;
 		}
 
-		if (startHovered != null && endHovered != null && endHovered.containsMouse() &&  !startHovered.equals(endHovered)) {
-			if (endHovered.store(startHovered.getContained())) startHovered.clear();
+		if (startHovered != null && endHovered != null && endHovered.containsMouse()) {
+			if (startHovered.equals(endHovered) && startHovered.getContained() != null) {
+				startHovered.getContained().use();
+			} else if (endHovered.store(startHovered.getContained()))
+				startHovered.remove();
 		}
 		startHovered = null;
 		endHovered = null;
@@ -116,19 +117,21 @@ public class MouseManager implements MouseListener, MouseMotionListener {
 	public int getY() {
 		return y;
 	}
-	
+
 	/**
-	 * @returns the mouse x position in pixels relative to the DrawGraphics, not the frame
+	 * @returns the mouse x position in pixels relative to the DrawGraphics, not the
+	 *          frame
 	 */
 	public int getAdjX() {
 		return (int) (x / Driver.scale);
 	}
-	
+
 	/**
-	 * @returns the mouse y position in pixels relative to the DrawGraphics, not the frame
+	 * @returns the mouse y position in pixels relative to the DrawGraphics, not the
+	 *          frame
 	 */
 	public int getAdjY() {
-		return (int) (y/ Driver.scale);
+		return (int) (y / Driver.scale);
 	}
 
 	public int getDeltaX() {
@@ -138,15 +141,15 @@ public class MouseManager implements MouseListener, MouseMotionListener {
 	public int getDeltaY() {
 		return y - y0;
 	}
-	
+
 	public void setStartHovered(ItemContainer<Item> c) {
 		startHovered = c;
 	}
-	
+
 	public void setEndHovered(ItemContainer<Item> c) {
 		endHovered = c;
 	}
-	
+
 	public ItemContainer<Item> getStartHovered() {
 		return startHovered;
 	}

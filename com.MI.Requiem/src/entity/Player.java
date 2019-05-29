@@ -5,21 +5,23 @@ import gfx.DrawGraphics;
 import item.Inventory;
 import item.Item;
 import item.ItemContainer;
+import items.Cloak;
+import items.Spineberry;
 import items.Torch;
 import runtime.Handler;
-import runtime.Light;
 import world.Tile;
 
 public class Player extends Mob {
 
 	boolean moving = false;
-	double speed = Tile.tileSize / 8;
 
 	int wounds;
 	int woundMax;
 
 	// Inventory
 	Inventory inventory;
+	ItemContainer<Item> lHand;
+	ItemContainer<Item> rHand;
 
 	public Player(Handler handler) {
 		this.x = 10 * Tile.tileSize;
@@ -30,14 +32,18 @@ public class Player extends Mob {
 		this.handler = handler;
 		activeSprite = Assets.player_still;
 
+		speed = 2;
 		health = 75;
 		healthMax = 100;
 		woundMax = 1;
 		wounds = 0;
 
+		lHand = new ItemContainer<Item>(44, 192, Assets.inventory_Empty, Assets.inventory_Mainhand, "hand mainhand", handler);
+		rHand = new ItemContainer<Item>(84, 192, Assets.inventory_Empty, Assets.inventory_Offhand, "hand offhand", handler);
+		
 		inventory = new Inventory(824, 16, 9, handler);
-		inventory.appendContainer(new ItemContainer<Item>(44, 192, Assets.inventory_Empty, Assets.inventory_Mainhand, "hand mainhand", handler));
-		inventory.appendContainer(new ItemContainer<Item>(84, 192, Assets.inventory_Empty, Assets.inventory_Offhand, "hand offhand", handler));
+		inventory.appendContainer(lHand);
+		inventory.appendContainer(rHand);
 		inventory.appendContainer(new ItemContainer<Item>(44, 296, Assets.inventory_Empty, Assets.inventory_Head, "head", handler));
 		inventory.appendContainer(new ItemContainer<Item>(84, 296, Assets.inventory_Empty, Assets.inventory_Body, "body", handler));
 		inventory.appendContainer(new ItemContainer<Item>(24, 256, Assets.inventory_Empty, Assets.inventory_Trinket, "trinket", handler));
@@ -45,10 +51,11 @@ public class Player extends Mob {
 		inventory.appendContainer(new ItemContainer<Item>(104, 256, Assets.inventory_Empty, Assets.inventory_Trinket, "trinket", handler));
 
 		inventory.add(new Torch(handler, this));
-
-		Light torch = new Light(128, 0xffff00ff, handler);
-		torch.setPos(10 * Tile.tileSize, 10 * Tile.tileSize);
-		torch.light();
+		inventory.add(new Cloak(handler, this));
+		inventory.add(new Cloak(handler, this));
+		inventory.add(new Spineberry(handler, this));
+		inventory.add(new Spineberry(handler, this));
+		inventory.add(new Spineberry(handler, this));
 	}
 
 	@Override
@@ -93,6 +100,9 @@ public class Player extends Mob {
 		} else {
 			activeSprite = Assets.player_still;
 		}
+		
+		if (handler.getMouse().getLeft() && lHand.getContained() != null) lHand.getContained().use();
+		if (handler.getMouse().getRight() && rHand.getContained() != null) rHand.getContained().use();
 	}
 
 	@Override

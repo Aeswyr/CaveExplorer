@@ -48,6 +48,10 @@ public class Inventory {
 				if (item.equipped())
 					item.onDequip();
 				item.update();
+				if (item.consumed) {
+					item.setConsumed(false);
+					storage.get(i).remove();
+				}
 			}
 		}
 		for (int i = 0; i < extra.size(); i++) {
@@ -57,6 +61,10 @@ public class Inventory {
 				if (!item.equipped())
 					item.onEquip();
 				item.update();
+				if (item.consumed) {
+					extra.get(i).remove();
+					item.onDequip();
+				}
 			}
 		}
 	}
@@ -66,6 +74,12 @@ public class Inventory {
 	}
 
 	public boolean add(Item item) {
+		for (int i = 0; i < storage.size(); i++) {
+			if (storage.get(i).getContained() != null && storage.get(i).getContained().equals(item)) {
+				storage.get(i).store(item);
+				return true;
+			}
+		}
 		for (int i = 0; i < storage.size(); i++) {
 			if (storage.get(i).getContained() == null) {
 				storage.get(i).store(item);

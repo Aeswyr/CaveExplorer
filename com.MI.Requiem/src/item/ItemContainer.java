@@ -13,7 +13,7 @@ public class ItemContainer<T extends Storeable> {
 	T contained;
 	Sprite container;
 	Sprite empty;
-	int x, y;
+	int x, y, amount;
 	Handler handler;
 	Hitbox h;
 
@@ -71,14 +71,17 @@ public class ItemContainer<T extends Storeable> {
 	}
 
 	public boolean store(T item) {
-		if (contained != null || (acceptedTags != null && !Utility.tagOverlaps(acceptedTags, item.getTags())))
+		if ((contained != null && !contained.equals(item)) || (acceptedTags != null && !Utility.tagOverlaps(acceptedTags, item.getTags())))
 			return false;
+		if (contained == null)
 		contained = item;
+		amount++;
 		return true;
 	}
 	
-	public void clear() {
-		contained = null;
+	public void remove() {
+		amount--;
+		if (amount <= 0) contained = null;
 	}
 
 	public boolean containsMouse() {

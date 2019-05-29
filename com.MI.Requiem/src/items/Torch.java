@@ -1,7 +1,7 @@
 package items;
 
 import core.Assets;
-import entity.Entity;
+import entity.Mob;
 import gfx.DrawGraphics;
 import item.Item;
 import runtime.Handler;
@@ -13,9 +13,10 @@ public class Torch extends Item {
 	Light dim;
 	Light burnt;
 
-	public Torch(Handler handler, Entity holder) {
+	public Torch(Handler handler, Mob holder) {
 		super(handler, holder);
 		
+		ID = "u0";
 		tags = "hand";
 		
 		useMax = 10800;
