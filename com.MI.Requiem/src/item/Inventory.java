@@ -16,10 +16,10 @@ public class Inventory {
 	public Inventory(int x, int y, int size, Handler handler) {
 		storage = new ArrayList<ItemContainer<Item>>();
 		extra = new ArrayList<ItemContainer<Item>>();
-		this.x = x;
-		this.y = y;
 		this.size = size;
 		this.handler = handler;
+		this.x = x;
+		this.y = y;
 		for (int i = 0; i < size; i++) {
 			storage.add(
 					new ItemContainer<Item>((i % 3) * 40 + x, (i / 3) * 40 + y, Assets.inventory_Empty, null, handler));
@@ -70,7 +70,14 @@ public class Inventory {
 	}
 
 	public void resize(int size) {
+		if (size > this.size) {
+			for (int i = this.size; i < size; i++) {
+				storage.add(new ItemContainer<Item>((i % 3) * 40 + x, (i / 3) * 40 + y, Assets.inventory_Empty, null,
+						handler));
+			}
+		} else if (size < this.size) {
 
+		}
 	}
 
 	public boolean add(Item item) {

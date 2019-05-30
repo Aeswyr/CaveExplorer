@@ -103,7 +103,24 @@ public class World {
 			return Tile.toTile(0);
 		return Tile.toTile(id);
 	}
+	
+	public int getTileID(int x, int y) {
+		int id = -1;
+		for (int i = 0; i < chunks.size(); i++) {
+			if (chunks.get(i) != null) {
+				int pos = chunks.get(i).tileAt(x / Tile.tileSize, y / Tile.tileSize);
+				if (pos != -1)
+					id = pos;
+			}
+		}
+		if (id == -1) return 0;
+		return id;
+	}
 
+	public void setTile(int x, int y, int id) {
+		for (int i = 0; i < chunks.size(); i++) chunks.get(i).setTile(x, y, id);
+	}
+	
 	public EntityManager getEntities() {
 		return entities;
 	}

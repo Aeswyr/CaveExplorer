@@ -38,6 +38,7 @@ public class Assets {
 	public static Sprite burntTorch_inv;
 	public static Sprite cloak_inv;
 	public static Sprite spineberry_inv;
+	public static Sprite pickaxe_inv;
 
 	public static void init() {
 		initSheet();
@@ -74,5 +75,6 @@ public class Assets {
 		burntTorch_inv = new Sprite(32, 0, 32, item);	
 		cloak_inv = new Sprite(64, 0, 32, item);
 		spineberry_inv = new Sprite(96, 0 , 32, item);
+		pickaxe_inv = new Sprite(128, 0, 32, item);
 	}
 }

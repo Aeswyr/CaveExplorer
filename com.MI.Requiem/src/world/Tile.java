@@ -1,12 +1,18 @@
 package world;
 
+import java.util.ArrayList;
+
+import entity.Mob;
 import gfx.DrawGraphics;
+import item.Item;
+import runtime.Handler;
 import tiles.Tile_DirtFloor;
 import tiles.Tile_DirtWall;
 
 public class Tile {
 
 	protected boolean wall;
+	protected boolean breakable;
 	protected TileSet tileSet;
 	public static int tileSize = 16;
 
@@ -23,5 +29,13 @@ public class Tile {
 
 	public boolean isSolid() {
 		return wall;
+	}
+	
+	public boolean isBreakable() {
+		return breakable;
+	}
+	
+	public ArrayList<Item> tileDrop(Handler handler, Mob holder) {
+		return null;
 	}
 }

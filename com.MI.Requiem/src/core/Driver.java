@@ -42,8 +42,8 @@ public class Driver implements Runnable {
 				render.tick();
 				updateTime += System.nanoTime() - currentTime;
 				if (currentTime - lastReport > deltaR) {
-					System.out.println("FPS: " + render.getFrames() + " Updates:" + upd + " Avg update time (ns): "
-							+ updateTime / upd);
+					System.out.println("FPS: " + render.getFrames() + " Updates:" + upd + " Avg update time (ms): "
+							+ updateTime / upd / 1000000.00);
 					updateTime = 0;
 					upd = 0;
 					lastReport = System.nanoTime();

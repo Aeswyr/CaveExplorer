@@ -6,6 +6,7 @@ import item.Inventory;
 import item.Item;
 import item.ItemContainer;
 import items.Cloak;
+import items.Pickaxe;
 import items.Spineberry;
 import items.Torch;
 import runtime.Handler;
@@ -56,6 +57,7 @@ public class Player extends Mob {
 		inventory.add(new Spineberry(handler, this));
 		inventory.add(new Spineberry(handler, this));
 		inventory.add(new Spineberry(handler, this));
+		inventory.add(new Pickaxe(handler, this));
 	}
 
 	@Override

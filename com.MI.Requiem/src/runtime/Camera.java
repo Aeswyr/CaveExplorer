@@ -9,7 +9,7 @@ public class Camera {
 	private int yOffset;
 
 	int w, h;
-	
+
 	public Camera(Handler handler) {
 		this.handler = handler;
 		w = handler.getWidth();
@@ -39,5 +39,4 @@ public class Camera {
 	public int yOffset() {
 		return yOffset - h / 2;
 	}
-
 }

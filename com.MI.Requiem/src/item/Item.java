@@ -25,7 +25,9 @@ public abstract class Item implements Storeable {
 	protected Mob holder;
 	protected boolean equipped = false;
 	protected boolean consumed = false;
-
+	protected int useTime = 0;
+	protected int timer;
+	
 	protected int useMax = 1;
 	protected int use = useMax;
 

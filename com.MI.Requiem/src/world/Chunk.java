@@ -59,17 +59,20 @@ public class Chunk {
 		if (endY > y * chunkDim + chunkDim)
 			endY = y * chunkDim + chunkDim;
 
+		Tile t;
 		for (int i = startX; i < endX; i++) {
 			for (int j = startY; j < endY; j++) {
-				if (!Tile.toTile(chunk[i - x * chunkDim][j - y * chunkDim]).isSolid())
-					Tile.toTile(chunk[i - x * chunkDim][j - y * chunkDim]).render(i, j, new int[0], g);
+				t = Tile.toTile(chunk[i - x * chunkDim][j - y * chunkDim]);
+				if (!t.isSolid())
+					t.render(i, j, new int[0], g);
 			}
 		}
 
 		for (int j = startY; j < endY; j++) {
 			for (int i = startX; i < endX; i++) {
-				if (Tile.toTile(chunk[i - x * chunkDim][j - y * chunkDim]).isSolid())
-					Tile.toTile(chunk[i - x * chunkDim][j - y * chunkDim]).render(i, j, new int[0], g);
+				t = Tile.toTile(chunk[i - x * chunkDim][j - y * chunkDim]);
+				if (t.isSolid())
+					t.render(i, j, new int[0], g);
 				handler.getWorld().getEntities().renderInOrder(i, j, g);
 			}
 		}
@@ -141,6 +144,14 @@ public class Chunk {
 		if (x >= chunkDim || x < 0 || y >= chunkDim || y < 0)
 			return -1;
 		return chunk[x][y];
+	}
+
+	public void setTile(int x, int y, int id) {
+		x -= this.x * chunkDim;
+		y -= this.y * chunkDim;
+		if (x >= chunkDim || x < 0 || y >= chunkDim || y < 0)
+			return;
+		chunk[x][y] = id;
 	}
 
 	/**
