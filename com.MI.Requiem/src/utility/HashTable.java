@@ -59,7 +59,7 @@ public class HashTable<K, T> {
 			find.next = new Node(k, t);
 		}
 		count++;
-		threshold = 1.0 * (count / size);
+		threshold = (1.0 * count / size);
 		if (resizable && threshold >= max)
 			resize();
 
@@ -121,6 +121,7 @@ public class HashTable<K, T> {
 	@SuppressWarnings("unchecked")
 	private void resize() {
 		size = size * 2 + 1;
+		count = 0;
 		Node[] store = list;
 		list = (Node[]) Array.newInstance(Node.class, size);
 		for (int i = 0; i < store.length; i++) {
