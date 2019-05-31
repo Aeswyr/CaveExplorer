@@ -87,8 +87,8 @@ public class World {
 	/**
 	 * returns the tile at the given position
 	 * 
-	 * @param x - the x coordinate of the tile (screen position)
-	 * @param y - the y coordinate of the tile (screen position)
+	 * @param x - the x coordinate of the tile (pixel position)
+	 * @param y - the y coordinate of the tile (pixel position)
 	 */
 	public Tile getTile(int x, int y) {
 		int id = -1;
@@ -104,6 +104,12 @@ public class World {
 		return Tile.toTile(id);
 	}
 	
+	/**
+	 * returns the tile id at the given position
+	 * 
+	 * @param x - the x coordinate of the tile (pixel position)
+	 * @param y - the y coordinate of the tile (pixel position)
+	 */
 	public int getTileID(int x, int y) {
 		int id = -1;
 		for (int i = 0; i < chunks.size(); i++) {
@@ -118,7 +124,7 @@ public class World {
 	}
 
 	public void setTile(int x, int y, int id) {
-		for (int i = 0; i < chunks.size(); i++) chunks.get(i).setTile(x, y, id);
+		for (int i = 0; i < chunks.size(); i++) chunks.get(i).setTile(x / Tile.tileSize, y / Tile.tileSize, id);
 	}
 	
 	public EntityManager getEntities() {

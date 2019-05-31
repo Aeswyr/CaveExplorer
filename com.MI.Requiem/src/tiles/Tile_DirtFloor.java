@@ -7,6 +7,7 @@ public class Tile_DirtFloor extends Tile{
 
 	public Tile_DirtFloor() {
 		this.tileSet = Assets.test;
+		this.breakable = false;
 	}
 	
 }

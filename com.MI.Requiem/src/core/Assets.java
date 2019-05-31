@@ -2,6 +2,7 @@ package core;
 
 import gfx.Sprite;
 import gfx.SpriteSheet;
+import sfx.Sound;
 import world.TileSet;
 
 public class Assets {
@@ -11,6 +12,7 @@ public class Assets {
 	private static final String ENTITY = "/entity/";
 	private static final String UI = "/gui/";
 	private static final String ITEM = "/item/";
+	private static final String SOUND = "/sound/";
 
 	private static SpriteSheet tile;
 	public static TileSet test;
@@ -40,9 +42,14 @@ public class Assets {
 	public static Sprite spineberry_inv;
 	public static Sprite pickaxe_inv;
 
+	// Sound
+	
+	public static Sound pickaxe1;
+	
 	public static void init() {
 		initSheet();
 		initSprite();
+		initSound();
 	}
 
 	private static void initSheet() {
@@ -76,5 +83,9 @@ public class Assets {
 		cloak_inv = new Sprite(64, 0, 32, item);
 		spineberry_inv = new Sprite(96, 0 , 32, item);
 		pickaxe_inv = new Sprite(128, 0, 32, item);
+	}
+	
+	private static void initSound() {
+		pickaxe1 = new Sound(SOUND + "pickaxe1.wav");
 	}
 }

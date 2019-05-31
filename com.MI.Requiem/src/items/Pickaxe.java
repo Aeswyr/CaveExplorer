@@ -5,7 +5,6 @@ import entity.Mob;
 import gfx.DrawGraphics;
 import item.Item;
 import runtime.Handler;
-import world.Tile;
 
 public class Pickaxe extends Item {
 
@@ -15,9 +14,9 @@ public class Pickaxe extends Item {
 		ID = "u2";
 		tags = "mainhand";
 
-		useMax = 512;
+		useMax = 128;
 		use = useMax;
-		useTime = 20;
+		useTime = 40;
 		timer = useTime;
 
 		sprite = null;
@@ -31,29 +30,59 @@ public class Pickaxe extends Item {
 	}
 
 	@Override
-	public void use() { //TODO raycast mining rather than selection. cast a ray out to a range in the direction of the mouse. if  it collides with a block, mine it
-		if (equipped && timer >= 20) {
-			int mouseX = holder.getX() + handler.getMouse().getAdjX() - handler.getWidth() / 2;
-			int mouseY = holder.getY() + handler.getMouse().getAdjY() - handler.getHeight() / 2;
+	public void use() {
+		if (equipped && timer >= useTime) {
 
-			if (Math.sqrt((holder.getX() - mouseX) * (holder.getX() - mouseX)
-					+ (holder.getY() - mouseY) * (holder.getY() - mouseY)) < 64) {
-				Tile t = handler.getWorld().getTile(mouseX / Tile.tileSize, mouseY / Tile.tileSize);
-				if (t.isBreakable()) {
-					System.out.println(mouseX / Tile.tileSize + ", " + mouseY / Tile.tileSize);
-					handler.getWorld().setTile(mouseX / Tile.tileSize, mouseY / Tile.tileSize,
-							handler.getWorld().getTileID(mouseX / Tile.tileSize, mouseY / Tile.tileSize) - 1);
+			int holderX = holder.getCenteredX();
+			int holderY = holder.getY() - 8;
+
+			int mouseX = handler.getCamera().xOffsetAdj() + handler.getMouse().getAdjX() - handler.getWidth() / 2;
+			int mouseY = handler.getCamera().yOffsetAdj() + handler.getMouse().getAdjY() - handler.getHeight() / 2;
+
+			int dx = Math.abs(mouseX - holderX);
+			int dy = Math.abs(mouseY - holderY);
+
+			int sx = holderX < mouseX ? 1 : -1;
+			int sy = holderY < mouseY ? 1 : -1;
+
+			int err = dx - dy;
+			int e2;
+
+			while (((holderX - holder.getCenteredX()) * (holderX - holder.getCenteredX())
+					+ (holderY - holder.getCenteredY()) * (holderY - holder.getCenteredY())) < 4096) {
+
+				if (handler.getWorld().getTile(holderX, holderY).isBreakable()) {
+					handler.getWorld().setTile(holderX, holderY, handler.getWorld().getTileID(holderX, holderY) - 1);
+					Assets.pickaxe1.play();
 					use--;
 					timer = 0;
+
+					break;
 				}
+
+				if (holderX == mouseX && holderY == mouseY)
+					break;
+				e2 = 2 * err;
+				if (e2 > -1 * dy) {
+					err -= dy;
+					holderX += sx;
+				}
+				if (e2 < dx) {
+					err += dx;
+					holderY += sy;
+				}
+
 			}
+
+
 		}
 
 	}
 
 	@Override
 	public void update() {
-		if (timer < 20) timer++;
+		if (timer < useTime)
+			timer++;
 		if (use <= 0)
 			this.consumed = true;
 

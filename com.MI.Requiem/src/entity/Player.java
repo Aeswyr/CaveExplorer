@@ -39,17 +39,24 @@ public class Player extends Mob {
 		woundMax = 1;
 		wounds = 0;
 
-		lHand = new ItemContainer<Item>(44, 192, Assets.inventory_Empty, Assets.inventory_Mainhand, "hand mainhand", handler);
-		rHand = new ItemContainer<Item>(84, 192, Assets.inventory_Empty, Assets.inventory_Offhand, "hand offhand", handler);
-		
+		lHand = new ItemContainer<Item>(44, 192, Assets.inventory_Empty, Assets.inventory_Mainhand, "hand mainhand",
+				handler);
+		rHand = new ItemContainer<Item>(84, 192, Assets.inventory_Empty, Assets.inventory_Offhand, "hand offhand",
+				handler);
+
 		inventory = new Inventory(824, 16, 9, handler);
 		inventory.appendContainer(lHand);
 		inventory.appendContainer(rHand);
-		inventory.appendContainer(new ItemContainer<Item>(44, 296, Assets.inventory_Empty, Assets.inventory_Head, "head", handler));
-		inventory.appendContainer(new ItemContainer<Item>(84, 296, Assets.inventory_Empty, Assets.inventory_Body, "body", handler));
-		inventory.appendContainer(new ItemContainer<Item>(24, 256, Assets.inventory_Empty, Assets.inventory_Trinket, "trinket", handler));
-		inventory.appendContainer(new ItemContainer<Item>(64, 256, Assets.inventory_Empty, Assets.inventory_Trinket, "trinket", handler));
-		inventory.appendContainer(new ItemContainer<Item>(104, 256, Assets.inventory_Empty, Assets.inventory_Trinket, "trinket", handler));
+		inventory.appendContainer(
+				new ItemContainer<Item>(44, 296, Assets.inventory_Empty, Assets.inventory_Head, "head", handler));
+		inventory.appendContainer(
+				new ItemContainer<Item>(84, 296, Assets.inventory_Empty, Assets.inventory_Body, "body", handler));
+		inventory.appendContainer(
+				new ItemContainer<Item>(24, 256, Assets.inventory_Empty, Assets.inventory_Trinket, "trinket", handler));
+		inventory.appendContainer(
+				new ItemContainer<Item>(64, 256, Assets.inventory_Empty, Assets.inventory_Trinket, "trinket", handler));
+		inventory.appendContainer(new ItemContainer<Item>(104, 256, Assets.inventory_Empty, Assets.inventory_Trinket,
+				"trinket", handler));
 
 		inventory.add(new Torch(handler, this));
 		inventory.add(new Cloak(handler, this));
@@ -71,6 +78,7 @@ public class Player extends Mob {
 	@Override
 	public void render(DrawGraphics g) {
 		super.render(g);
+
 	}
 
 	@Override
@@ -102,9 +110,11 @@ public class Player extends Mob {
 		} else {
 			activeSprite = Assets.player_still;
 		}
-		
-		if (handler.getMouse().getLeft() && lHand.getContained() != null) lHand.getContained().use();
-		if (handler.getMouse().getRight() && rHand.getContained() != null) rHand.getContained().use();
+
+		if (handler.getMouse().getLeft() && lHand.getContained() != null)
+			lHand.getContained().use();
+		if (handler.getMouse().getRight() && rHand.getContained() != null)
+			rHand.getContained().use();
 	}
 
 	@Override

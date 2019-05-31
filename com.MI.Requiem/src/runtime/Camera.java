@@ -19,8 +19,8 @@ public class Camera {
 	public void update() {
 		if (target != null) {
 
-			xOffset += (target.getX() - xOffset) / 4;
-			yOffset += (target.getY() - yOffset) / 4;
+			xOffset += (target.getCenteredX() - xOffset) / 4;
+			yOffset += (target.getCenteredY() - yOffset) / 4;
 			if (xOffset < w / 2 - w / 6)
 				xOffset = w / 2 - w / 6;
 			if (yOffset < h / 2)
@@ -38,5 +38,13 @@ public class Camera {
 
 	public int yOffset() {
 		return yOffset - h / 2;
+	}
+	
+	public int xOffsetAdj() {
+		return xOffset;
+	}
+	
+	public int yOffsetAdj() {
+		return yOffset;
 	}
 }

@@ -56,5 +56,13 @@ public abstract class Entity {
 	public int getAdjY() {
 		return (int) (y - yOff / 2) / Tile.tileSize;
 	}
+	
+	public int getCenteredX() {
+		return (int) (x - xOff / 2);
+	}
+	
+	public int getCenteredY() {
+		return (int) (y - yOff / 2);
+	}
 
 }
