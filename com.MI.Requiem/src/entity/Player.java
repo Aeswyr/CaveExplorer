@@ -41,24 +41,27 @@ public class Player extends Mob {
 		woundMax = 1;
 		wounds = 0;
 
-		lHand = new ItemContainer<Item>(44, 192, Assets.inventory_Empty, Assets.inventory_Mainhand, "hand mainhand",
-				handler);
-		rHand = new ItemContainer<Item>(84, 192, Assets.inventory_Empty, Assets.inventory_Offhand, "hand offhand",
-				handler);
+		int w = handler.getWidth();
+		int h = handler.getHeight();
+		
+		lHand = new ItemContainer<Item>((int) (w / 21.8), w / 5, Assets.inventory_Empty, Assets.inventory_Mainhand, "hand mainhand",
+				handler); // previously 44 and 192
+		rHand = new ItemContainer<Item>((int) ((w / 21.8) + 40), w / 5, Assets.inventory_Empty, Assets.inventory_Offhand, "hand offhand",
+				handler); // previously 84 and 192
 
-		inventory = new Inventory(824, 16, 9, handler);
+		inventory = new Inventory((int) (w / 1.17), w / 60, 9, handler); // previously 824 and 16
 		inventory.appendContainer(lHand);
 		inventory.appendContainer(rHand);
 		inventory.appendContainer(
-				new ItemContainer<Item>(44, 296, Assets.inventory_Empty, Assets.inventory_Head, "head", handler));
+				new ItemContainer<Item>((int) (w / 21.8), (int) (w / 3.25), Assets.inventory_Empty, Assets.inventory_Head, "head", handler)); // previously 44 and 296
 		inventory.appendContainer(
-				new ItemContainer<Item>(84, 296, Assets.inventory_Empty, Assets.inventory_Body, "body", handler));
+				new ItemContainer<Item>((int) (w / 21.8) + 40, (int) (w / 3.25), Assets.inventory_Empty, Assets.inventory_Body, "body", handler)); // previously 84 and 296
 		inventory.appendContainer(
-				new ItemContainer<Item>(24, 256, Assets.inventory_Empty, Assets.inventory_Trinket, "trinket", handler));
+				new ItemContainer<Item>(w / 40, (int) (w / 3.75), Assets.inventory_Empty, Assets.inventory_Trinket, "trinket", handler));// previously 24 and 256
 		inventory.appendContainer(
-				new ItemContainer<Item>(64, 256, Assets.inventory_Empty, Assets.inventory_Trinket, "trinket", handler));
-		inventory.appendContainer(new ItemContainer<Item>(104, 256, Assets.inventory_Empty, Assets.inventory_Trinket,
-				"trinket", handler));
+				new ItemContainer<Item>(w / 40 + 40, (int) (w / 3.75), Assets.inventory_Empty, Assets.inventory_Trinket, "trinket", handler));// previously 64 and 256
+		inventory.appendContainer(new ItemContainer<Item>(w / 40 + 80, (int) (w / 3.75), Assets.inventory_Empty, Assets.inventory_Trinket,
+				"trinket", handler)); // previously 104 and 256
 
 		inventory.add(new Torch(handler, this));
 		inventory.add(new Cloak(handler, this));
@@ -122,11 +125,11 @@ public class Player extends Mob {
 	@Override
 	public void renderUI(DrawGraphics g) {
 
-		int posX = 16;
-		int posY = 24;
-
 		int w = handler.getWidth();
 		int h = handler.getHeight();
+
+		int posX = w / 60; // previously 16
+		int posY = w / 40; // previously 24
 
 		Square s = new Square(w / 6, h, 0xff202020, Sprite.TYPE_GUI_BACKGROUND_SHAPE);
 		s.render(0, 0, g);
