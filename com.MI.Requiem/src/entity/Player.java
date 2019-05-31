@@ -118,15 +118,17 @@ public class Player extends Mob {
 			activeSprite = Assets.player_still;
 		}
 
-		if (handler.getMouse().getLeft() && lHand.getContained() != null)
-			lHand.getContained().use();
-		if (handler.getMouse().getRight() && rHand.getContained() != null)
-			rHand.getContained().use();
+		if (!handler.getMouse().getDragging()) {
+			if (handler.getMouse().getLeft() && lHand.getContained() != null)
+				lHand.getContained().use();
+			if (handler.getMouse().getRight() && rHand.getContained() != null)
+				rHand.getContained().use();
+		}
 		if (handler.getKeys().f) {
 			ArrayList<Entity> col = hitbox.collidingAll();
 			for (int i = 0; i < col.size(); i++) {
 				if (col.get(i) instanceof Interactable) {
-					((Interactable)col.get(i)).interact(this);
+					((Interactable) col.get(i)).interact(this);
 				}
 			}
 		}

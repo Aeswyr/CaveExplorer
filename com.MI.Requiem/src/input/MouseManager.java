@@ -9,7 +9,7 @@ import item.ItemContainer;
 
 public class MouseManager implements MouseListener, MouseMotionListener {
 
-	private boolean left, right;
+	private boolean left, right, dragging;
 	private int x, y, x0, y0; // x0 and y0 are the last positions of the mouse. x and y are current
 	ItemContainer<Item> startHovered, endHovered;
 
@@ -94,6 +94,7 @@ public class MouseManager implements MouseListener, MouseMotionListener {
 		}
 		startHovered = null;
 		endHovered = null;
+		this.dragging = false;
 	}
 
 	// Getters and Setter
@@ -146,6 +147,7 @@ public class MouseManager implements MouseListener, MouseMotionListener {
 
 	public void setStartHovered(ItemContainer<Item> c) {
 		startHovered = c;
+		this.dragging = true;
 	}
 
 	public void setEndHovered(ItemContainer<Item> c) {
@@ -156,4 +158,8 @@ public class MouseManager implements MouseListener, MouseMotionListener {
 		return startHovered;
 	}
 
+	public boolean getDragging() {
+		return dragging;
+	}
+	
 }
