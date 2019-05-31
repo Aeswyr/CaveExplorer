@@ -89,6 +89,8 @@ public class MouseManager implements MouseListener, MouseMotionListener {
 				startHovered.getContained().use();
 			} else if (endHovered.store(startHovered.getContained()))
 				startHovered.remove();
+		} else if (startHovered != null && startHovered.getContained() != null) {
+			startHovered.drop();
 		}
 		startHovered = null;
 		endHovered = null;

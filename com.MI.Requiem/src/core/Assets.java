@@ -42,6 +42,15 @@ public class Assets {
 	public static Sprite cloak_inv;
 	public static Sprite spineberry_inv;
 	public static Sprite pickaxe_inv;
+	public static Sprite theOrb_inv;
+	public static Sprite dirt_inv;
+	public static Sprite litTorch;
+	public static Sprite burntTorch;
+	public static Sprite cloak;
+	public static Sprite spineberry;
+	public static Sprite pickaxe;
+	public static Sprite theOrb;
+	public static Sprite dirt;
 
 	// Sound
 
@@ -80,10 +89,19 @@ public class Assets {
 		inventory_Mainhand = new Sprite(0, 96, 32, ui, Sprite.TYPE_GUI_COMPONENT);
 
 		litTorch_inv = new Sprite(0, 0, 32, item, Sprite.TYPE_INVENTORY_ITEM);
+		litTorch = new Sprite(0, 32, 32, item);
 		burntTorch_inv = new Sprite(32, 0, 32, item, Sprite.TYPE_INVENTORY_ITEM);
+		burntTorch = new Sprite(32, 32, 32, item);
 		cloak_inv = new Sprite(64, 0, 32, item, Sprite.TYPE_INVENTORY_ITEM);
+		cloak = new Sprite(64, 32, 32, item);
 		spineberry_inv = new Sprite(96, 0, 32, item, Sprite.TYPE_INVENTORY_ITEM);
+		spineberry = new Sprite(96, 32, 32, item);
 		pickaxe_inv = new Sprite(128, 0, 32, item, Sprite.TYPE_INVENTORY_ITEM);
+		pickaxe = new Sprite(128, 32, 32, item);
+		theOrb_inv = new Sprite(160, 0, 32, item, Sprite.TYPE_INVENTORY_ITEM);
+		theOrb = new Sprite(160, 32, 32, item);
+		dirt_inv = new Sprite(192, 0, 32, item, Sprite.TYPE_INVENTORY_ITEM);
+		dirt = new Sprite(192, 32, 32, item);
 	}
 
 	private static void initSound() {

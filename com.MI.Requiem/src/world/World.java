@@ -3,6 +3,7 @@ package world;
 import java.util.ArrayList;
 import entity.EntityManager;
 import gfx.DrawGraphics;
+import items.TheOrb;
 import runtime.Handler;
 
 public class World {
@@ -29,7 +30,8 @@ public class World {
 		currChunk = new Chunk(-1, -1);
 
 		chunkLoader.start();
-
+		
+		entities.addEntity(new TheOrb(64, 64, handler));
 	}
 
 	public void render(DrawGraphics g) {

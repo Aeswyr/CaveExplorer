@@ -42,11 +42,9 @@ public class EntityManager {
 	 * @param g - the graphics object of the screen
 	 */
 	public void renderInOrder(int x, int y, DrawGraphics g) {
-		for (int i = entities.size() - 1; i >= 0; i--) {
 			Entity e = inorder.get(new CoordKey(x, y));
 			if (e != null)
 				e.render(g);
-		}
 	}
 
 	/**
@@ -65,7 +63,8 @@ public class EntityManager {
 	 */
 	public void update() {
 		inorder = new HashTable<CoordKey, Entity>();
-		for (Entity e : entities) {
+		for (int i = 0; i < entities.size(); i++) {
+			Entity e = entities.get(i);
 			e.update();
 			inorder.add(new CoordKey(e.getAdjX(), e.getAdjY()), e);
 		}

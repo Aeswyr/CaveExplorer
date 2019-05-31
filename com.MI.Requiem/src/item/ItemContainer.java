@@ -71,7 +71,7 @@ public class ItemContainer<T extends Storeable> {
 	}
 
 	public boolean store(T item) {
-		if ((contained != null && !contained.equals(item)) || (acceptedTags != null && !Utility.tagOverlaps(acceptedTags, item.getTags())))
+		if ((contained != null && !contained.canStack(item)) || (acceptedTags != null && !Utility.tagOverlaps(acceptedTags, item.getTags())))
 			return false;
 		if (contained == null)
 		contained = item;
@@ -82,6 +82,20 @@ public class ItemContainer<T extends Storeable> {
 	public void remove() {
 		amount--;
 		if (amount <= 0) contained = null;
+	}
+	
+	public void drop() {
+		if (contained instanceof Item) {
+			try {
+				Item i = (Item) ((Item)contained).clone();
+				i.drop();
+				remove();
+			} catch (CloneNotSupportedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
 	}
 
 	public boolean containsMouse() {

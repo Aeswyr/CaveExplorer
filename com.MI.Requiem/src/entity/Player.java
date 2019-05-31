@@ -1,5 +1,7 @@
 package entity;
 
+import java.util.ArrayList;
+
 import core.Assets;
 import geometry.Square;
 import gfx.DrawGraphics;
@@ -43,25 +45,25 @@ public class Player extends Mob {
 
 		int w = handler.getWidth();
 		int h = handler.getHeight();
-		
-		lHand = new ItemContainer<Item>((int) (w / 21.8), w / 5, Assets.inventory_Empty, Assets.inventory_Mainhand, "hand mainhand",
-				handler); // previously 44 and 192
-		rHand = new ItemContainer<Item>((int) ((w / 21.8) + 40), w / 5, Assets.inventory_Empty, Assets.inventory_Offhand, "hand offhand",
-				handler); // previously 84 and 192
+
+		lHand = new ItemContainer<Item>((int) (w / 21.8), w / 5, Assets.inventory_Empty, Assets.inventory_Mainhand,
+				"hand mainhand", handler); // previously 44 and 192
+		rHand = new ItemContainer<Item>((int) ((w / 21.8) + 40), w / 5, Assets.inventory_Empty,
+				Assets.inventory_Offhand, "hand offhand", handler); // previously 84 and 192
 
 		inventory = new Inventory((int) (w / 1.17), w / 60, 9, handler); // previously 824 and 16
 		inventory.appendContainer(lHand);
 		inventory.appendContainer(rHand);
-		inventory.appendContainer(
-				new ItemContainer<Item>((int) (w / 21.8), (int) (w / 3.25), Assets.inventory_Empty, Assets.inventory_Head, "head", handler)); // previously 44 and 296
-		inventory.appendContainer(
-				new ItemContainer<Item>((int) (w / 21.8) + 40, (int) (w / 3.25), Assets.inventory_Empty, Assets.inventory_Body, "body", handler)); // previously 84 and 296
-		inventory.appendContainer(
-				new ItemContainer<Item>(w / 40, (int) (w / 3.75), Assets.inventory_Empty, Assets.inventory_Trinket, "trinket", handler));// previously 24 and 256
-		inventory.appendContainer(
-				new ItemContainer<Item>(w / 40 + 40, (int) (w / 3.75), Assets.inventory_Empty, Assets.inventory_Trinket, "trinket", handler));// previously 64 and 256
-		inventory.appendContainer(new ItemContainer<Item>(w / 40 + 80, (int) (w / 3.75), Assets.inventory_Empty, Assets.inventory_Trinket,
-				"trinket", handler)); // previously 104 and 256
+		inventory.appendContainer(new ItemContainer<Item>((int) (w / 21.8), (int) (w / 3.25), Assets.inventory_Empty,
+				Assets.inventory_Head, "head", handler)); // previously 44 and 296
+		inventory.appendContainer(new ItemContainer<Item>((int) (w / 21.8) + 40, (int) (w / 3.25),
+				Assets.inventory_Empty, Assets.inventory_Body, "body", handler)); // previously 84 and 296
+		inventory.appendContainer(new ItemContainer<Item>(w / 40, (int) (w / 3.75), Assets.inventory_Empty,
+				Assets.inventory_Trinket, "trinket", handler));// previously 24 and 256
+		inventory.appendContainer(new ItemContainer<Item>(w / 40 + 40, (int) (w / 3.75), Assets.inventory_Empty,
+				Assets.inventory_Trinket, "trinket", handler));// previously 64 and 256
+		inventory.appendContainer(new ItemContainer<Item>(w / 40 + 80, (int) (w / 3.75), Assets.inventory_Empty,
+				Assets.inventory_Trinket, "trinket", handler)); // previously 104 and 256
 
 		inventory.add(new Torch(handler, this));
 		inventory.add(new Cloak(handler, this));
@@ -120,6 +122,14 @@ public class Player extends Mob {
 			lHand.getContained().use();
 		if (handler.getMouse().getRight() && rHand.getContained() != null)
 			rHand.getContained().use();
+		if (handler.getKeys().f) {
+			ArrayList<Entity> col = hitbox.collidingAll();
+			for (int i = 0; i < col.size(); i++) {
+				if (col.get(i) instanceof Interactable) {
+					((Interactable)col.get(i)).interact(this);
+				}
+			}
+		}
 	}
 
 	@Override
@@ -170,8 +180,12 @@ public class Player extends Mob {
 		if (health <= 0) {
 			wounds++;
 			if (wounds > woundMax) {
+				health = 0;
 				this.die();
+			} else {
+				health = healthMax;
 			}
+
 		}
 	}
 
@@ -183,10 +197,12 @@ public class Player extends Mob {
 	}
 
 	@Override
-	public void pickup(Item i) {
-		if (inventory.add(i)) {
+	public boolean pickup(Item i) {
+		boolean success = inventory.add(i);
+		if (success) {
 			i.setHolder(this);
 		}
+		return success;
 	}
 
 }

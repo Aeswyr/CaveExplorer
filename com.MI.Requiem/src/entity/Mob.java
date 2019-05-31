@@ -76,7 +76,7 @@ public abstract class Mob extends Entity {
 	
 	public abstract void equip(Item i);
 	
-	public abstract void pickup(Item i);
+	public abstract boolean pickup(Item i);
 	
 	public void adjSpeed(double adj) {
 		speed += adj;

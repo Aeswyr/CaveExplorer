@@ -17,8 +17,22 @@ public class Cloak extends Item{
 		useMax = 80;
 		use = useMax;
 		
-		this.sprite = null;
+		this.sprite = Assets.cloak;
 		this.invSprite = Assets.cloak_inv;
+	}
+	
+	public Cloak(int x, int y, Handler handler) {
+		super(x, y, handler);
+		
+		ID = "u1";
+		tags = "trinket body";
+		
+		useMax = 80;
+		use = useMax;
+		
+		this.sprite = Assets.cloak;
+		this.invSprite = Assets.cloak_inv;
+		
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package items;
 
+import java.util.ArrayList;
+
 import core.Assets;
 import entity.Mob;
 import gfx.DrawGraphics;
@@ -19,8 +21,24 @@ public class Pickaxe extends Item {
 		useTime = 40;
 		timer = useTime;
 
-		sprite = null;
+		sprite = Assets.pickaxe;
 		invSprite = Assets.pickaxe_inv;
+	}
+	
+	public Pickaxe(int x, int y, Handler handler) {
+		super(x, y, handler);
+	
+		ID = "u2";
+		tags = "mainhand";
+
+		useMax = 128;
+		use = useMax;
+		useTime = 40;
+		timer = useTime;
+
+		sprite = Assets.pickaxe;
+		invSprite = Assets.pickaxe_inv;
+		
 	}
 
 	@Override
@@ -52,12 +70,21 @@ public class Pickaxe extends Item {
 					+ (holderY - holder.getCenteredY()) * (holderY - holder.getCenteredY())) < 4096) {
 
 				if (handler.getWorld().getTile(holderX, holderY).isBreakable()) {
+					
+					// on tile break
+					ArrayList<Item> drops = handler.getWorld().getTile(holderX, holderY).tileDrop(holderX, holderY, handler);
 					handler.getWorld().setTile(holderX, holderY, handler.getWorld().getTileID(holderX, holderY) - 1);
+					for (int i = 0; i < drops.size(); i++) {
+						handler.getWorld().getEntities().addEntity(drops.get(i));
+					}
+					// end tile break
+					
+					// always do
 					Assets.pickaxe1.play();
 					use--;
 					timer = 0;
-
 					break;
+					// end
 				}
 
 				if (holderX == mouseX && holderY == mouseY)

@@ -9,4 +9,6 @@ public interface Storeable {
 	public void renderTextBox(int x, int y, DrawGraphics g);
 	
 	public String getTags();
+	
+	public boolean canStack(Storeable s);
 }

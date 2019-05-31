@@ -105,9 +105,10 @@ public class Hitbox {
 		EntityManager em = handler.getWorld().getEntities();
 		ArrayList<Entity> found = new ArrayList<Entity>();
 		for (int i = 0; i < em.totalEntities(); i++) {
-			if (em.getEntity(i).getHitbox() != null && (this.contains(em.getEntity(i).getHitbox()))
-					|| em.getEntity(i).getHitbox().contains(this))
-				found.add(em.getEntity(i));
+			Entity e = em.getEntity(i);
+			if (e.getHitbox() != null && this != e.getHitbox() && (this.contains(e.getHitbox())
+					|| e.getHitbox().contains(this)))
+				found.add(e);
 		}
 		return found;
 	}

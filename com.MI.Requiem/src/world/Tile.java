@@ -1,8 +1,6 @@
 package world;
 
 import java.util.ArrayList;
-
-import entity.Mob;
 import gfx.DrawGraphics;
 import item.Item;
 import runtime.Handler;
@@ -17,7 +15,12 @@ public class Tile {
 	public static int tileSize = 16;
 
 	private static Tile[] tiles = { new Tile_DirtFloor(), new Tile_DirtWall() };
-
+	protected final int id;
+	
+	protected Tile(int id) {
+		this.id = id;
+	}
+	
 	// An edge starts with 0 in the top left and goes around clockwise up to 7
 	public void render(int x, int y, int[] edges, DrawGraphics g) {
 		tileSet.render(x, y, edges, wall, g);
@@ -35,7 +38,7 @@ public class Tile {
 		return breakable;
 	}
 	
-	public ArrayList<Item> tileDrop(Handler handler, Mob holder) {
+	public ArrayList<Item> tileDrop(int x, int y, Handler handler) {
 		return null;
 	}
 }

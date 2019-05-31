@@ -82,7 +82,7 @@ public class Inventory {
 
 	public boolean add(Item item) {
 		for (int i = 0; i < storage.size(); i++) {
-			if (storage.get(i).getContained() != null && storage.get(i).getContained().equals(item)) {
+			if (storage.get(i).getContained() != null && storage.get(i).getContained().canStack(item)) {
 				storage.get(i).store(item);
 				return true;
 			}

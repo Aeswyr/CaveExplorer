@@ -60,7 +60,7 @@ public class HashTable<K, T> {
 		}
 		count++;
 		threshold = 1.0 * (count / size);
-		if (resizable && threshold > max)
+		if (resizable && threshold >= max)
 			resize();
 
 	}

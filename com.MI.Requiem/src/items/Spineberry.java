@@ -11,10 +11,21 @@ public class Spineberry extends Item{
 	public Spineberry(Handler handler, Mob holder) {
 		super(handler, holder);
 
+		ID = "1";
+		tags = "hand";
+		
+		sprite = Assets.spineberry;
+		invSprite = Assets.spineberry_inv;
+		
+	}
+	
+	public Spineberry(int x, int y, Handler handler) {
+		super(x, y, handler);
+	
 		ID = "0";
 		tags = "hand";
 		
-		sprite = null;
+		sprite = Assets.spineberry;
 		invSprite = Assets.spineberry_inv;
 		
 	}
