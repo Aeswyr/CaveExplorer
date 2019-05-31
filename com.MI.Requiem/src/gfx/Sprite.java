@@ -5,16 +5,66 @@ import runtime.Light;
 
 public class Sprite {
 
+	public static final int TYPE_GUI_COMPONENT = 1;
+	public static final int TYPE_INVENTORY_ITEM = 2;
+	public static final int TYPE_GUI_FOREGROUND_SHAPE = 3;
+	public static final int TYPE_GUI_BACKGROUND_SHAPE = 4;
+	public static final int TYPE_GUI_ITEM_SHAPE = 5;
+	
 	int lightInteraction = Light.NONE;
 
 	int[][] raw;
 	int width, height;
 
 	int xOff, yOff;
-
+	int priority = 0;
+/* PRIORITY NUMBERS
+ * 11 - shapes which are used to help display inventory items, such as use bars
+ * 10 - any inventory item display
+ * 9 - shapes which render over ui components
+ * 8 - ui components
+ * 7 - shapes which render below ui components
+ */
+	
 	int frames;
 	long delta, lastTime;
 
+	public Sprite(int width, int height, int[] raw, int type) {
+		switch (type) {
+		case TYPE_GUI_COMPONENT:
+			lightInteraction = Light.IGNORE;
+			priority = 8;
+			break;
+		case TYPE_INVENTORY_ITEM:
+			lightInteraction = Light.IGNORE;
+			priority = 10;
+			break;
+		case TYPE_GUI_BACKGROUND_SHAPE:
+			lightInteraction = Light.IGNORE;
+			priority = 7;
+		break;
+		case TYPE_GUI_FOREGROUND_SHAPE:
+			lightInteraction = Light.IGNORE;
+			priority = 9;
+		break;
+		case TYPE_GUI_ITEM_SHAPE:
+			lightInteraction = Light.IGNORE;
+			priority = 11;
+			break;
+		default:
+			break;
+		}
+		
+		frames = 1;
+
+		this.raw = new int[frames][];
+		this.raw[0] = raw;
+
+		this.width = width;
+		this.height = height;
+	}
+	
+	
 	public Sprite(int x, int y, int size, SpriteSheet sheet) {
 		frames = 1;
 
@@ -28,7 +78,84 @@ public class Sprite {
 		lastTime = System.nanoTime();
 	}
 
+	public Sprite(int x, int y, int size, SpriteSheet sheet, int type) {
+		switch (type) {
+		case TYPE_GUI_COMPONENT:
+			lightInteraction = Light.IGNORE;
+			priority = 8;
+			break;
+		case TYPE_INVENTORY_ITEM:
+			lightInteraction = Light.IGNORE;
+			priority = 10;
+			break;
+		case TYPE_GUI_BACKGROUND_SHAPE:
+			lightInteraction = Light.IGNORE;
+			priority = 7;
+		break;
+		case TYPE_GUI_FOREGROUND_SHAPE:
+			lightInteraction = Light.IGNORE;
+			priority = 9;
+		break;
+		case TYPE_GUI_ITEM_SHAPE:
+			lightInteraction = Light.IGNORE;
+			priority = 11;
+			break;
+		default:
+			break;
+		}
+
+		frames = 1;
+
+		width = size;
+		height = size;
+		BufferedImage b = sheet.cut(x, y, size);
+
+		raw = new int[frames][];
+		raw[0] = b.getRGB(0, 0, width, height, null, 0, width);
+
+		lastTime = System.nanoTime();
+	}
+
 	public Sprite(int x, int y, int width, int height, SpriteSheet sheet) {
+		frames = 1;
+		BufferedImage b = sheet.cut(x, y, width, height);
+
+		raw = new int[frames][];
+		raw[0] = b.getRGB(0, 0, width, height, null, 0, width);
+
+		this.width = width;
+		this.height = height;
+
+		lastTime = System.nanoTime();
+	}
+
+	public Sprite(int x, int y, int width, int height, SpriteSheet sheet, int type) {
+
+		switch (type) {
+		case TYPE_GUI_COMPONENT:
+			lightInteraction = Light.IGNORE;
+			priority = 8;
+			break;
+		case TYPE_INVENTORY_ITEM:
+			lightInteraction = Light.IGNORE;
+			priority = 10;
+			break;
+		case TYPE_GUI_BACKGROUND_SHAPE:
+			lightInteraction = Light.IGNORE;
+			priority = 7;
+		break;
+		case TYPE_GUI_FOREGROUND_SHAPE:
+			lightInteraction = Light.IGNORE;
+			priority = 9;
+		break;
+		case TYPE_GUI_ITEM_SHAPE:
+			lightInteraction = Light.IGNORE;
+			priority = 11;
+			break;
+		default:
+			break;
+		}
+
 		frames = 1;
 		BufferedImage b = sheet.cut(x, y, width, height);
 
@@ -70,7 +197,7 @@ public class Sprite {
 					frame = 0;
 			}
 		}
-		g.draw(this, x - xOff, y - yOff);
+		g.submitRequest(new SpriteRequest(this, priority, x - xOff, y - yOff));
 	}
 
 	protected int[] getRawFrame() {
@@ -91,5 +218,9 @@ public class Sprite {
 
 	public int getLightInteraction() {
 		return lightInteraction;
+	}
+
+	public void setPriority(int value) {
+		this.priority = value;
 	}
 }

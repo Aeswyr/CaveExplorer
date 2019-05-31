@@ -66,6 +66,7 @@ public class Renderer implements Runnable {
 		draw.clear();
 
 		handler.render(draw);
+		draw.process();
 		draw.render(g);
 		bs.show();
 		g.dispose();

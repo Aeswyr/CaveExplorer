@@ -1,21 +1,20 @@
 package geometry;
 
 import gfx.DrawGraphics;
+import gfx.Sprite;
+import gfx.SpriteRequest;
 
 public abstract class Shape {
 
 	int[] raster;
 	int width, height;
 	int xpos, ypos;
+	int type;
 	
-	public abstract void contains(Shape s);
+	public abstract boolean contains(Shape s);
 	
-	public void render(DrawGraphics g) {
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < width; x++) {
-				g.draw(this, x + xpos, y + ypos);
-			}
-		}
+	public void render(int x, int y, DrawGraphics g) {
+		g.submitRequest(new SpriteRequest(this, x, y));
 	}
 	
 	public int[] getRaster() {
@@ -28,6 +27,10 @@ public abstract class Shape {
 	
 	public int getHeight() {
 		return height;
+	}
+	
+	public Sprite toSprite() {
+		return new Sprite(width, height, raster, type);
 	}
  	
 }

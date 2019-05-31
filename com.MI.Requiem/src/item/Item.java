@@ -1,6 +1,7 @@
 package item;
 
 import entity.Mob;
+import geometry.Square;
 import gfx.DrawGraphics;
 import gfx.Sprite;
 import runtime.Handler;
@@ -43,7 +44,8 @@ public abstract class Item implements Storeable {
 	public void renderInventory(int x, int y, DrawGraphics g) {
 		invSprite.render(x, y, g);
 		if (use > 0 && use != useMax) {
-			g.fillRect(x + 3, y + 24, (int) (27.0 * use / useMax), 4, 0xFFFFFF00);
+			Square s = new Square((int) (27.0 * use / useMax), 4, 0xFFFFFF00, Sprite.TYPE_GUI_ITEM_SHAPE);
+			s.render(x + 3, y + 24, g);
 		}
 	}
 

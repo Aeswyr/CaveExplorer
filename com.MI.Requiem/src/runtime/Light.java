@@ -1,11 +1,13 @@
 package runtime;
 
 import gfx.DrawGraphics;
+import gfx.LightRequest;
 
 public class Light {
 
 	public static final int NONE = 0;
 	public static final int FULL = 1;
+	public static final int IGNORE = 2;
 
 	Handler handler;
 
@@ -69,7 +71,7 @@ public class Light {
 	}
 
 	public void render(DrawGraphics g) {
-		g.drawLight(this, x - handler.getCamera().xOffset(), y - handler.getCamera().yOffset());
+		g.submitRequest(new LightRequest(this, x - handler.getCamera().xOffset(), y - handler.getCamera().yOffset()));
 
 	}
 

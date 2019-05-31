@@ -1,7 +1,9 @@
 package entity;
 
 import core.Assets;
+import geometry.Square;
 import gfx.DrawGraphics;
+import gfx.Sprite;
 import item.Inventory;
 import item.Item;
 import item.ItemContainer;
@@ -126,10 +128,14 @@ public class Player extends Mob {
 		int w = handler.getWidth();
 		int h = handler.getHeight();
 
-		g.fillRect(0, 0, w / 6, h, 0xff202020);
-		g.fillRect(w - w / 6, 0, w / 6, h, 0xff202020);
+		Square s = new Square(w / 6, h, 0xff202020, Sprite.TYPE_GUI_BACKGROUND_SHAPE);
+		s.render(0, 0, g);
+		s.render(w - w / 6, 0, g);
+
+		Square hp = new Square((int) (118 * health / healthMax), (int) (26), 0xff691920,
+				Sprite.TYPE_GUI_FOREGROUND_SHAPE);
 		Assets.healthBar.render((int) (posX), (int) (posY), g);
-		g.fillRect((int) ((posX + 5)), (int) ((posY + 5)), (int) (118 * health / healthMax), (int) (26), 0xff691920);
+		hp.render(posX + 5, posY + 5, g);
 
 		for (int i = 0; i < woundMax; i++) {
 			int pos = (int) (i * 24) + posX;
