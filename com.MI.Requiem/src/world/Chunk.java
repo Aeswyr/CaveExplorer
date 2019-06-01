@@ -59,23 +59,13 @@ public class Chunk {
 		if (endY > y * chunkDim + chunkDim)
 			endY = y * chunkDim + chunkDim;
 
-		Tile t;
 		for (int i = startX; i < endX; i++) {
 			for (int j = startY; j < endY; j++) {
-				t = Tile.toTile(chunk[i - x * chunkDim][j - y * chunkDim]);
-				if (!t.isSolid())
-					t.render(i, j, new int[0], g);
+				Tile.toTile(chunk[i - x * chunkDim][j - y * chunkDim]).render(i, j, new int[0], g);
 			}
 		}
 
-		for (int j = startY; j < endY; j++) {
-			for (int i = startX; i < endX; i++) {
-				t = Tile.toTile(chunk[i - x * chunkDim][j - y * chunkDim]);
-				if (t.isSolid())
-					t.render(i, j, new int[0], g);
-				handler.getWorld().getEntities().renderInOrder(i, j, g);
-			}
-		}
+
 	}
 
 	/**

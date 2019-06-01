@@ -218,7 +218,7 @@ public class Sprite {
 			break;
 		case TYPE_CEILING:
 			lightInteraction = Light.FULL;
-			priority = 1;
+			priority = 2;
 			break;
 		default:
 			break;

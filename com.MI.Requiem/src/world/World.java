@@ -41,8 +41,8 @@ public class World {
 				chunks.get(i).render(g);
 			}
 		}
+		entities.render(g);
 		handler.getLights().render(g);
-
 		entities.renderEntityUI(g);
 	}
 

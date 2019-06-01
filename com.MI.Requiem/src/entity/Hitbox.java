@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import entity.Entity;
 import entity.EntityManager;
 import entity.Mob;
+import geometry.Shape;
+import geometry.Square;
 import gfx.DrawGraphics;
+import gfx.Sprite;
 import runtime.Handler;
 
 public class Hitbox {
@@ -53,7 +56,7 @@ public class Hitbox {
 		int[] newC = h.getCenter();
 
 		if (Math.abs(thisC[0] - newC[0]) < (this.width + h.width) / 2
-				|| Math.abs(thisC[1] - newC[1]) < (this.height + h.height) / 2)
+				&& Math.abs(thisC[1] - newC[1]) < (this.height + h.height) / 2)
 			return true;
 
 		return false;
@@ -94,8 +97,8 @@ public class Hitbox {
 	public Entity collidingWithMob() {
 		EntityManager em = handler.getWorld().getEntities();
 		for (int i = 0; i < em.totalEntities(); i++) {
-			if (em.getEntity(i).getHitbox() != null && (this.contains(em.getEntity(i).getHitbox()))
-					|| em.getEntity(i).getHitbox().contains(this) && em.getEntity(i) instanceof Mob)
+			if (em.getEntity(i).getHitbox() != null && this.contains(em.getEntity(i).getHitbox())
+					&& em.getEntity(i) instanceof Mob)
 				return em.getEntity(i);
 		}
 		return null;
@@ -106,8 +109,7 @@ public class Hitbox {
 		ArrayList<Entity> found = new ArrayList<Entity>();
 		for (int i = 0; i < em.totalEntities(); i++) {
 			Entity e = em.getEntity(i);
-			if (e.getHitbox() != null && this != e.getHitbox() && (this.contains(e.getHitbox())
-					|| e.getHitbox().contains(this)))
+			if (e.getHitbox() != null && this != e.getHitbox() && this.contains(e.getHitbox()))
 				found.add(e);
 		}
 		return found;
@@ -142,8 +144,8 @@ public class Hitbox {
 	}
 
 	public void render(DrawGraphics g) {
-		if (handler.devMode)
-			g.fillRect(x - handler.getCamera().xOffset(), y - handler.getCamera().yOffset(), width, height, 0xff0000ff);
+		Shape s = new Square(width, height, 0xff0000ff, Sprite.TYPE_GUI_BACKGROUND_SHAPE, true);
+		s.render(x - handler.getCamera().xOffset() + xoff, y - handler.getCamera().yOffset() + yoff, g);
 	}
 
 	public void renderStill(DrawGraphics g) {

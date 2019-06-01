@@ -10,6 +10,7 @@ public abstract class Shape {
 	int width, height;
 	int xpos, ypos;
 	int type;
+	Sprite sprite;
 	
 	public abstract boolean contains(Shape s);
 	
@@ -30,7 +31,7 @@ public abstract class Shape {
 	}
 	
 	public Sprite toSprite() {
-		return new Sprite(width, height, raster, type);
+		return sprite;
 	}
  	
 }

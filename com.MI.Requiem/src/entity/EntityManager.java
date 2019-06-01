@@ -43,9 +43,16 @@ public class EntityManager {
 	 */
 	public void renderInOrder(int x, int y, DrawGraphics g) {
 		synchronized (inorder) {
-			Entity e = inorder.get(new CoordKey(x, y));
-			if (e != null)
-				e.render(g);
+			CoordKey key = new CoordKey(x, y);
+			if (inorder.hasBucket(key)) {
+				ArrayList<Entity> list = inorder.getAll(key);
+				for (int i = 0; i < list.size(); i++)
+					list.get(i).render(g);
+			} else {
+				Entity e = inorder.get(key);
+				if (e != null)
+					e.render(g);
+			}
 		}
 	}
 

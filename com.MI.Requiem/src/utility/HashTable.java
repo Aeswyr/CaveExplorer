@@ -1,6 +1,8 @@
 package utility;
 
+import java.awt.List;
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 /**
  * A hash table implementation
@@ -95,13 +97,32 @@ public class HashTable<K, T> {
 	public T get(K key) {
 		int location = key.hashCode() % size;
 		Node find = list[location];
-		if (find == null) return null;
+		if (find == null)
+			return null;
 		while (!find.key.equals(key)) {
 			find = find.next;
 			if (find == null)
 				return null;
 		}
 		return find.stored;
+	}
+
+	public ArrayList<T> getAll(K key) {
+		ArrayList<T> hold = new ArrayList<T>();
+		int location = key.hashCode() % size;
+		Node find = list[location];
+		while (find != null) {
+			hold.add(find.stored);
+			find = find.next;
+		}
+		return hold;
+	}
+
+	public boolean hasBucket(K key) {
+		Node find = list[key.hashCode() % size];
+		if (find == null || find.next == null)
+			return false;
+		return true;
 	}
 
 	/**
@@ -114,7 +135,7 @@ public class HashTable<K, T> {
 	public void setResizable(boolean b) {
 		this.resizable = b;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public void clear() {
 		list = (Node[]) Array.newInstance(Node.class, size);

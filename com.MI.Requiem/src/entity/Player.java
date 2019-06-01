@@ -85,6 +85,7 @@ public class Player extends Mob {
 	@Override
 	public void render(DrawGraphics g) {
 		super.render(g);
+//		hitbox.render(g);
 
 	}
 

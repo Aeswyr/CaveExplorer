@@ -46,6 +46,7 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 
 	public void render(DrawGraphics g) {
 		sprite.render((int) x - handler.getCamera().xOffset(), (int) y - handler.getCamera().yOffset(), g);
+//		if (hitbox != null) hitbox.render(g);
 	}
 
 	public void renderInventory(int x, int y, DrawGraphics g) {
