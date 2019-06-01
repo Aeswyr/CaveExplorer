@@ -23,7 +23,7 @@ public class HashTable<K, T> {
 	@SuppressWarnings("unchecked")
 	public HashTable() {
 		size = 10;
-		max = 0.8;
+		max = 0.7;
 		list = (Node[]) Array.newInstance(Node.class, size);
 	}
 
@@ -59,7 +59,7 @@ public class HashTable<K, T> {
 			find.next = new Node(k, t);
 		}
 		count++;
-		threshold = (1.0 * count / size);
+		threshold = 1.0 * count / size;
 		if (resizable && threshold >= max)
 			resize();
 
@@ -83,6 +83,7 @@ public class HashTable<K, T> {
 		} else {
 			prev.next = find.next;
 		}
+		count--;
 	}
 
 	/**
@@ -112,6 +113,11 @@ public class HashTable<K, T> {
 	 */
 	public void setResizable(boolean b) {
 		this.resizable = b;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void clear() {
+		list = (Node[]) Array.newInstance(Node.class, size);
 	}
 
 	/**

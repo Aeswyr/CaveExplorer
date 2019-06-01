@@ -42,9 +42,11 @@ public class EntityManager {
 	 * @param g - the graphics object of the screen
 	 */
 	public void renderInOrder(int x, int y, DrawGraphics g) {
+		synchronized (inorder) {
 			Entity e = inorder.get(new CoordKey(x, y));
 			if (e != null)
 				e.render(g);
+		}
 	}
 
 	/**
@@ -62,11 +64,13 @@ public class EntityManager {
 	 * added to the remove list
 	 */
 	public void update() {
-		inorder = new HashTable<CoordKey, Entity>();
-		for (int i = 0; i < entities.size(); i++) {
-			Entity e = entities.get(i);
-			e.update();
-			inorder.add(new CoordKey(e.getAdjX(), e.getAdjY()), e);
+		inorder.clear();
+		synchronized (inorder) {
+			for (int i = 0; i < entities.size(); i++) {
+				Entity e = entities.get(i);
+				e.update();
+				inorder.add(new CoordKey(e.getAdjX(), e.getAdjY()), e);
+			}
 		}
 		for (Entity e : remove)
 			entities.remove(e);

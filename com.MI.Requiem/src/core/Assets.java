@@ -72,8 +72,8 @@ public class Assets {
 	private static void initSprite() {
 		test = new TileSet(0, 0, tile);
 
-		player_still = new Sprite(0, 0, 32, player);
-		player_run = new Sprite(32, 0, 32, 32, 8, 10, player);
+		player_still = new Sprite(0, 0, 32, player, Sprite.TYPE_ENTITY);
+		player_run = new Sprite(32, 0, 32, 32, 8, 10, player, Sprite.TYPE_ENTITY);
 
 		healthBar = new Sprite(0, 0, 128, 36, ui, Sprite.TYPE_GUI_COMPONENT);
 		heart = new Sprite(27, 36, 20, ui, Sprite.TYPE_GUI_COMPONENT);
@@ -89,19 +89,19 @@ public class Assets {
 		inventory_Mainhand = new Sprite(0, 96, 32, ui, Sprite.TYPE_GUI_COMPONENT);
 
 		litTorch_inv = new Sprite(0, 0, 32, item, Sprite.TYPE_INVENTORY_ITEM);
-		litTorch = new Sprite(0, 32, 32, item);
+		litTorch = new Sprite(0, 32, 32, item, Sprite.TYPE_ENTITY);
 		burntTorch_inv = new Sprite(32, 0, 32, item, Sprite.TYPE_INVENTORY_ITEM);
-		burntTorch = new Sprite(32, 32, 32, item);
+		burntTorch = new Sprite(32, 32, 32, item, Sprite.TYPE_ENTITY);
 		cloak_inv = new Sprite(64, 0, 32, item, Sprite.TYPE_INVENTORY_ITEM);
-		cloak = new Sprite(64, 32, 32, item);
+		cloak = new Sprite(64, 32, 32, item, Sprite.TYPE_ENTITY);
 		spineberry_inv = new Sprite(96, 0, 32, item, Sprite.TYPE_INVENTORY_ITEM);
-		spineberry = new Sprite(96, 32, 32, item);
+		spineberry = new Sprite(96, 32, 32, item, Sprite.TYPE_ENTITY);
 		pickaxe_inv = new Sprite(128, 0, 32, item, Sprite.TYPE_INVENTORY_ITEM);
-		pickaxe = new Sprite(128, 32, 32, item);
+		pickaxe = new Sprite(128, 32, 32, item, Sprite.TYPE_ENTITY);
 		theOrb_inv = new Sprite(160, 0, 32, item, Sprite.TYPE_INVENTORY_ITEM);
-		theOrb = new Sprite(160, 32, 32, item);
+		theOrb = new Sprite(160, 32, 32, item, Sprite.TYPE_ENTITY);
 		dirt_inv = new Sprite(192, 0, 32, item, Sprite.TYPE_INVENTORY_ITEM);
-		dirt = new Sprite(192, 32, 32, item);
+		dirt = new Sprite(192, 32, 32, item, Sprite.TYPE_ENTITY);
 	}
 
 	private static void initSound() {

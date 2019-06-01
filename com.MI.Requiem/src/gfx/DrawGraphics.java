@@ -40,7 +40,7 @@ public class DrawGraphics {
 
 		requestList = new ArrayList<SpriteRequest>();
 		lightRequest = new ArrayList<LightRequest>();
-		
+
 		ambientColor = 0xff000000;
 	}
 
@@ -55,22 +55,24 @@ public class DrawGraphics {
 	}
 
 	public void process() {
-		
+
 		Collections.sort(requestList, new Comparator<SpriteRequest>() {
 
 			@Override
 			public int compare(SpriteRequest i0, SpriteRequest i1) {
-				if (i0.z < i1.z) return -1;
-				if (i0.z > i1.z) return 1;
+				if (i0.z < i1.z)
+					return -1;
+				if (i0.z > i1.z)
+					return 1;
 				return 0;
 			}
-			
+
 		});
 		int temp = 0;
 		for (int i = 0; i < requestList.size(); i++) {
 			SpriteRequest req = requestList.get(i);
-			if (req.z > 0) {
-				temp = z;
+			if (req.z > 50) {
+				temp = i;
 				break;
 			}
 			setZBuffer(req.z);
@@ -100,7 +102,7 @@ public class DrawGraphics {
 	public void submitRequest(LightRequest l) {
 		lightRequest.add(l);
 	}
-	
+
 	public void setLightCollision(int x, int y, int value) {
 		if (x < 0 || x >= width || y < 0 || y >= height)
 			return;
@@ -238,7 +240,7 @@ public class DrawGraphics {
 		}
 
 	}
-	
+
 	public void drawPost(Sprite s, int xOff, int yOff) {
 
 		int xCap = 0;
@@ -266,7 +268,8 @@ public class DrawGraphics {
 		for (int y = yCap; y < heightCap; y++) {
 			for (int x = xCap; x < widthCap; x++) {
 				drawPixel(x + xOff, y + yOff, r[y * w + x]);
-				if (l == Light.IGNORE && r[y * w + x] != 0xffff00ff) drawLuminosity(x + xOff, y + yOff, 0xffffffff);					
+				if (l == Light.IGNORE && r[y * w + x] != 0xffff00ff)
+					drawLuminosity(x + xOff, y + yOff, 0xffffffff);
 			}
 		}
 

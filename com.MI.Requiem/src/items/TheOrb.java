@@ -53,7 +53,7 @@ public class TheOrb extends Item {
 	@Override
 	public void update() {
 		if (holder != null)
-			light.setPos(holder.getX(), holder.getY());
+			light.setPos(holder.getCenteredX(), holder.getCenteredY());
 		else
 			light.setPos((int) x, (int) y);
 

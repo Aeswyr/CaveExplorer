@@ -23,16 +23,14 @@ public class TileSet {
 
 	public TileSet(int x, int y, SpriteSheet sheet) {
 		floor = new Sprite[2];
-		floor[0] = new Sprite(x + 48, y + 32, 16, sheet);
-		floor[1] = new Sprite(x + 48, y + 48, 16, sheet);
+		floor[0] = new Sprite(x + 48, y + 32, 16, sheet, Sprite.TYPE_FLOOR);
+		floor[1] = new Sprite(x + 48, y + 48, 16, sheet, Sprite.TYPE_FLOOR);
 		wall = new Sprite[2];
-		wall[0] = new Sprite(x + 16, y + 24, 16, sheet);
-		wall[1] = new Sprite(x + 32, y + 24, 16, sheet);
+		wall[0] = new Sprite(x + 16, y + 24, 16, sheet, Sprite.TYPE_WALL);
+		wall[1] = new Sprite(x + 32, y + 24, 16, sheet, Sprite.TYPE_WALL);
 		ceiling = new Sprite[2];
-		ceiling[0] = new Sprite(x + 48, y + 0, 16, sheet);
-		ceiling[0].setLightInteraction(Light.FULL);
-		ceiling[1] = new Sprite(x + 48, y + 16, 16, sheet);
-		ceiling[1].setLightInteraction(Light.FULL);
+		ceiling[0] = new Sprite(x + 48, y + 0, 16, sheet, Sprite.TYPE_CEILING);
+		ceiling[1] = new Sprite(x + 48, y + 16, 16, sheet, Sprite.TYPE_CEILING);
 
 	}
 

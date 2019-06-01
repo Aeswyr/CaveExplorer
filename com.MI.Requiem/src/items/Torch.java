@@ -15,13 +15,13 @@ public class Torch extends Item {
 
 	public Torch(Handler handler, Mob holder) {
 		super(handler, holder);
-		
+
 		ID = "u0";
 		tags = "hand";
-		
+
 		useMax = 10800;
 		use = useMax;
-		
+
 		this.sprite = Assets.litTorch;
 		this.invSprite = Assets.litTorch_inv;
 
@@ -30,16 +30,16 @@ public class Torch extends Item {
 		burnt = new Light(90, 0xff111111, handler);
 		dim.light();
 	}
-	
+
 	public Torch(int x, int y, Handler handler) {
 		super(x, y, handler);
-		
+
 		ID = "u0";
 		tags = "hand";
-		
+
 		useMax = 10800;
 		use = useMax;
-		
+
 		this.sprite = Assets.litTorch;
 		this.invSprite = Assets.litTorch_inv;
 
@@ -47,7 +47,7 @@ public class Torch extends Item {
 		dim = new Light(128, 0xffffffAA, handler);
 		burnt = new Light(90, 0xff111111, handler);
 		dim.light();
-		
+
 	}
 
 	@Override
@@ -76,13 +76,13 @@ public class Torch extends Item {
 		}
 
 		if (holder != null) {
-			bright.setPos(holder.getX() - 16, holder.getY() - 16);
-			dim.setPos(holder.getX() - 16, holder.getY() - 16);
-			burnt.setPos(holder.getX() - 16, holder.getY() - 16);
+			bright.setPos(holder.getCenteredX(), holder.getCenteredY());
+			dim.setPos(holder.getCenteredX(), holder.getCenteredY());
+			burnt.setPos(holder.getCenteredX(), holder.getCenteredY());
 		} else {
-			bright.setPos((int)x, (int)y);
-			dim.setPos((int)x, (int)y);
-			burnt.setPos((int)x, (int)y);
+			bright.setPos((int) x, (int) y);
+			dim.setPos((int) x, (int) y);
+			burnt.setPos((int) x, (int) y);
 		}
 	}
 
