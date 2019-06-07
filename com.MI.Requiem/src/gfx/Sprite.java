@@ -15,6 +15,7 @@ public class Sprite {
 	public static final int TYPE_FLOOR = 7;
 	public static final int TYPE_WALL = 8;
 	public static final int TYPE_CEILING = 9;
+	public static final int TYPE_TEXT = 10;
 
 	int lightInteraction = Light.NONE;
 
@@ -23,14 +24,21 @@ public class Sprite {
 
 	int xOff, yOff;
 	int priority = 0;
-	/*
-	 * PRIORITY NUMBERS 11 - shapes which are used to help display inventory items,
-	 * such as use bars 10 - any inventory item display 9 - shapes which render over
-	 * ui components 8 - ui components 7 - shapes which render below ui components
-	 */
 
 	int frames;
 	long delta, lastTime;
+
+	public Sprite(BufferedImage b, int type) {
+		settings(type);
+
+		frames = 1;
+		raw = new int[frames][];
+
+		width = b.getWidth();
+		height = b.getHeight();
+
+		raw[0] = b.getRGB(0, 0, width, height, null, 0, width);
+	}
 
 	public Sprite(int width, int height, int[] raw, int type) {
 
@@ -220,6 +228,9 @@ public class Sprite {
 			lightInteraction = Light.FULL;
 			priority = 2;
 			break;
+		case TYPE_TEXT:
+			lightInteraction = Light.IGNORE;
+			priority = 1012;
 		default:
 			break;
 		}

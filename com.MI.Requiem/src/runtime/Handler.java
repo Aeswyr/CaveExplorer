@@ -2,7 +2,7 @@ package runtime;
 
 import core.Driver;
 import core.Screen;
-import entity.Player;
+import entities.Player;
 import gfx.DrawGraphics;
 import input.KeyManager;
 import input.MouseManager;

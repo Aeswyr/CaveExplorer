@@ -20,5 +20,7 @@ public class SpriteRequest {
 		this.x = x;
 		this.z = this.s.priority;
 	}
+	
+
 
 }

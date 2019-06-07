@@ -1,9 +1,11 @@
 package world;
 
 import java.util.ArrayList;
+
+import entities.Ooze;
+import entities.WillowWisp;
 import entity.EntityManager;
 import gfx.DrawGraphics;
-import items.TheOrb;
 import runtime.Handler;
 
 public class World {
@@ -23,15 +25,20 @@ public class World {
 		entities = new EntityManager();
 		entities.addEntity(handler.getPlayer());
 		MapGenerator.generateMap();
-
+		
 		Chunk.handler = this.handler;
 		chunkLoader = new ChunkLoader();
 		chunks = chunkLoader.getActive();
 		currChunk = new Chunk(-1, -1);
-
+		
 		chunkLoader.start();
 		
-		entities.addEntity(new TheOrb(64, 64, handler));
+		entities.addEntity(new Ooze(handler, 64, 64));
+		entities.addEntity(new WillowWisp(handler, 64, 64));
+		entities.addEntity(new WillowWisp(handler, 64, 64));
+		entities.addEntity(new WillowWisp(handler, 64, 64));
+		entities.addEntity(new WillowWisp(handler, 64, 64));
+		entities.addEntity(new WillowWisp(handler, 64, 64));
 	}
 
 	public void render(DrawGraphics g) {

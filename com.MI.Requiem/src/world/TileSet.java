@@ -4,7 +4,6 @@ import gfx.DrawGraphics;
 import gfx.Sprite;
 import gfx.SpriteSheet;
 import runtime.Handler;
-import runtime.Light;
 
 public class TileSet {
 

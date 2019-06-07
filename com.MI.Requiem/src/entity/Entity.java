@@ -11,6 +11,10 @@ public abstract class Entity {
 	protected Hitbox hitbox;
 	protected Handler handler;
 
+	public Entity(Handler handler) {
+		this.handler = handler;
+	}
+	
 	public abstract void update();
 
 	public abstract void render(DrawGraphics g);
@@ -33,6 +37,14 @@ public abstract class Entity {
 		return (int) y;
 	}
 
+	public void setX(int x) {
+		this.x = x;
+	}
+	
+	public void setY(int y) {
+		this.y = y;
+	}
+	
 	public int getTileX() {
 		return (int) (x / Tile.tileSize);
 	}

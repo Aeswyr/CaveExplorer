@@ -1,8 +1,12 @@
-package entity;
+package entities;
 
 import java.util.ArrayList;
 
 import core.Assets;
+import entity.Entity;
+import entity.Hitbox;
+import entity.Interactable;
+import entity.Mob;
 import geometry.Square;
 import gfx.DrawGraphics;
 import gfx.Sprite;
@@ -29,22 +33,24 @@ public class Player extends Mob {
 	ItemContainer<Item> rHand;
 
 	public Player(Handler handler) {
+		super(handler);
 		this.x = 10 * Tile.tileSize;
 		this.y = 10 * Tile.tileSize;
 		this.xOff = 32;
 		this.yOff = 32;
 		this.hitbox = new Hitbox(-22, -8, 10, 10, this, handler);
-		this.handler = handler;
-		activeSprite = Assets.player_still;
+		activeSprite = Assets.player_idle;
 
 		speed = 2;
-		health = 75;
+		health = 50;
 		healthMax = 100;
 		woundMax = 1;
 		wounds = 0;
 
+		//TODO y coordinate relies on width rather than height
+		
 		int w = handler.getWidth();
-		int h = handler.getHeight();
+		//int h = handler.getHeight();
 
 		lHand = new ItemContainer<Item>((int) (w / 21.8), w / 5, Assets.inventory_Empty, Assets.inventory_Mainhand,
 				"hand mainhand", handler); // previously 44 and 192
@@ -116,7 +122,7 @@ public class Player extends Mob {
 			activeSprite = Assets.player_run;
 
 		} else {
-			activeSprite = Assets.player_still;
+			activeSprite = Assets.player_idle;
 		}
 
 		if (!handler.getMouse().getDragging()) {

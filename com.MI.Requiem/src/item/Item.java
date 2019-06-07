@@ -1,9 +1,9 @@
 package item;
 
+import entities.Player;
 import entity.Hitbox;
 import entity.Interactable;
 import entity.Mob;
-import entity.Player;
 import geometry.Square;
 import gfx.DrawGraphics;
 import gfx.Sprite;
@@ -31,14 +31,14 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 	protected int use = useMax;
 
 	public Item(Handler handler, Mob holder) {
-		this.handler = handler;
+		super(handler);
 		this.holder = holder;
 	}
 
 	public Item(int x, int y, Handler handler) {
+		super(handler);
 		this.x = x;
 		this.y = y;
-		this.handler = handler;
 		this.holder = null;
 		this.hitbox = new Hitbox(6, 6, 20, this, handler);
 		hitbox.updatePos(x, y);
@@ -61,7 +61,6 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 	public void interact(Object interactor) {
 		if (interactor instanceof Player) {
 			if (((Player) interactor).pickup(this))
-				if (handler == null) System.out.println("yiles");
 				die();
 		}
 	}

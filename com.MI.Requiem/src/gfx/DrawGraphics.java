@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import core.Assets;
 import core.Driver;
 import geometry.Shape;
 import runtime.Light;
@@ -15,6 +16,7 @@ public class DrawGraphics {
 
 	ArrayList<SpriteRequest> requestList;
 	ArrayList<LightRequest> lightRequest;
+	ArrayList<FontRequest> textRequest;
 
 	int width, height;
 	double scale;
@@ -28,6 +30,8 @@ public class DrawGraphics {
 
 	int z = 0;
 
+	private Font font;
+
 	public DrawGraphics(Driver d) {
 		width = d.getWidth();
 		height = d.getHeight();
@@ -40,8 +44,11 @@ public class DrawGraphics {
 
 		requestList = new ArrayList<SpriteRequest>();
 		lightRequest = new ArrayList<LightRequest>();
+		textRequest = new ArrayList<FontRequest>();
 
 		ambientColor = 0xff000000;
+
+		this.font = Assets.font;
 	}
 
 	public void render(Graphics g) {
@@ -87,6 +94,11 @@ public class DrawGraphics {
 			setZBuffer(req.z);
 			drawPost(req.s, req.x, req.y);
 		}
+		for (int i = 0; i < textRequest.size(); i++) {
+			FontRequest req = textRequest.get(i);
+			writeText(req.s, req.x, req.y, req.color);
+		}
+		textRequest.clear();
 		requestList.clear();
 		lightRequest.clear();
 	}
@@ -107,6 +119,33 @@ public class DrawGraphics {
 		if (x < 0 || x >= width || y < 0 || y >= height)
 			return;
 		lightCollision[y * width + x] = value;
+	}
+
+	public void write(String text, int x, int y) {
+		textRequest.add(new FontRequest(text, x, y, 0xffffffff));
+	}
+
+	public void write(String text, int x, int y, int color) {
+		textRequest.add(new FontRequest(text, x, y, color));
+	}
+
+	private void writeText(String text, int xOff, int yOff, int color) {
+		text = text.toUpperCase();
+
+		Sprite fontSprite = font.getSprite();
+		int[] off = font.getOffsets();
+		int[] wid = font.getWidths();
+
+		int offset = 0;
+		for (int i = 0; i < text.length(); i++) {
+			int unicode = text.codePointAt(i) - 32;
+			for (int y = 0; y < fontSprite.getHeight(); y++)
+				for (int x = 0; x < wid[unicode]; x++) {
+					if (fontSprite.getRawFrame()[x + off[unicode] + y * fontSprite.getWidth()] == 0xffffffff)
+						drawPixel(x + xOff + offset, y + yOff, color);
+				}
+			offset += wid[unicode];
+		}
 	}
 
 	private void drawPixel(int x, int y, int value) {

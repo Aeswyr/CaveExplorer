@@ -41,8 +41,10 @@ public class ItemContainer<T extends Storeable> {
 		if (contained != null) {
 			if (this.equals(handler.getMouse().getStartHovered()))
 				contained.renderInventory(handler.getMouse().getAdjX(), handler.getMouse().getAdjY(), g);
-			else
+			else {
 				contained.renderInventory(x, y, g);
+				if (amount > 1) g.write("" + amount, x + 20, y + 18);
+			}
 		} else {
 			if (empty != null)
 				empty.render(x, y, g);

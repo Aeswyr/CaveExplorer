@@ -1,8 +1,8 @@
 package core;
 
+import gfx.Font;
 import gfx.Sprite;
 import gfx.SpriteSheet;
-import runtime.Light;
 import sfx.Sound;
 import world.TileSet;
 
@@ -15,6 +15,8 @@ public class Assets {
 	private static final String ITEM = "/item/";
 	private static final String SOUND = "/sound/";
 
+	public static Font font;
+	
 	private static SpriteSheet tile;
 	public static TileSet test;
 
@@ -33,9 +35,15 @@ public class Assets {
 	public static Sprite inventory_Mainhand;
 
 	private static SpriteSheet player;
-	public static Sprite player_still;
+	public static Sprite player_idle;
 	public static Sprite player_run;
 
+	private static SpriteSheet ooze;
+	public static Sprite ooze_idle;
+	
+	private static SpriteSheet willowWisp;
+	public static Sprite willowWisp_idle;
+	
 	private static SpriteSheet item;
 	public static Sprite litTorch_inv;
 	public static Sprite burntTorch_inv;
@@ -67,14 +75,22 @@ public class Assets {
 		player = new SpriteSheet(PLAYER + "testChar.png");
 		ui = new SpriteSheet(UI + "gui.png");
 		item = new SpriteSheet(ITEM + "items.png");
+		
+		ooze = new SpriteSheet(ENTITY + "ooze.png");
+		willowWisp = new SpriteSheet(ENTITY + "willowWisp.png");
+		
+		font = new Font(UI + "font.png");
 	}
 
 	private static void initSprite() {
 		test = new TileSet(0, 0, tile);
 
-		player_still = new Sprite(0, 0, 32, player, Sprite.TYPE_ENTITY);
+		player_idle = new Sprite(0, 0, 32, player, Sprite.TYPE_ENTITY);
 		player_run = new Sprite(32, 0, 32, 32, 8, 10, player, Sprite.TYPE_ENTITY);
 
+		ooze_idle = new Sprite(0, 0, 32, ooze, Sprite.TYPE_ENTITY);
+		willowWisp_idle = new Sprite(0, 0, 32, willowWisp, Sprite.TYPE_ENTITY);
+		
 		healthBar = new Sprite(0, 0, 128, 36, ui, Sprite.TYPE_GUI_COMPONENT);
 		heart = new Sprite(27, 36, 20, ui, Sprite.TYPE_GUI_COMPONENT);
 		heartDead = new Sprite(47, 36, 20, ui, Sprite.TYPE_GUI_COMPONENT);

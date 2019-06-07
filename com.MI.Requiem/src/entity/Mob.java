@@ -3,8 +3,13 @@ package entity;
 import gfx.DrawGraphics;
 import gfx.Sprite;
 import item.Item;
+import runtime.Handler;
 
 public abstract class Mob extends Entity {
+
+	public Mob(Handler handler) {
+		super(handler);
+	}
 
 	protected Sprite activeSprite;
 	protected double health, healthMax, speed, spirit, spiritMax, hunger, hungerMax;
