@@ -63,7 +63,8 @@ public class Inventory {
 				item.update();
 				if (item.consumed) {
 					extra.get(i).remove();
-					item.onDequip();
+					if (extra.get(i).contained == null) item.onDequip();
+					else item.setConsumed(false);
 				}
 			}
 		}

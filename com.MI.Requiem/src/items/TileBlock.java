@@ -44,7 +44,7 @@ public class TileBlock extends Item {
 	@Override
 	public void use() {
 
-		if (!consumed) {
+		if (!consumed && timer >= useTime) {
 			int holderX = holder.getCenteredX();
 			int holderY = holder.getY() - 8;
 
@@ -54,19 +54,12 @@ public class TileBlock extends Item {
 			int dx = mouseX - holderX;
 			int dy = mouseY - holderY;
 
-			if (dx * dx + dy * dy < 4096 && timer >= useTime) {
-				if (!handler.getWorld().getTile(mouseX, mouseY).isSolid()) {
-					handler.getWorld().setTile(mouseX, mouseY, id);
-					consumed = true;
-				}
+			if (dx * dx + dy * dy < 4096 && !handler.getWorld().getTile(mouseX, mouseY).isSolid()) {
+				handler.getWorld().setTile(mouseX, mouseY, id);
+				timer = 0;
+				consumed = true;
 			}
 		}
-	}
-
-	@Override
-	public void update() {
-		if (timer < useTime)
-			timer++;
 	}
 
 }

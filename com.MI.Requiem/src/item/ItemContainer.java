@@ -54,7 +54,7 @@ public class ItemContainer<T extends Storeable> {
 	@SuppressWarnings("unchecked")
 	public void update() {
 		if (this instanceof ItemContainer<?>) {
-			if (handler.getMouse().getLeft() && h.containsMouse()) {
+			if ((handler.getMouse().getLeft() || handler.getMouse().getRight() || handler.getMouse().getMiddle()) && h.containsMouse()) {
 				if (handler.getMouse().getStartHovered() == null)
 					handler.getMouse().setStartHovered((ItemContainer<Item>) this);
 				else {
@@ -81,9 +81,33 @@ public class ItemContainer<T extends Storeable> {
 		return true;
 	}
 	
+	public boolean store(T item, int amount) {
+		if ((contained != null && !contained.canStack(item)) || (acceptedTags != null && !Utility.tagOverlaps(acceptedTags, item.getTags())))
+			return false;
+		if (contained == null)
+		contained = item;
+		this.amount += amount;
+		return true;
+	}
+	
 	public void remove() {
 		amount--;
 		if (amount <= 0) contained = null;
+	}
+	
+	public int remove(int num) {
+		if (amount - num <= 0) {
+			amount = 0;
+			contained = null;
+			return amount;
+		} else {
+			amount -= num;
+			return num;
+		}
+	}
+	
+	public int getAmount() {
+		return amount;
 	}
 	
 	public void drop() {

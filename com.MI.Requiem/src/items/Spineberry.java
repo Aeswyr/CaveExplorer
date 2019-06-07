@@ -14,6 +14,9 @@ public class Spineberry extends Item{
 		ID = "1";
 		tags = "hand";
 		
+		useTime = 30;
+		timer = useTime;
+		
 		sprite = Assets.spineberry;
 		invSprite = Assets.spineberry_inv;
 		
@@ -24,6 +27,9 @@ public class Spineberry extends Item{
 	
 		ID = "0";
 		tags = "hand";
+		
+		useTime = 30;
+		timer = useTime;
 		
 		sprite = Assets.spineberry;
 		invSprite = Assets.spineberry_inv;
@@ -38,17 +44,13 @@ public class Spineberry extends Item{
 
 	@Override
 	public void use() {
-		if (!consumed) {
+		if (!consumed && timer >= useTime) {
 			holder.harm(30);
 			holder.healHNG(15);
 			holder.healSPI(15);
+			this.consumed = true;
+			timer = 0;
 		}
-		this.consumed = true;
-	}
-
-	@Override
-	public void update() {
-		// TODO Auto-generated method stub
 		
 	}
 

@@ -72,8 +72,6 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 		this.hitbox = null;
 	}
 
-	public abstract void update();
-
 	public void onEquip() {
 		this.equipped = true;
 	}
@@ -113,5 +111,11 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 	
 	protected Object clone() throws CloneNotSupportedException {
 		return super.clone();
+	}
+	
+	@Override
+	public void update() {
+		if (timer < useTime)
+			timer++;
 	}
 }

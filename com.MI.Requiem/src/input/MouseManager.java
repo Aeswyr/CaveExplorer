@@ -9,7 +9,7 @@ import item.ItemContainer;
 
 public class MouseManager implements MouseListener, MouseMotionListener {
 
-	private boolean left, right, dragging;
+	private boolean left, right, middle, dragging;
 	private int x, y, x0, y0; // x0 and y0 are the last positions of the mouse. x and y are current
 	ItemContainer<Item> startHovered, endHovered;
 
@@ -57,6 +57,7 @@ public class MouseManager implements MouseListener, MouseMotionListener {
 			left = true;
 			break;
 		case 2:
+			middle = true;
 			break;
 		case 3:
 			right = true;
@@ -76,6 +77,7 @@ public class MouseManager implements MouseListener, MouseMotionListener {
 			left = false;
 			break;
 		case 2:
+			middle = false;
 			break;
 		case 3:
 			right = false;
@@ -87,8 +89,23 @@ public class MouseManager implements MouseListener, MouseMotionListener {
 		if (startHovered != null && endHovered != null && endHovered.containsMouse()) {
 			if (startHovered.equals(endHovered) && startHovered.getContained() != null) {
 				startHovered.getContained().use();
-			} else if (endHovered.store(startHovered.getContained()))
-				startHovered.remove();
+			} else {
+				switch (e.getButton()) {
+				case MouseEvent.BUTTON1:
+					if (endHovered.store(startHovered.getContained(), startHovered.getAmount())) startHovered.remove(startHovered.getAmount());
+					break;
+				case MouseEvent.BUTTON2:
+					if (endHovered.store(startHovered.getContained())) startHovered.remove();
+					break;
+				case MouseEvent.BUTTON3:
+					if (endHovered.store(startHovered.getContained(), (int) Math.ceil(startHovered.getAmount() / 2.0))) startHovered.remove((int) Math.ceil(startHovered.getAmount() / 2.0));
+					break;
+					default:
+						break;
+				}
+				
+			}
+				
 		} else if (startHovered != null && startHovered.getContained() != null) {
 			startHovered.drop();
 		}
@@ -105,6 +122,10 @@ public class MouseManager implements MouseListener, MouseMotionListener {
 
 	public boolean getRight() {
 		return right;
+	}
+	
+	public boolean getMiddle() {
+		return middle;
 	}
 
 	/**
