@@ -20,7 +20,7 @@ public class WillowWisp extends Mob {
 		this.healthMax = 25;
 		this.health = healthMax;
 
-		this.speed = 2;
+		this.speed = 1.75;
 	}
 
 	public WillowWisp(Handler handler, int x, int y) {

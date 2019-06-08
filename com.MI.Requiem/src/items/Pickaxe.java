@@ -72,7 +72,7 @@ public class Pickaxe extends Item {
 				if (handler.getWorld().getTile(holderX, holderY).isBreakable()) {
 					
 					// on tile break
-					ArrayList<Item> drops = handler.getWorld().getTile(holderX, holderY).tileDrop(holderX, holderY, handler);
+					ArrayList<Item> drops = handler.getWorld().getTile(holderX, holderY).tileDrop(holderX - 16, holderY - 18, handler);
 					handler.getWorld().setTile(holderX, holderY, handler.getWorld().getTileID(holderX, holderY) - 1);
 					for (int i = 0; i < drops.size(); i++) {
 						handler.getWorld().getEntities().addEntity(drops.get(i));
