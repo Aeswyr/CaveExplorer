@@ -2,47 +2,80 @@ package core;
 
 import java.awt.Canvas;
 import java.awt.Dimension;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 
-public class Screen extends Canvas{
-	
+import sfx.Sound;
+
+public class Screen extends Canvas {
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	private JFrame frame;
 	private Dimension d;
+
 	public Screen(int width, int height) {
-		
-		
-		d = new Dimension();
-		if (width == -1 && height == -1) d = Toolkit.getDefaultToolkit().getScreenSize();
-		else d.setSize(width, height);
-		
-		
+
 		frame = new JFrame();
+		d = new Dimension();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
-		frame.setSize(d);
-		frame.setMinimumSize(d);
-		frame.setUndecorated(true);
+
+		if (width == -1 && height == -1) {
+			GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+			if (gd.isFullScreenSupported()) {
+				frame.setUndecorated(true);
+				gd.setFullScreenWindow(frame);
+				d.setSize(gd.getFullScreenWindow().getWidth(), gd.getFullScreenWindow().getHeight());
+			} else {
+				d.setSize(800, 600);
+				frame.setSize(d);
+				frame.setMinimumSize(d);
+			}
+		} else {
+			d.setSize(width, height);
+			frame.setSize(d);
+			frame.setMinimumSize(d);
+		}
+
+		frame.addWindowListener(new WindowAdapter() // Operations to complete upon window closing
+		{
+			public void windowClosing(WindowEvent we) {
+				try {
+					Sound.shutdown();
+				} catch (NullPointerException e) {
+					e.printStackTrace();
+				}
+				System.out.println("Game Closed");
+			}
+		});
+		frame.setTitle("Unto the Abyss");
+		frame.setName("Unto the Abyss");
 		frame.setVisible(true);
+
 		
 		
 		frame.add(this);
 		frame.pack();
 	}
-	
-	
-	
+
 	public int getWidth() {
 		return (int) (d.width / Driver.scale);
 	}
-	
+
 	public int getHeight() {
 		return (int) (d.height / Driver.scale);
+	}
+
+	public void close() {
+		frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
 	}
 }

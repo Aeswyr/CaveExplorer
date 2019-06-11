@@ -97,4 +97,8 @@ public class Driver implements Runnable {
 		screen.addMouseListener(m);
 		screen.addMouseMotionListener(m);
 	}
+	
+	public void close() {
+		screen.close();
+	}
 }

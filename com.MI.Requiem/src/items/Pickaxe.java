@@ -4,8 +4,12 @@ import java.util.ArrayList;
 
 import core.Assets;
 import entity.Mob;
+import geometry.Shape;
+import geometry.Square;
 import gfx.DrawGraphics;
+import gfx.Sprite;
 import item.Item;
+import particle.Particle;
 import runtime.Handler;
 
 public class Pickaxe extends Item {
@@ -24,10 +28,10 @@ public class Pickaxe extends Item {
 		sprite = Assets.pickaxe;
 		invSprite = Assets.pickaxe_inv;
 	}
-	
+
 	public Pickaxe(int x, int y, Handler handler) {
 		super(x, y, handler);
-	
+
 		ID = "u2";
 		tags = "mainhand";
 
@@ -38,7 +42,7 @@ public class Pickaxe extends Item {
 
 		sprite = Assets.pickaxe;
 		invSprite = Assets.pickaxe_inv;
-		
+
 	}
 
 	@Override
@@ -46,6 +50,8 @@ public class Pickaxe extends Item {
 		// TODO Auto-generated method stub
 
 	}
+
+	private Shape spark = new Square(1, 1, 0xffffff00, Sprite.TYPE_ITEM_DROP);
 
 	@Override
 	public void use() {
@@ -70,16 +76,20 @@ public class Pickaxe extends Item {
 					+ (holderY - holder.getCenteredY()) * (holderY - holder.getCenteredY())) < 4096) {
 
 				if (handler.getWorld().getTile(holderX, holderY).isBreakable()) {
-					
+
 					// on tile break
-					ArrayList<Item> drops = handler.getWorld().getTile(holderX, holderY).tileDrop(holderX - 16, holderY - 18, handler);
+					ArrayList<Item> drops = handler.getWorld().getTile(holderX, holderY).tileDrop(holderX - 16,
+							holderY - 18, handler);
 					handler.getWorld().setTile(holderX, holderY, handler.getWorld().getTileID(holderX, holderY) - 1);
 					for (int i = 0; i < drops.size(); i++) {
 						handler.getWorld().getEntities().addEntity(drops.get(i));
 					}
 					// end tile break
-					
+
 					// always do
+					new Particle(spark.toSprite(), 8, 6, holderX, holderY, holderX + 5, holderY + 5,
+							Particle.SHAPE_CIRCLE, Particle.DISPERSE_BURST, Particle.DIRECTION_RANDOM,
+							Particle.LIFETIME_VARIABLE, handler).start();
 					Assets.pickaxe1.play();
 					use--;
 					timer = 0;
@@ -100,7 +110,6 @@ public class Pickaxe extends Item {
 				}
 
 			}
-
 
 		}
 

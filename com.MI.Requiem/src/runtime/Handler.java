@@ -6,6 +6,7 @@ import entities.Player;
 import gfx.DrawGraphics;
 import input.KeyManager;
 import input.MouseManager;
+import particle.ParticleManager;
 import world.TileSet;
 import world.World;
 
@@ -22,13 +23,16 @@ public class Handler {
 	private Player player;
 
 	private LightManager lightManager;
+	private ParticleManager particles;
 
 	public Handler(Driver d) {
 		driver = d;
 		TileSet.handler = this;
 
 		lightManager = new LightManager(this);
-
+		particles = new ParticleManager();
+		
+		
 		camera = new Camera(this);
 		player = new Player(this);
 		camera.centerOnEntity(player);
@@ -44,6 +48,7 @@ public class Handler {
 	public void update() {
 		keys.update();
 		world.update();
+		particles.update();
 		lightManager.update();
 		camera.update();
 
@@ -51,6 +56,7 @@ public class Handler {
 
 	public void render(DrawGraphics g) {
 		world.render(g);
+		particles.render(g);
 	}
 
 	// Getters and Setters
@@ -93,5 +99,9 @@ public class Handler {
 
 	public LightManager getLights() {
 		return lightManager;
+	}
+	
+	public ParticleManager getParticles() {
+		return particles;
 	}
 }
