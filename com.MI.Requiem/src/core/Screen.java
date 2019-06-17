@@ -4,7 +4,6 @@ import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -17,8 +16,8 @@ public class Screen extends Canvas {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-
+	private static final long serialVersionUID = 942448191868169090L;
+	
 	private JFrame frame;
 	private Dimension d;
 

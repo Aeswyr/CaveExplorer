@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import gfx.DrawGraphics;
 import item.Item;
 import runtime.Handler;
+import tiles.Tile_Anvil;
 import tiles.Tile_DirtFloor;
 import tiles.Tile_DirtWall;
 
@@ -14,7 +15,7 @@ public class Tile {
 	protected TileSet tileSet;
 	public static int tileSize = 16;
 
-	private static Tile[] tiles = { new Tile_DirtFloor(), new Tile_DirtWall() };
+	private static Tile[] tiles = { new Tile_DirtFloor(), new Tile_DirtWall(), new Tile_Anvil() };
 	protected final int id;
 	
 	protected Tile(int id) {

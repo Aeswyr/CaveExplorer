@@ -9,7 +9,7 @@ import sfx.Sound;
 
 public class Initialize {
 
-	private static final String GAMENAME = ".UntoTheAbyss";
+	private static final String GAMENAME = "UntoTheAbyss";
 
 	public static void main(String[] args) {
 		Assets.init();

@@ -22,6 +22,7 @@ public class Chunk {
 	protected int x, y;
 	boolean loaded = false;
 	int[][] chunk;
+	int[][] map;
 	public static final int chunkDim = 16;
 
 	/**
@@ -62,9 +63,10 @@ public class Chunk {
 		for (int i = startX; i < endX; i++) {
 			for (int j = startY; j < endY; j++) {
 				Tile.toTile(chunk[i - x * chunkDim][j - y * chunkDim]).render(i, j, new int[0], g);
+				if (map[i - x * chunkDim][j - y * chunkDim] != -1)
+					Tile.toTile(map[i - x * chunkDim][j - y * chunkDim]).render(i, j, new int[0], g);
 			}
 		}
-
 
 	}
 
@@ -87,24 +89,32 @@ public class Chunk {
 	 */
 	public void load() {
 		String line = null;
+		String mapLine = null;
 		try {
 			BufferedReader read = Loader.loadTextFromFile(Driver.saveDir + "saves/world/world.dat");
+			BufferedReader readMap = Loader.loadTextFromFile(Driver.saveDir + "saves/world/map.dat");
 			int find = y * World.maxChunks + x;
 			for (int i = 0; i < find; i++) {
 				read.readLine();
+				readMap.readLine();
 			}
 			line = read.readLine();
-
+			mapLine = readMap.readLine();
 			read.close();
+			readMap.close();
 		} catch (IOException e) {
 
 		}
 
 		chunk = new int[chunkDim][chunkDim];
+		map = new int[chunkDim][chunkDim];
+
 		StringTokenizer data = new StringTokenizer(line);
+		StringTokenizer mapData = new StringTokenizer(mapLine);
 		for (int y = 0; y < chunkDim; y++) {
 			for (int x = 0; x < chunkDim; x++) {
 				chunk[x][y] = Integer.parseInt(data.nextToken());
+				map[x][y] = Integer.parseInt(mapData.nextToken());
 			}
 		}
 		loaded = true;
@@ -115,11 +125,12 @@ public class Chunk {
 	 */
 	public void unload() {
 		chunk = null;
+		map = null;
 		loaded = false;
 	}
 
 	/**
-	 * fetches the node at a given x and y
+	 * fetches the tile at a given x and y
 	 * 
 	 * @param x - the x coordinate of the node relative to the whole map
 	 * @param y - the y coordinate of the node relative to the whole map
@@ -142,6 +153,24 @@ public class Chunk {
 		if (x >= chunkDim || x < 0 || y >= chunkDim || y < 0)
 			return;
 		chunk[x][y] = id;
+	}
+
+	public int overlayAt(int x, int y) {
+		if (!loaded)
+			return -1;
+		x -= this.x * chunkDim;
+		y -= this.y * chunkDim;
+		if (x >= chunkDim || x < 0 || y >= chunkDim || y < 0)
+			return -1;
+		return map[x][y];
+	}
+
+	public void setOverlay(int x, int y, int id) {
+		x -= this.x * chunkDim;
+		y -= this.y * chunkDim;
+		if (x >= chunkDim || x < 0 || y >= chunkDim || y < 0)
+			return;
+		map[x][y] = id;
 	}
 
 	/**

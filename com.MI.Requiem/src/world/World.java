@@ -136,6 +136,48 @@ public class World {
 		for (int i = 0; i < chunks.size(); i++) chunks.get(i).setTile(x / Tile.tileSize, y / Tile.tileSize, id);
 	}
 	
+	/**
+	 * returns the tile at the given position
+	 * 
+	 * @param x - the x coordinate of the tile (pixel position)
+	 * @param y - the y coordinate of the tile (pixel position)
+	 */
+	public Tile getOverlay(int x, int y) {
+		int id = -1;
+		for (int i = 0; i < chunks.size(); i++) {
+			if (chunks.get(i) != null) {
+				int pos = chunks.get(i).overlayAt(x / Tile.tileSize, y / Tile.tileSize);
+				if (pos != -1)
+					id = pos;
+			}
+		}
+		if (id == -1)
+			return null;
+		return Tile.toTile(id);
+	}
+	
+	/**
+	 * returns the tile id at the given position
+	 * 
+	 * @param x - the x coordinate of the tile (pixel position)
+	 * @param y - the y coordinate of the tile (pixel position)
+	 */
+	public int getOverlayID(int x, int y) {
+		int id = -1;
+		for (int i = 0; i < chunks.size(); i++) {
+			if (chunks.get(i) != null) {
+				int pos = chunks.get(i).overlayAt(x / Tile.tileSize, y / Tile.tileSize);
+				if (pos != -1)
+					id = pos;
+			}
+		}
+		return id;
+	}
+
+	public void setOverlay(int x, int y, int id) {
+		for (int i = 0; i < chunks.size(); i++) chunks.get(i).setOverlay(x / Tile.tileSize, y / Tile.tileSize, id);
+	}
+	
 	public EntityManager getEntities() {
 		return entities;
 	}

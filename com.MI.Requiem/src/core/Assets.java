@@ -19,6 +19,7 @@ public class Assets {
 	
 	private static SpriteSheet tile;
 	public static TileSet test;
+	public static TileSet anvil;
 
 	private static SpriteSheet ui;
 	public static Sprite heart;
@@ -84,7 +85,8 @@ public class Assets {
 
 	private static void initSprite() {
 		test = new TileSet(0, 0, tile);
-
+		anvil = new TileSet(64, 0, tile);
+		
 		player_idle = new Sprite(0, 0, 32, player, Sprite.TYPE_ENTITY);
 		player_run = new Sprite(32, 0, 32, 32, 8, 10, player, Sprite.TYPE_ENTITY);
 
