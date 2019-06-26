@@ -17,7 +17,7 @@ public class Screen extends Canvas {
 	 * 
 	 */
 	private static final long serialVersionUID = 942448191868169090L;
-	
+
 	private JFrame frame;
 	private Dimension d;
 
@@ -60,8 +60,10 @@ public class Screen extends Canvas {
 		frame.setName("Unto the Abyss");
 		frame.setVisible(true);
 
-		
-		
+		this.setPreferredSize(d);
+		this.setMaximumSize(d);
+		this.setMinimumSize(d);
+
 		frame.add(this);
 		frame.pack();
 	}

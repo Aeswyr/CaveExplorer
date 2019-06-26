@@ -18,8 +18,10 @@ public class Assets {
 	public static Font font;
 	
 	private static SpriteSheet tile;
-	public static TileSet test;
+	public static TileSet dirtTile;
 	public static TileSet anvil;
+	public static TileSet forgeLeft;
+	public static TileSet forgeRight;
 
 	private static SpriteSheet ui;
 	public static Sprite heart;
@@ -84,8 +86,10 @@ public class Assets {
 	}
 
 	private static void initSprite() {
-		test = new TileSet(0, 0, tile);
-		anvil = new TileSet(64, 0, tile);
+		dirtTile = new TileSet(0, 0, tile);
+		anvil = new TileSet(48, 0, tile);
+		forgeLeft = new TileSet(48, 0, tile);
+		forgeRight = new TileSet(80, 0, tile);
 		
 		player_idle = new Sprite(0, 0, 32, player, Sprite.TYPE_ENTITY);
 		player_run = new Sprite(32, 0, 32, 32, 8, 10, player, Sprite.TYPE_ENTITY);

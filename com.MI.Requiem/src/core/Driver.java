@@ -18,7 +18,7 @@ public class Driver implements Runnable {
 
 	public Driver() {
 
-		screen = new Screen(-1, -1);
+		screen = new Screen(1600, 800);
 		canvas = new DrawGraphics(this);
 
 	}

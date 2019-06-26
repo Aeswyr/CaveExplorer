@@ -62,9 +62,9 @@ public class Chunk {
 
 		for (int i = startX; i < endX; i++) {
 			for (int j = startY; j < endY; j++) {
-				Tile.toTile(chunk[i - x * chunkDim][j - y * chunkDim]).render(i, j, new int[0], g);
+				Tile.toTile(chunk[i - x * chunkDim][j - y * chunkDim]).render(i, j, g);
 				if (map[i - x * chunkDim][j - y * chunkDim] != -1)
-					Tile.toTile(map[i - x * chunkDim][j - y * chunkDim]).render(i, j, new int[0], g);
+					Tile.toTile(map[i - x * chunkDim][j - y * chunkDim]).render(i, j, g);
 			}
 		}
 
