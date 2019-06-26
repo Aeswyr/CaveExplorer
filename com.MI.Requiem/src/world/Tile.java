@@ -7,6 +7,8 @@ import runtime.Handler;
 import tiles.Tile_Anvil;
 import tiles.Tile_DirtFloor;
 import tiles.Tile_DirtWall;
+import tiles.Tile_ForgeLeft;
+import tiles.Tile_ForgeRight;
 
 public class Tile {
 
@@ -16,10 +18,10 @@ public class Tile {
 	protected TileSet tileSet;
 	public static int tileSize = 16;
 
-	private static Tile[] tiles = { new Tile_DirtFloor(), new Tile_DirtWall(), new Tile_Anvil() };
+	private static Tile[] tiles = { new Tile_DirtFloor(), new Tile_DirtWall(), new Tile_Anvil(), new Tile_ForgeLeft(), new Tile_ForgeRight() };
 	protected final int id;
 	
-	protected Tile(int id) {
+	public Tile(int id) {
 		this.id = id;
 	}
 	

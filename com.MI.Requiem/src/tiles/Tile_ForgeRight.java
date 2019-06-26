@@ -10,7 +10,7 @@ import world.Tile;
 
 public class Tile_ForgeRight extends Tile{
 
-	protected Tile_ForgeRight(int id) {
+	public Tile_ForgeRight() {
 		super(4);
 		
 		this.tileSet = Assets.forgeRight;
