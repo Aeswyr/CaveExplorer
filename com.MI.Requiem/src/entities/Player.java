@@ -3,6 +3,7 @@ package entities;
 import java.util.ArrayList;
 
 import core.Assets;
+import effects.Effect;
 import entity.Entity;
 import entity.Hitbox;
 import entity.Interactable;
@@ -13,7 +14,9 @@ import gfx.Sprite;
 import item.Inventory;
 import item.Item;
 import item.ItemContainer;
+import items.Anvil;
 import items.Cloak;
+import items.Forge;
 import items.Pickaxe;
 import items.Spineberry;
 import items.Torch;
@@ -47,10 +50,10 @@ public class Player extends Mob {
 		woundMax = 1;
 		wounds = 0;
 
-		//TODO y coordinate relies on width rather than height
-		
+		// TODO y coordinate relies on width rather than height
+
 		int w = handler.getWidth();
-		//int h = handler.getHeight();
+		// int h = handler.getHeight();
 
 		lHand = new ItemContainer<Item>((int) (w / 21.8), w / 5, Assets.inventory_Empty, Assets.inventory_Mainhand,
 				"hand mainhand", handler); // previously 44 and 192
@@ -78,6 +81,8 @@ public class Player extends Mob {
 		inventory.add(new Spineberry(handler, this));
 		inventory.add(new Spineberry(handler, this));
 		inventory.add(new Pickaxe(handler, this));
+		inventory.add(new Anvil(handler, this));
+		inventory.add(new Forge(handler, this));
 	}
 
 	@Override
@@ -85,7 +90,7 @@ public class Player extends Mob {
 		inventory.update();
 		super.update();
 		if (health < healthMax)
-			heal(healthMax / (5 * 60 * 60));
+			heal(healthMax / (5 * 60 * 60), Effect.DAMAGE_TYPE_ENERGY);
 	}
 
 	@Override
@@ -184,17 +189,53 @@ public class Player extends Mob {
 	}
 
 	@Override
-	public void harm(double amount) {
-		health -= amount;
-		if (health <= 0) {
-			wounds++;
-			if (wounds > woundMax) {
-				health = 0;
-				this.die();
-			} else {
-				health = healthMax;
+	public double harm(double amount, int type) {
+		double val;
+		switch (type) {
+		case Effect.DAMAGE_TYPE_ENERGY:
+			val = amount;
+			if (health - amount <= 0)
+				val = health;
+			health -= amount;
+			if (health <= 0) {
+				wounds++;
+				if (wounds > woundMax) {
+					health = 0;
+					this.die();
+				} else {
+					health = healthMax;
+				}
 			}
-
+			return amount;
+		case Effect.DAMAGE_TYPE_HUNGER:
+			val = amount;
+			if (hunger - amount <= 0)
+				val = hunger;
+			hunger -= amount;
+			return amount;
+		case Effect.DAMAGE_TYPE_MENTAL:
+			val = amount;
+			if (spirit - amount <= 0)
+				val = spirit;
+			spirit -= amount;
+			return amount;
+		case Effect.DAMAGE_TYPE_PHYSICAL:
+			val = amount - arm;
+			if (health - val <= 0)
+				val = health;
+			health -= amount - arm;
+			if (health <= 0) {
+				wounds++;
+				if (wounds > woundMax) {
+					health = 0;
+					this.die();
+				} else {
+					health = healthMax;
+				}
+			}
+			return amount - arm;
+		default:
+			return 0;
 		}
 	}
 

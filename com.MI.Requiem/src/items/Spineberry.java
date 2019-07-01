@@ -1,6 +1,7 @@
 package items;
 
 import core.Assets;
+import effects.Effect;
 import entity.Mob;
 import gfx.DrawGraphics;
 import item.Item;
@@ -11,7 +12,7 @@ public class Spineberry extends Item{
 	public Spineberry(Handler handler, Mob holder) {
 		super(handler, holder);
 
-		ID = "1";
+		ID = "4";
 		tags = "hand";
 		
 		useTime = 30;
@@ -25,7 +26,7 @@ public class Spineberry extends Item{
 	public Spineberry(int x, int y, Handler handler) {
 		super(x, y, handler);
 	
-		ID = "0";
+		ID = "4";
 		tags = "hand";
 		
 		useTime = 30;
@@ -45,9 +46,9 @@ public class Spineberry extends Item{
 	@Override
 	public void use() {
 		if (!consumed && timer >= useTime) {
-			holder.harm(30);
-			holder.healHNG(15);
-			holder.healSPI(15);
+			holder.harm(30, Effect.DAMAGE_TYPE_ENERGY);
+			holder.heal(5, Effect.DAMAGE_TYPE_HUNGER);
+			holder.heal(5, Effect.DAMAGE_TYPE_MENTAL);
 			this.consumed = true;
 			timer = 0;
 		}

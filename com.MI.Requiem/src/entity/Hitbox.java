@@ -70,6 +70,17 @@ public class Hitbox {
 				|| (handler.getWorld().getTile((int) (bound[1] + xMove), bound[3] - 2).isSolid())) {
 			return true;
 		}
+		try {
+			if ((handler.getWorld().getOverlay((int) (bound[0] + xMove), bound[2]).isSolid())
+					|| (handler.getWorld().getOverlay((int) (bound[0] + xMove), bound[3] - 2).isSolid())
+					|| (handler.getWorld().getOverlay((int) (bound[1] + xMove), bound[2]).isSolid())
+					|| (handler.getWorld().getOverlay((int) (bound[1] + xMove), bound[3] - 2).isSolid())) {
+				return true;
+			}
+		} catch (NullPointerException e) {
+
+		}
+
 		return false;
 	}
 
@@ -80,6 +91,17 @@ public class Hitbox {
 				|| handler.getWorld().getTile(bound[0], (int) (bound[3] + yMove)).isSolid()
 				|| handler.getWorld().getTile(bound[1] - 2, (int) (bound[3] + yMove)).isSolid()) {
 			return true;
+		}
+
+		try {
+			if (handler.getWorld().getOverlay(bound[0], (int) (bound[2] + yMove)).isSolid()
+					|| handler.getWorld().getOverlay(bound[1] - 2, (int) (bound[2] + yMove)).isSolid()
+					|| handler.getWorld().getOverlay(bound[0], (int) (bound[3] + yMove)).isSolid()
+					|| handler.getWorld().getOverlay(bound[1] - 2, (int) (bound[3] + yMove)).isSolid()) {
+				return true;
+			}
+		} catch (NullPointerException e) {
+
 		}
 		return false;
 	}

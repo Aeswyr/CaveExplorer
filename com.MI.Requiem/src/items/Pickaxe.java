@@ -11,6 +11,7 @@ import gfx.Sprite;
 import item.Item;
 import particle.Particle;
 import runtime.Handler;
+import world.Tile;
 
 public class Pickaxe extends Item {
 
@@ -75,12 +76,33 @@ public class Pickaxe extends Item {
 			while (((holderX - holder.getCenteredX()) * (holderX - holder.getCenteredX())
 					+ (holderY - holder.getCenteredY()) * (holderY - holder.getCenteredY())) < 4096) {
 
-				if (handler.getWorld().getTile(holderX, holderY).isBreakable()) {
+				if (handler.getWorld().getTile(holderX, holderY).isBreakable()
+						|| (handler.getWorld().getOverlay(holderX, holderY) != null
+								&& handler.getWorld().getOverlay(holderX, holderY).isBreakable())) {
 
 					// on tile break
-					ArrayList<Item> drops = handler.getWorld().getTile(holderX, holderY).tileDrop(holderX - 16,
-							holderY - 18, handler);
-					handler.getWorld().setTile(holderX, holderY, handler.getWorld().getTileID(holderX, holderY) - 1);
+					ArrayList<Item> drops;
+					if (handler.getWorld().getTile(holderX, holderY).isBreakable())
+						drops = handler.getWorld().getTile(holderX, holderY).tileDrop(holderX - 16, holderY - 18,
+								handler);
+					else
+						drops = handler.getWorld().getOverlay(holderX, holderY).tileDrop(holderX - 16, holderY - 18,
+								handler);
+					if (handler.getWorld().getOverlayID(holderX, holderY) == 3
+							|| handler.getWorld().getOverlayID(holderX, holderY) == 4) { // When tile is forge
+						if (handler.getWorld().getOverlayID(holderX, holderY) == 3) {
+							handler.getWorld().setOverlay(holderX, holderY, -1);
+							handler.getWorld().setOverlay(holderX + Tile.tileSize, holderY, -1);
+						} else {
+							handler.getWorld().setOverlay(holderX, holderY, -1);
+							handler.getWorld().setOverlay(holderX - Tile.tileSize, holderY, -1);
+						}
+
+					} else if (handler.getWorld().getOverlayID(holderX, holderY) == 2) { // When tile is anvil
+						handler.getWorld().setOverlay(holderX, holderY, -1);
+					} else
+						handler.getWorld().setTile(holderX, holderY,
+								handler.getWorld().getTileID(holderX, holderY) - 1);
 					for (int i = 0; i < drops.size(); i++) {
 						handler.getWorld().getEntities().addEntity(drops.get(i));
 					}

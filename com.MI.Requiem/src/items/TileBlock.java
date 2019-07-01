@@ -33,6 +33,21 @@ public class TileBlock extends Item {
 	public TileBlock(Handler handler, Mob holder, int id) {
 		super(handler, holder);
 		this.id = id;
+		
+		tags = "hand";
+		ID = "0:" + id;
+
+		useTime = 30;
+		timer = useTime;
+
+		switch (id) {
+		case 1:
+			this.sprite = Assets.dirt;
+			this.invSprite = Assets.dirt_inv;
+			break;
+		default:
+			break;
+		}
 	}
 
 	@Override

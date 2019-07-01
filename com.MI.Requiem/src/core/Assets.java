@@ -62,6 +62,8 @@ public class Assets {
 	public static Sprite pickaxe;
 	public static Sprite theOrb;
 	public static Sprite dirt;
+	public static Sprite anvil_inv;
+	public static Sprite forge_inv;
 
 	// Sound
 
@@ -87,9 +89,9 @@ public class Assets {
 
 	private static void initSprite() {
 		dirtTile = new TileSet(0, 0, tile);
-		anvil = new TileSet(48, 0, tile);
-		forgeLeft = new TileSet(48, 0, tile);
-		forgeRight = new TileSet(80, 0, tile);
+		anvil = new TileSet(48, 0, tile, true);
+		forgeLeft = new TileSet(48, 0, tile, true);
+		forgeRight = new TileSet(80, 0, tile, true);
 		
 		player_idle = new Sprite(0, 0, 32, player, Sprite.TYPE_ENTITY);
 		player_run = new Sprite(32, 0, 32, 32, 8, 10, player, Sprite.TYPE_ENTITY);
@@ -124,6 +126,8 @@ public class Assets {
 		theOrb = new Sprite(160, 32, 32, item, Sprite.TYPE_ENTITY);
 		dirt_inv = new Sprite(192, 0, 32, item, Sprite.TYPE_INVENTORY_ITEM);
 		dirt = new Sprite(192, 32, 32, item, Sprite.TYPE_ENTITY);
+		anvil_inv = new Sprite(224, 0, 32, item, Sprite.TYPE_INVENTORY_ITEM);
+		forge_inv = new Sprite(224, 32, 32, item, Sprite.TYPE_INVENTORY_ITEM);
 	}
 
 	private static void initSound() {
