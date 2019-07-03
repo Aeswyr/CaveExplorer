@@ -3,11 +3,15 @@ package items;
 import core.Assets;
 import entity.Mob;
 import gfx.DrawGraphics;
+import interactables.AnvilInteractable;
 import item.Item;
 import runtime.Handler;
+import world.Tile;
 
 public class Anvil extends Item {
 
+	private AnvilInteractable interact;
+	
 	public Anvil(int x, int y, Handler handler) {
 		super(x, y, handler);
 
@@ -19,6 +23,8 @@ public class Anvil extends Item {
 		
 		this.sprite = Assets.anvil_inv;
 		this.invSprite = Assets.anvil_inv;
+
+		interact = new AnvilInteractable(handler);
 	}
 	
 	public Anvil(Handler handler, Mob holder) {
@@ -32,6 +38,8 @@ public class Anvil extends Item {
 		
 		this.sprite = Assets.anvil_inv;
 		this.invSprite = Assets.anvil_inv;
+		
+		interact = new AnvilInteractable(handler);
 	}
 
 	@Override
@@ -54,6 +62,9 @@ public class Anvil extends Item {
 
 			if (dx * dx + dy * dy < 4096 && !handler.getWorld().getTile(mouseX, mouseY).isSolid()) {
 				handler.getWorld().setOverlay(mouseX, mouseY, 2);
+				interact.setX((mouseX / Tile.tileSize) * Tile.tileSize);
+				interact.setY((mouseY / Tile.tileSize) * Tile.tileSize);
+				handler.getWorld().getEntities().addEntity(interact);
 				timer = 0;
 				consumed = true;
 			}

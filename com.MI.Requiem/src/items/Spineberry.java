@@ -46,8 +46,6 @@ public class Spineberry extends Item{
 	@Override
 	public void use() {
 		if (!consumed && timer >= useTime) {
-			holder.harm(30, Effect.DAMAGE_TYPE_ENERGY);
-			holder.heal(5, Effect.DAMAGE_TYPE_HUNGER);
 			holder.heal(5, Effect.DAMAGE_TYPE_MENTAL);
 			this.consumed = true;
 			timer = 0;

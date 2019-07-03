@@ -11,6 +11,7 @@ import runtime.Light;
 public class WillowWisp extends Mob {
 
 	Light l;
+
 	public WillowWisp(Handler handler) {
 		super(handler);
 		this.activeSprite = Assets.willowWisp_idle;
@@ -23,7 +24,7 @@ public class WillowWisp extends Mob {
 		this.health = healthMax;
 
 		this.speed = 1.75;
-		 
+
 		l = new Light(32, 0xff666633, handler);
 		l.light();
 	}
@@ -36,7 +37,7 @@ public class WillowWisp extends Mob {
 
 	@Override
 	public void renderUI(DrawGraphics g) {
-		
+
 	}
 
 	@Override
@@ -44,7 +45,7 @@ public class WillowWisp extends Mob {
 		super.update();
 		l.setPos(getCenteredX(), getCenteredY());
 	}
-	
+
 	@Override
 	public void move() {
 		int xDest = handler.getPlayer().getCenteredX();
@@ -52,7 +53,9 @@ public class WillowWisp extends Mob {
 		int xCent = this.getCenteredX();
 		int yCent = this.getCenteredY();
 
-		if ((xDest - xCent) * (xDest - xCent) + (yDest - yCent) * (yDest - yCent) > 17424) {
+		double hypo = (xDest - xCent) * (xDest - xCent) + (yDest - yCent) * (yDest - yCent);
+
+		if (hypo > 17424) { // 132 ^ 2
 			if (xDest > xCent)
 				x += speed;
 			else if (xDest < xCent)
@@ -62,7 +65,7 @@ public class WillowWisp extends Mob {
 				y += speed;
 			else if (yDest < yCent)
 				y -= speed;
-		} else if ((xDest - xCent) * (xDest - xCent) + (yDest - yCent) * (yDest - yCent) < 15376) {
+		} else if (hypo < 15376) { // 124 ^ 2
 			if (xDest > xCent)
 				x -= speed;
 			else if (xDest < xCent)
@@ -75,7 +78,7 @@ public class WillowWisp extends Mob {
 		} else {
 			x += speed * -(yDest - yCent) / 128;
 			y += speed * (xDest - xCent) / 128;
-					
+
 		}
 	}
 
@@ -90,7 +93,7 @@ public class WillowWisp extends Mob {
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
+
 	@Override
 	public void die() {
 		super.die();

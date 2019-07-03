@@ -3,11 +3,14 @@ package items;
 import core.Assets;
 import entity.Mob;
 import gfx.DrawGraphics;
+import interactables.ForgeInteractable;
 import item.Item;
 import runtime.Handler;
 import world.Tile;
 
 public class Forge extends Item {
+
+	private ForgeInteractable interact;
 
 	public Forge(int x, int y, Handler handler) {
 		super(x, y, handler);
@@ -17,22 +20,26 @@ public class Forge extends Item {
 
 		useTime = 30;
 		timer = useTime;
-		
+
 		this.sprite = Assets.forge_inv;
 		this.invSprite = Assets.forge_inv;
+
+		interact = new ForgeInteractable(handler);
 	}
 
 	public Forge(Handler handler, Mob holder) {
 		super(handler, holder);
-		
+
 		tags = "hand";
 		ID = "0:3&4";
 
 		useTime = 30;
 		timer = useTime;
-		
+
 		this.sprite = Assets.forge_inv;
 		this.invSprite = Assets.forge_inv;
+
+		interact = new ForgeInteractable(handler);
 	}
 
 	@Override
@@ -57,6 +64,9 @@ public class Forge extends Item {
 					&& !handler.getWorld().getTile(mouseX + Tile.tileSize, mouseY).isSolid()) {
 				handler.getWorld().setOverlay(mouseX, mouseY, 3);
 				handler.getWorld().setOverlay(mouseX + Tile.tileSize, mouseY, 4);
+				interact.setX((mouseX / Tile.tileSize) * Tile.tileSize);
+				interact.setY((mouseY / Tile.tileSize) * Tile.tileSize);
+				handler.getWorld().getEntities().addEntity(interact);
 				timer = 0;
 				consumed = true;
 			}

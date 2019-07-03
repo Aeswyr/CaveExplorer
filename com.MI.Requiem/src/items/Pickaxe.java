@@ -3,11 +3,15 @@ package items;
 import java.util.ArrayList;
 
 import core.Assets;
+import entity.Entity;
+import entity.Hitbox;
 import entity.Mob;
 import geometry.Shape;
 import geometry.Square;
 import gfx.DrawGraphics;
 import gfx.Sprite;
+import interactables.AnvilInteractable;
+import interactables.ForgeInteractable;
 import item.Item;
 import particle.Particle;
 import runtime.Handler;
@@ -93,13 +97,16 @@ public class Pickaxe extends Item {
 						if (handler.getWorld().getOverlayID(holderX, holderY) == 3) {
 							handler.getWorld().setOverlay(holderX, holderY, -1);
 							handler.getWorld().setOverlay(holderX + Tile.tileSize, holderY, -1);
+
 						} else {
 							handler.getWorld().setOverlay(holderX, holderY, -1);
 							handler.getWorld().setOverlay(holderX - Tile.tileSize, holderY, -1);
+
 						}
 
 					} else if (handler.getWorld().getOverlayID(holderX, holderY) == 2) { // When tile is anvil
 						handler.getWorld().setOverlay(holderX, holderY, -1);
+
 					} else
 						handler.getWorld().setTile(holderX, holderY,
 								handler.getWorld().getTileID(holderX, holderY) - 1);

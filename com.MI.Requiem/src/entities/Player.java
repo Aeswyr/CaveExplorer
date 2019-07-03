@@ -50,6 +50,14 @@ public class Player extends Mob {
 		woundMax = 1;
 		wounds = 0;
 
+		str = 5;
+		agi = 5;
+		con = 5;
+		wil = 5;
+		kno = 5;
+
+		luk = 5;
+
 		// TODO y coordinate relies on width rather than height
 
 		int w = handler.getWidth();
@@ -89,14 +97,11 @@ public class Player extends Mob {
 	public void update() {
 		inventory.update();
 		super.update();
-		if (health < healthMax)
-			heal(healthMax / (5 * 60 * 60), Effect.DAMAGE_TYPE_ENERGY);
 	}
 
 	@Override
 	public void render(DrawGraphics g) {
 		super.render(g);
-//		hitbox.render(g);
 
 	}
 
@@ -189,8 +194,8 @@ public class Player extends Mob {
 	}
 
 	@Override
-	public double harm(double amount, int type) {
-		double val;
+	public int harm(int amount, int type) {
+		int val;
 		switch (type) {
 		case Effect.DAMAGE_TYPE_ENERGY:
 			val = amount;
@@ -206,12 +211,6 @@ public class Player extends Mob {
 					health = healthMax;
 				}
 			}
-			return amount;
-		case Effect.DAMAGE_TYPE_HUNGER:
-			val = amount;
-			if (hunger - amount <= 0)
-				val = hunger;
-			hunger -= amount;
 			return amount;
 		case Effect.DAMAGE_TYPE_MENTAL:
 			val = amount;
