@@ -13,20 +13,14 @@ public class TheOrb extends Item {
 
 	public TheOrb(Handler handler, Mob holder) {
 		super(handler, holder);
-
-		ID = "u3";
-		tags = "hand";
-
-		this.sprite = Assets.theOrb;
-		this.invSprite = Assets.theOrb_inv;
-
-		light = new Light(64, 0xff002669, handler);
-		light.light();
 	}
 
 	public TheOrb(int x, int y, Handler handler) {
 		super(x, y, handler);
-
+	}
+	
+	@Override
+	protected void setup() {
 		ID = "u3";
 		tags = "hand";
 
@@ -35,7 +29,6 @@ public class TheOrb extends Item {
 
 		light = new Light(96, 0xff002669, handler);
 		light.light();
-
 	}
 
 	@Override

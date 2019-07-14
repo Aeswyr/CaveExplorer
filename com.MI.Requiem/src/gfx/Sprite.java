@@ -225,7 +225,7 @@ public class Sprite {
 			priority = 0;
 			break;
 		case TYPE_CEILING:
-			lightInteraction = Light.FULL;
+			lightInteraction = Light.DIM;
 			priority = 2;
 			break;
 		case TYPE_TEXT:

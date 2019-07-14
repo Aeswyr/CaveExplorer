@@ -14,22 +14,14 @@ public class Anvil extends Item {
 	
 	public Anvil(int x, int y, Handler handler) {
 		super(x, y, handler);
-
-		tags = "hand";
-		ID = "0:2";
-
-		useTime = 30;
-		timer = useTime;
-		
-		this.sprite = Assets.anvil_inv;
-		this.invSprite = Assets.anvil_inv;
-
-		interact = new AnvilInteractable(handler);
 	}
 	
 	public Anvil(Handler handler, Mob holder) {
 		super(handler, holder);
-		
+	}
+	
+	@Override
+	protected void setup() {
 		tags = "hand";
 		ID = "0:2";
 

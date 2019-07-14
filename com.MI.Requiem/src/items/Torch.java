@@ -15,25 +15,14 @@ public class Torch extends Item {
 
 	public Torch(Handler handler, Mob holder) {
 		super(handler, holder);
-
-		ID = "u0";
-		tags = "hand";
-
-		useMax = 10800;
-		use = useMax;
-
-		this.sprite = Assets.litTorch;
-		this.invSprite = Assets.litTorch_inv;
-
-		bright = new Light(256, 0xffffffAA, handler);
-		dim = new Light(128, 0xffffffAA, handler);
-		burnt = new Light(90, 0xff111111, handler);
-		dim.light();
 	}
 
 	public Torch(int x, int y, Handler handler) {
 		super(x, y, handler);
-
+	}
+	
+	@Override
+	protected void setup() {
 		ID = "u0";
 		tags = "hand";
 
@@ -47,7 +36,6 @@ public class Torch extends Item {
 		dim = new Light(128, 0xffffffAA, handler);
 		burnt = new Light(90, 0xff111111, handler);
 		dim.light();
-
 	}
 
 	@Override

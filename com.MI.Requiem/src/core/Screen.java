@@ -38,11 +38,13 @@ public class Screen extends Canvas {
 				d.setSize(800, 600);
 				frame.setSize(d);
 				frame.setMinimumSize(d);
+				frame.setMaximumSize(d);
 			}
 		} else {
 			d.setSize(width, height);
 			frame.setSize(d);
 			frame.setMinimumSize(d);
+			frame.setMaximumSize(d);
 		}
 
 		frame.addWindowListener(new WindowAdapter() // Operations to complete upon window closing
@@ -64,6 +66,8 @@ public class Screen extends Canvas {
 		this.setMaximumSize(d);
 		this.setMinimumSize(d);
 
+		frame.setResizable(false);
+		
 		frame.add(this);
 		frame.pack();
 	}

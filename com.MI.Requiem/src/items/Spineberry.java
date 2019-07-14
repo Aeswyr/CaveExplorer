@@ -7,40 +7,34 @@ import gfx.DrawGraphics;
 import item.Item;
 import runtime.Handler;
 
-public class Spineberry extends Item{
+public class Spineberry extends Item {
 
 	public Spineberry(Handler handler, Mob holder) {
 		super(handler, holder);
 
-		ID = "4";
-		tags = "hand";
-		
-		useTime = 30;
-		timer = useTime;
-		
-		sprite = Assets.spineberry;
-		invSprite = Assets.spineberry_inv;
-		
 	}
-	
+
 	public Spineberry(int x, int y, Handler handler) {
 		super(x, y, handler);
-	
+
+	}
+
+	@Override
+	protected void setup() {
 		ID = "4";
 		tags = "hand";
-		
+
 		useTime = 30;
 		timer = useTime;
-		
+
 		sprite = Assets.spineberry;
 		invSprite = Assets.spineberry_inv;
-		
 	}
 
 	@Override
 	public void renderTextBox(int x, int y, DrawGraphics g) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -50,7 +44,7 @@ public class Spineberry extends Item{
 			this.consumed = true;
 			timer = 0;
 		}
-		
+
 	}
 
 }

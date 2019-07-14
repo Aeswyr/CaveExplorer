@@ -1,42 +1,30 @@
 package items;
 
 import java.util.ArrayList;
-
 import core.Assets;
-import entity.Entity;
-import entity.Hitbox;
 import entity.Mob;
 import geometry.Shape;
 import geometry.Square;
 import gfx.DrawGraphics;
 import gfx.Sprite;
-import interactables.AnvilInteractable;
-import interactables.ForgeInteractable;
 import item.Item;
 import particle.Particle;
 import runtime.Handler;
+import utility.Utility;
 import world.Tile;
 
 public class Pickaxe extends Item {
 
 	public Pickaxe(Handler handler, Mob holder) {
 		super(handler, holder);
-
-		ID = "u2";
-		tags = "mainhand";
-
-		useMax = 128;
-		use = useMax;
-		useTime = 40;
-		timer = useTime;
-
-		sprite = Assets.pickaxe;
-		invSprite = Assets.pickaxe_inv;
 	}
 
 	public Pickaxe(int x, int y, Handler handler) {
 		super(x, y, handler);
+	}
 
+	@Override
+	protected void setup() {
 		ID = "u2";
 		tags = "mainhand";
 
@@ -47,7 +35,6 @@ public class Pickaxe extends Item {
 
 		sprite = Assets.pickaxe;
 		invSprite = Assets.pickaxe_inv;
-
 	}
 
 	@Override
@@ -85,12 +72,13 @@ public class Pickaxe extends Item {
 								&& handler.getWorld().getOverlay(holderX, holderY).isBreakable())) {
 
 					// on tile break
-					ArrayList<Item> drops;
-					if (handler.getWorld().getTile(holderX, holderY).isBreakable())
-						drops = handler.getWorld().getTile(holderX, holderY).tileDrop(holderX - 16, holderY - 18,
-								handler);
-					else
+					ArrayList<Item> drops = null;
+					if (handler.getWorld().getOverlayID(holderX, holderY) != -1
+							&& handler.getWorld().getOverlay(holderX, holderY).isBreakable())
 						drops = handler.getWorld().getOverlay(holderX, holderY).tileDrop(holderX - 16, holderY - 18,
+								handler);
+					else if (handler.getWorld().getTile(holderX, holderY).isBreakable())
+						drops = handler.getWorld().getTile(holderX, holderY).tileDrop(holderX - 16, holderY - 18,
 								handler);
 					if (handler.getWorld().getOverlayID(holderX, holderY) == 3
 							|| handler.getWorld().getOverlayID(holderX, holderY) == 4) { // When tile is forge
@@ -107,9 +95,13 @@ public class Pickaxe extends Item {
 					} else if (handler.getWorld().getOverlayID(holderX, holderY) == 2) { // When tile is anvil
 						handler.getWorld().setOverlay(holderX, holderY, -1);
 
+					} else if (handler.getWorld().getOverlayID(holderX, holderY) != -1
+							&& handler.getWorld().getOverlay(holderX, holderY).isBreakable()) {
+						handler.getWorld().setOverlay(holderX, holderY, -1);
 					} else
 						handler.getWorld().setTile(holderX, holderY,
-								handler.getWorld().getTileID(holderX, holderY) - 1);
+								Utility.tileToFloor(handler.getWorld().getTileID(holderX, holderY)));
+					
 					for (int i = 0; i < drops.size(); i++) {
 						handler.getWorld().getEntities().addEntity(drops.get(i));
 					}

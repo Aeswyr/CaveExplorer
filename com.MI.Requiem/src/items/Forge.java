@@ -15,23 +15,17 @@ public class Forge extends Item {
 	public Forge(int x, int y, Handler handler) {
 		super(x, y, handler);
 
-		tags = "hand";
-		ID = "0:3&4";
-
-		useTime = 30;
-		timer = useTime;
-
-		this.sprite = Assets.forge_inv;
-		this.invSprite = Assets.forge_inv;
-
-		interact = new ForgeInteractable(handler);
 	}
 
 	public Forge(Handler handler, Mob holder) {
 		super(handler, holder);
 
+	}
+
+	@Override
+	protected void setup() {
 		tags = "hand";
-		ID = "0:3&4";
+		ID = "0:3";
 
 		useTime = 30;
 		timer = useTime;

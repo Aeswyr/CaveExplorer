@@ -8,6 +8,7 @@ public class Light {
 	public static final int NONE = 0;
 	public static final int FULL = 1;
 	public static final int IGNORE = 2;
+	public static final int DIM = 3;
 
 	Handler handler;
 

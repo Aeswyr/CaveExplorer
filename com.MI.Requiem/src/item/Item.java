@@ -33,6 +33,7 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 	public Item(Handler handler, Mob holder) {
 		super(handler);
 		this.holder = holder;
+		setup();
 	}
 
 	public Item(int x, int y, Handler handler) {
@@ -42,7 +43,10 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 		this.holder = null;
 		this.hitbox = new Hitbox(6, 6, 20, this, handler);
 		hitbox.updatePos(x, y);
+		setup();
 	}
+	
+	protected abstract void setup();
 
 	public void render(DrawGraphics g) {
 		sprite.render((int) x - handler.getCamera().xOffset(), (int) y - handler.getCamera().yOffset(), g);

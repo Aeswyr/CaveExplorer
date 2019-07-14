@@ -16,12 +16,16 @@ public class Assets {
 	private static final String SOUND = "/sound/";
 
 	public static Font font;
-	
+
 	private static SpriteSheet tile;
 	public static TileSet dirtTile;
 	public static TileSet anvil;
 	public static TileSet forgeLeft;
 	public static TileSet forgeRight;
+	public static TileSet limestoneTile;
+	public static TileSet ironOreTile;
+	public static TileSet azuriteOreTile; // copper ore
+	public static TileSet casseriteTile; // tin ore
 
 	private static SpriteSheet ui;
 	public static Sprite heart;
@@ -43,10 +47,10 @@ public class Assets {
 
 	private static SpriteSheet ooze;
 	public static Sprite ooze_idle;
-	
+
 	private static SpriteSheet willowWisp;
 	public static Sprite willowWisp_idle;
-	
+
 	private static SpriteSheet item;
 	public static Sprite litTorch_inv;
 	public static Sprite burntTorch_inv;
@@ -64,6 +68,12 @@ public class Assets {
 	public static Sprite dirt;
 	public static Sprite anvil_inv;
 	public static Sprite forge_inv;
+	public static Sprite limestone_inv;
+	public static Sprite limestone;
+	public static Sprite corundum;
+	public static Sprite corundum_inv;
+	public static Sprite ironOre;
+	public static Sprite ironOre_inv;
 
 	// Sound
 
@@ -80,10 +90,10 @@ public class Assets {
 		player = new SpriteSheet(PLAYER + "testChar.png");
 		ui = new SpriteSheet(UI + "gui.png");
 		item = new SpriteSheet(ITEM + "items.png");
-		
+
 		ooze = new SpriteSheet(ENTITY + "ooze.png");
 		willowWisp = new SpriteSheet(ENTITY + "willowWisp.png");
-		
+
 		font = new Font(UI + "font.png");
 	}
 
@@ -92,13 +102,17 @@ public class Assets {
 		anvil = new TileSet(48, 0, tile, true);
 		forgeLeft = new TileSet(48, 0, tile, true);
 		forgeRight = new TileSet(80, 0, tile, true);
-		
+		limestoneTile = new TileSet(0, 32, tile);
+		ironOreTile = new TileSet(64, 32, tile);
+		azuriteOreTile = new TileSet(32, 32, tile); // copper ore
+		casseriteTile = new TileSet(96, 32, tile); // tin ore
+
 		player_idle = new Sprite(0, 0, 32, player, Sprite.TYPE_ENTITY);
 		player_run = new Sprite(32, 0, 32, 32, 8, 10, player, Sprite.TYPE_ENTITY);
 
 		ooze_idle = new Sprite(0, 0, 32, ooze, Sprite.TYPE_ENTITY);
 		willowWisp_idle = new Sprite(0, 0, 32, willowWisp, Sprite.TYPE_ENTITY);
-		
+
 		healthBar = new Sprite(0, 0, 128, 36, ui, Sprite.TYPE_GUI_COMPONENT);
 		heart = new Sprite(27, 36, 20, ui, Sprite.TYPE_GUI_COMPONENT);
 		heartDead = new Sprite(47, 36, 20, ui, Sprite.TYPE_GUI_COMPONENT);
@@ -128,6 +142,12 @@ public class Assets {
 		dirt = new Sprite(192, 32, 32, item, Sprite.TYPE_ENTITY);
 		anvil_inv = new Sprite(224, 0, 32, item, Sprite.TYPE_INVENTORY_ITEM);
 		forge_inv = new Sprite(224, 32, 32, item, Sprite.TYPE_INVENTORY_ITEM);
+		limestone_inv = new Sprite(32, 64, 32, item, Sprite.TYPE_INVENTORY_ITEM);
+		limestone = new Sprite(32, 96, 32, item, Sprite.TYPE_ENTITY);
+		corundum = new Sprite(0, 96, 32, item, Sprite.TYPE_ENTITY);
+		corundum_inv = new Sprite(0, 64, 32, item, Sprite.TYPE_INVENTORY_ITEM);
+		ironOre = new Sprite(64, 96, 32, item, Sprite.TYPE_ENTITY);
+		ironOre_inv = new Sprite(64, 64, 32, item, Sprite.TYPE_INVENTORY_ITEM);
 	}
 
 	private static void initSound() {

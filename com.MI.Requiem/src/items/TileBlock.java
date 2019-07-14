@@ -9,31 +9,23 @@ import runtime.Handler;
 public class TileBlock extends Item {
 
 	int id;
+	int floorID;
 
 	public TileBlock(int x, int y, Handler handler, int id) {
 		super(x, y, handler);
 		this.id = id;
-
-		tags = "hand";
-		ID = "0:" + id;
-
-		useTime = 30;
-		timer = useTime;
-
-		switch (id) {
-		case 1:
-			this.sprite = Assets.dirt;
-			this.invSprite = Assets.dirt_inv;
-			break;
-		default:
-			break;
-		}
+		setup();
 	}
 
 	public TileBlock(Handler handler, Mob holder, int id) {
 		super(handler, holder);
 		this.id = id;
-		
+		setup();
+	}
+
+	@Override
+	protected void setup() {
+
 		tags = "hand";
 		ID = "0:" + id;
 
@@ -45,6 +37,9 @@ public class TileBlock extends Item {
 			this.sprite = Assets.dirt;
 			this.invSprite = Assets.dirt_inv;
 			break;
+		case 6:
+			this.sprite = Assets.limestone;
+			this.invSprite = Assets.limestone_inv;
 		default:
 			break;
 		}

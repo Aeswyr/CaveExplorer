@@ -9,6 +9,9 @@ import tiles.Tile_DirtFloor;
 import tiles.Tile_DirtWall;
 import tiles.Tile_ForgeLeft;
 import tiles.Tile_ForgeRight;
+import tiles.Tile_IronVein;
+import tiles.Tile_LimestoneFloor;
+import tiles.Tile_LimestoneWall;
 
 public class Tile {
 
@@ -18,7 +21,7 @@ public class Tile {
 	protected TileSet tileSet;
 	public static int tileSize = 16;
 
-	private static Tile[] tiles = { new Tile_DirtFloor(), new Tile_DirtWall(), new Tile_Anvil(), new Tile_ForgeLeft(), new Tile_ForgeRight() };
+	private static Tile[] tiles = { new Tile_DirtFloor(), new Tile_DirtWall(), new Tile_Anvil(), new Tile_ForgeLeft(), new Tile_ForgeRight(), new Tile_LimestoneFloor(), new Tile_LimestoneWall(), new Tile_IronVein() };
 	protected final int id;
 	
 	public Tile(int id) {

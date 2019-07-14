@@ -83,11 +83,6 @@ public class Player extends Mob {
 				Assets.inventory_Trinket, "trinket", handler)); // previously 104 and 256
 
 		inventory.add(new Torch(handler, this));
-		inventory.add(new Cloak(handler, this));
-		inventory.add(new Cloak(handler, this));
-		inventory.add(new Spineberry(handler, this));
-		inventory.add(new Spineberry(handler, this));
-		inventory.add(new Spineberry(handler, this));
 		inventory.add(new Pickaxe(handler, this));
 		inventory.add(new Anvil(handler, this));
 		inventory.add(new Forge(handler, this));

@@ -19,7 +19,6 @@ public class DrawGraphics {
 	ArrayList<FontRequest> textRequest;
 
 	int width, height;
-	double scale;
 	BufferedImage screen;
 	int[] raster;
 	int[] zBuffer;
@@ -35,7 +34,6 @@ public class DrawGraphics {
 	public DrawGraphics(Driver d) {
 		width = d.getWidth();
 		height = d.getHeight();
-		scale = Driver.scale;
 		screen = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		raster = ((DataBufferInt) screen.getRaster().getDataBuffer()).getData();
 		zBuffer = new int[raster.length];
@@ -58,7 +56,7 @@ public class DrawGraphics {
 					| (int) ((raster[i] & 0xff) * ((lightMap[i] & 0xff) / 255f));
 		}
 
-		g.drawImage(screen, 0, 0, (int) (width * scale), (int) (height * scale), null);
+		g.drawImage(screen, 0, 0, (int) (width * Driver.scale), (int) (height * Driver.scale), null);
 	}
 
 	public void process() {
@@ -197,6 +195,8 @@ public class DrawGraphics {
 	}
 
 	private void drawLightRay(Light l, int x0, int y0, int x1, int y1, int xOff, int yOff) {
+		boolean mark = false; // marked true when the light has passed through a wall
+		boolean done = false;
 		int dx = Math.abs(x1 - x0);
 		int dy = Math.abs(y1 - y0);
 
@@ -221,8 +221,16 @@ public class DrawGraphics {
 				return;
 			if (lightCollision[screenY * width + screenX] == Light.FULL)
 				return;
+			if (mark && lightCollision[screenY * width + screenX] == Light.NONE) done = true;
+			if (lightCollision[screenY * width + screenX] == Light.DIM) {
+				int r = ((color >> 16) & 0xff) / 2; //TODO return to 6 after testing
+				int g = ((color >> 8) & 0xff) / 2; //TODO return to 6 after testing
+				int b = ((color) & 0xff) / 2 ; //TODO return to 6 after testing
+				color = r << 16 | g << 8 | b;
+				mark = true;
+			}
 
-			drawLuminosity(screenX, screenY, color);
+			if (!done || lightCollision[screenY * width + screenX] == Light.DIM) drawLuminosity(screenX, screenY, color);
 			if (x0 == x1 && y0 == y1)
 				break;
 			e2 = 2 * err;
