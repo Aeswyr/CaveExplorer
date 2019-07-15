@@ -6,19 +6,19 @@ import gfx.DrawGraphics;
 import item.Item;
 import runtime.Handler;
 
-public class Ore extends Item{
+public class Ingot extends Item{
 
 	//ID
 	// 0 - iron ore
 	
 	int id;
-	public Ore(Handler handler, Mob holder, int id) {
+	public Ingot(Handler handler, Mob holder, int id) {
 		super(handler, holder);
 		this.id = id;
 		setup();
 	}
 
-	public Ore(int x, int y, Handler handler, int id) {
+	public Ingot(int x, int y, Handler handler, int id) {
 		super(x, y, handler);
 		this.id = id;
 		setup();
@@ -27,7 +27,7 @@ public class Ore extends Item{
 	@Override
 	protected void setup() {
 		tags = "";
-		this.ID = "1:" + id;
+		this.ID = "3:" + id;
 		
 		useTime = 30;
 		timer = useTime;
@@ -57,4 +57,5 @@ public class Ore extends Item{
 
 
 
+	
 }

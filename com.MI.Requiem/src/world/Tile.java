@@ -36,6 +36,22 @@ public class Tile {
 	public static Tile toTile(int id) {
 		return tiles[id];
 	}
+	
+	/**
+	 * returns the floor tile associated with the tile id
+	 * @param id of the wall tile.
+	 * @returns the id of the floor tile, dirt floor if  wall id is not valid
+	 */
+	public static int tileToFloor(int id) {
+		switch (id) {
+		case 1:
+			return 0;
+		case 6:
+			return 5;
+		default:
+			return 0;
+		}
+	}
 
 	public boolean isSolid() {
 		return solid;

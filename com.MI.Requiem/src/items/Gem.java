@@ -8,6 +8,9 @@ import runtime.Handler;
 
 public class Gem extends Item{
 
+	//ID
+	// 0 - Corundum
+	
 	int id;
 	
 	public Gem(Handler handler, Mob holder, int id) {

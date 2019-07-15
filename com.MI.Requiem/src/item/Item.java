@@ -7,6 +7,11 @@ import entity.Mob;
 import geometry.Square;
 import gfx.DrawGraphics;
 import gfx.Sprite;
+import items.Gem;
+import items.Ingot;
+import items.Ore;
+import items.Spineberry;
+import items.TileBlock;
 import runtime.Handler;
 import utility.Storeable;
 
@@ -29,6 +34,16 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 
 	protected int useMax = 1;
 	protected int use = useMax;
+	
+	protected double[] statPackage = new double[8];
+	public static final int ITEM_WEIGHT = 0;
+	public static final int ITEM_DURABILITY = 1;
+	public static final int ITEM_ARMOR = 2;
+	public static final int ITEM_DAMAGE = 3;
+	public static final int ITEM_SPEED = 4;
+	public static final int ITEM_HEALTH = 5;
+	public static final int ITEM_SPIRIT = 6;
+	public static final int ITEM_LUCK = 7;
 
 	public Item(Handler handler, Mob holder) {
 		super(handler);
@@ -45,7 +60,7 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 		hitbox.updatePos(x, y);
 		setup();
 	}
-	
+
 	protected abstract void setup();
 
 	public void render(DrawGraphics g) {
@@ -78,10 +93,13 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 
 	public void onEquip() {
 		this.equipped = true;
+		applyStats();
+		
 	}
 
 	public void onDequip() {
 		this.equipped = false;
+		removeStats();
 	}
 
 	public String getTags() {
@@ -112,14 +130,56 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 		}
 		hitbox.updatePos((int) x, (int) y);
 	}
-	
+
 	protected Object clone() throws CloneNotSupportedException {
 		return super.clone();
 	}
-	
+
 	@Override
 	public void update() {
 		if (timer < useTime)
 			timer++;
+	}
+
+	/**
+	 * converts an id to an item
+	 */
+	public static Item toItem(String id, Mob holder, Handler handler) {
+		String[] sec = id.split(":");
+		switch (sec[0]) {
+		case "0":
+			return new TileBlock(handler, holder, Integer.parseInt(sec[1]));
+		case "1":
+			return new Ore(handler, holder, Integer.parseInt(sec[1]));
+		case "2":
+			return new Gem(handler, holder, Integer.parseInt(sec[1]));
+		case "3":
+			return new Ingot(handler, holder, Integer.parseInt(sec[1])); // Ingot
+		case "4":
+			return new Spineberry(handler, holder);
+		default:
+			return new TileBlock(handler, holder, 1); // default returns dirt block
+		}
+	}
+	
+	
+	public double[] getStatPackage() {
+		return statPackage;
+	}
+	
+	public void editStatPackage(double[] edit) {
+		if (holder != null) removeStats();
+		for (int i = 0; i < statPackage.length; i++) {
+			statPackage[i] += edit[i];
+		}
+		if (holder != null) applyStats();
+	}
+	
+	protected void applyStats() { //TODO actually write methods to apply stats to mobs
+		
+	}
+	
+	protected void removeStats() { //TODO actually write methods to apply stats to mobs
+		
 	}
 }

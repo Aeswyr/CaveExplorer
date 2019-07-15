@@ -16,7 +16,6 @@ public abstract class Mob extends Entity {
 	protected double speed;
 	protected int health, healthMax, spirit, spiritMax;
 	protected int con, wil, str, agi, kno, arm, luk;
-	protected boolean starving;
 
 	@Override
 	public void render(DrawGraphics g) {
@@ -103,4 +102,5 @@ public abstract class Mob extends Entity {
 	public void adjSpeed(double adj) {
 		speed += adj;
 	}
+	
 }

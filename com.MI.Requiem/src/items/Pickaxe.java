@@ -10,7 +10,6 @@ import gfx.Sprite;
 import item.Item;
 import particle.Particle;
 import runtime.Handler;
-import utility.Utility;
 import world.Tile;
 
 public class Pickaxe extends Item {
@@ -100,7 +99,7 @@ public class Pickaxe extends Item {
 						handler.getWorld().setOverlay(holderX, holderY, -1);
 					} else
 						handler.getWorld().setTile(holderX, holderY,
-								Utility.tileToFloor(handler.getWorld().getTileID(holderX, holderY)));
+								Tile.tileToFloor(handler.getWorld().getTileID(holderX, holderY)));
 					
 					for (int i = 0; i < drops.size(); i++) {
 						handler.getWorld().getEntities().addEntity(drops.get(i));
