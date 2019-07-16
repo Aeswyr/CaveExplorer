@@ -35,15 +35,16 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 	protected int useMax = 1;
 	protected int use = useMax;
 	
-	protected double[] statPackage = new double[8];
+	protected double[] statPackage = new double[9];
 	public static final int ITEM_WEIGHT = 0;
 	public static final int ITEM_DURABILITY = 1;
 	public static final int ITEM_ARMOR = 2;
 	public static final int ITEM_DAMAGE = 3;
-	public static final int ITEM_SPEED = 4;
-	public static final int ITEM_HEALTH = 5;
-	public static final int ITEM_SPIRIT = 6;
-	public static final int ITEM_LUCK = 7;
+	public static final int ITEM_CAPACITY = 4;
+	public static final int ITEM_SPEED = 5;
+	public static final int ITEM_HEALTH = 6;
+	public static final int ITEM_SPIRIT = 7;
+	public static final int ITEM_LUCK = 8;
 
 	public Item(Handler handler, Mob holder) {
 		super(handler);

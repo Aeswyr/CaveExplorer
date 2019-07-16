@@ -34,8 +34,8 @@ public class Ingot extends Item{
 		
 		switch (id) {
 		case 0:
-			this.sprite = Assets.ironOre;
-			this.invSprite = Assets.ironOre_inv;
+			this.sprite = Assets.ironIngot;
+			this.invSprite = Assets.ironIngot_inv;
 			break;
 		default:
 			break;

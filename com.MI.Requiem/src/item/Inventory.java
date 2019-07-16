@@ -72,13 +72,25 @@ public class Inventory {
 
 	public void resize(int size) {
 		if (size > this.size) {
+			
 			for (int i = this.size; i < size; i++) {
 				storage.add(new ItemContainer<Item>((i % 3) * 40 + x, (i / 3) * 40 + y, Assets.inventory_Empty, null,
 						handler));
 			}
+			
 		} else if (size < this.size) {
-
+			ArrayList<ItemContainer<Item>> hold = storage;
+			storage = new ArrayList<ItemContainer<Item>>();
+			for (int i = 0; i < hold.size(); i++) {
+				if (i < size) storage.add(hold.get(i));
+				else hold.get(i).getContained().drop();
+			}
 		}
+		this.size = size;
+	}
+	
+	public int getSize() {
+		return size;
 	}
 
 	public boolean add(Item item) {

@@ -23,6 +23,7 @@ public class Assets {
 	public static TileSet forgeLeft;
 	public static TileSet forgeRight;
 	public static TileSet limestoneTile;
+	public static TileSet clayTile;
 	public static TileSet ironOreTile;
 	public static TileSet azuriteOreTile; // copper ore
 	public static TileSet casseriteTile; // tin ore
@@ -74,6 +75,10 @@ public class Assets {
 	public static Sprite corundum_inv;
 	public static Sprite ironOre;
 	public static Sprite ironOre_inv;
+	public static Sprite ironIngot;
+	public static Sprite ironIngot_inv;
+	public static Sprite clay;
+	public static Sprite clay_inv;
 
 	// Sound
 
@@ -106,6 +111,7 @@ public class Assets {
 		ironOreTile = new TileSet(64, 32, tile);
 		azuriteOreTile = new TileSet(32, 32, tile); // copper ore
 		casseriteTile = new TileSet(96, 32, tile); // tin ore
+		clayTile = new TileSet(0, 64, tile);
 
 		player_idle = new Sprite(0, 0, 32, player, Sprite.TYPE_ENTITY);
 		player_run = new Sprite(32, 0, 32, 32, 8, 10, player, Sprite.TYPE_ENTITY);
@@ -148,6 +154,10 @@ public class Assets {
 		corundum_inv = new Sprite(0, 64, 32, item, Sprite.TYPE_INVENTORY_ITEM);
 		ironOre = new Sprite(64, 96, 32, item, Sprite.TYPE_ENTITY);
 		ironOre_inv = new Sprite(64, 64, 32, item, Sprite.TYPE_INVENTORY_ITEM);
+		ironIngot = new Sprite(96, 96, 32, item, Sprite.TYPE_ENTITY);
+		ironIngot_inv = new Sprite(96, 64, 32, item, Sprite.TYPE_INVENTORY_ITEM);
+		clay = new Sprite(128, 96, 32, item, Sprite.TYPE_ENTITY);
+		clay_inv = new Sprite(128, 64, 32, item, Sprite.TYPE_INVENTORY_ITEM);
 	}
 
 	private static void initSound() {

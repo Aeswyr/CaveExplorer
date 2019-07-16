@@ -4,6 +4,7 @@ import core.Driver;
 import core.Screen;
 import entities.Player;
 import gfx.DrawGraphics;
+import gui.InterfaceManager;
 import input.KeyManager;
 import input.MouseManager;
 import particle.ParticleManager;
@@ -24,6 +25,8 @@ public class Handler {
 
 	private LightManager lightManager;
 	private ParticleManager particles;
+	
+	private InterfaceManager uiManager;
 
 	public Handler(Driver d) {
 		driver = d;
@@ -31,6 +34,7 @@ public class Handler {
 
 		lightManager = new LightManager(this);
 		particles = new ParticleManager();
+		uiManager = new InterfaceManager();
 		
 		
 		camera = new Camera(this);
@@ -51,12 +55,14 @@ public class Handler {
 		particles.update();
 		lightManager.update();
 		camera.update();
+		uiManager.update();
 
 	}
 
 	public void render(DrawGraphics g) {
 		world.render(g);
 		particles.render(g);
+		uiManager.render(g);
 	}
 
 	// Getters and Setters
@@ -103,5 +109,9 @@ public class Handler {
 	
 	public ParticleManager getParticles() {
 		return particles;
+	}
+	
+	public InterfaceManager getUI() {
+		return uiManager;
 	}
 }

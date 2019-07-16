@@ -29,7 +29,7 @@ public class Loader {
 		try {
 			return ImageIO.read(Loader.class.getResourceAsStream(path));
 		} catch (Exception e) {
-			System.out.println("Resource at " + path + " failed to load;");
+			System.out.println("Resource at " + path + " failed to load");
 			e.printStackTrace();
 			return null;
 		}
@@ -44,7 +44,7 @@ public class Loader {
 		try {
 			return new BufferedReader(new InputStreamReader(Loader.class.getResourceAsStream(path)));
 		} catch (Exception e) {
-			System.out.println("Resource at " + path + " failed to load;");
+			System.out.println("Resource at " + path + " failed to load");
 			e.printStackTrace();
 			return null;
 		}
@@ -59,7 +59,7 @@ public class Loader {
 		try {
 			return Loader.class.getResourceAsStream(path);
 		} catch (Exception e) {
-			System.out.println("Resource at " + path + " failed to load;");
+			System.out.println("Resource at " + path + " failed to load");
 			e.printStackTrace();
 			return null;
 		}
@@ -75,7 +75,7 @@ public class Loader {
 		try {
 			return AudioSystem.getAudioInputStream(url);
 		} catch (Exception e) {
-			System.out.println("Resource at " + path + " failed to load;");
+			System.out.println("Resource at " + path + " failed to load");
 			e.printStackTrace();
 			return null;
 		}
@@ -93,7 +93,7 @@ public class Loader {
 		try {
 			f = new FileReader(file);
 		} catch (FileNotFoundException e) {
-			System.out.println("Resource at " + path + " failed to load;");
+			System.out.println("Resource at " + path + " failed to load");
 			e.printStackTrace();
 		}
 		BufferedReader read = new BufferedReader(f);

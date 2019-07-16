@@ -3,6 +3,8 @@ package entities;
 import java.util.ArrayList;
 
 import core.Assets;
+import crafting.Craft;
+import crafting.Recipe;
 import effects.Effect;
 import entity.Entity;
 import entity.Hitbox;
@@ -11,6 +13,9 @@ import entity.Mob;
 import geometry.Square;
 import gfx.DrawGraphics;
 import gfx.Sprite;
+import gui.ClickListener;
+import gui.ContainerButton;
+import gui.UIObject;
 import item.Inventory;
 import item.Item;
 import item.ItemContainer;
@@ -98,6 +103,9 @@ public class Player extends Mob {
 
 	}
 
+	boolean lastFframe = false;
+	boolean lastCframe = false;
+
 	@Override
 	public void move() {
 		moving = false;
@@ -136,12 +144,23 @@ public class Player extends Mob {
 		}
 		if (handler.getKeys().f) {
 			ArrayList<Entity> col = hitbox.collidingAll();
+			boolean interacted = false;
 			for (int i = 0; i < col.size(); i++) {
 				if (col.get(i) instanceof Interactable) {
 					((Interactable) col.get(i)).interact(this);
+					interacted = true;
 				}
 			}
+			if (!interacted && !lastFframe) {
+				if (craftShowing)
+					closeCraft();
+				else
+					showCraft();
+			}
 		}
+
+		lastFframe = handler.getKeys().f;
+		lastCframe = handler.getKeys().c;
 	}
 
 	@Override
@@ -183,6 +202,9 @@ public class Player extends Mob {
 		}
 
 		inventory.render(g);
+
+		if (craftShowing)
+			renderCraft(g);
 
 	}
 
@@ -247,4 +269,48 @@ public class Player extends Mob {
 		return success;
 	}
 
+	private boolean craftShowing = false;
+	private ArrayList<ContainerButton> crafts;
+
+	private void showCraft() {
+		craftShowing = true;
+		crafts = new ArrayList<ContainerButton>();
+		ArrayList<Recipe> recipes = Craft.getRecipes(this);
+
+		for (int i = 0; i < recipes.size(); i++) {
+			ContainerButton b = new ContainerButton(setAction(recipes.get(i)), 120 + i * 48, 64, 32, 32,
+					recipes.get(i).getResult(this, handler), handler);
+			handler.getUI().addObject(b);
+			crafts.add(b);
+		}
+
+	}
+
+	private void closeCraft() {
+		craftShowing = false;
+		for (int i = 0; i < crafts.size(); i++)  {
+			handler.getUI().removeObject(crafts.get(i));
+		}
+	}
+
+	private void renderCraft(DrawGraphics g) {
+
+	}
+
+	private ClickListener setAction(Recipe r) {
+		Player p = this;
+		return new ClickListener() {
+
+			@Override
+			public void onClick(UIObject source) {
+				if (r.qualify(p)) {
+					Item item = r.craft(p, handler);
+					if (!p.pickup(item))
+						item.drop();
+				}
+
+			}
+
+		};
+	}
 }

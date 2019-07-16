@@ -100,5 +100,9 @@ public class Recipe {
 			p.harm(hpCost, Effect.DAMAGE_TYPE_MENTAL);
 		return Item.toItem(result, p, h);
 	}
+	
+	public Item getResult(Player p, Handler h)  {
+		return Item.toItem(result, p, h);
+	}
 
 }

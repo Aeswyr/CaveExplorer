@@ -23,9 +23,9 @@ public class Tile_IronVein extends Tile{
 	@Override
 	public ArrayList<Item> tileDrop(int x, int y, Handler handler) {
 		ArrayList<Item> drop = new ArrayList<Item>();
-		if (Math.random() < 0.20) drop.add(new Ore(x, y, handler, 0));
-		if (Math.random() < 0.30) drop.add(new TileBlock(x, y, handler, 6));
-		if (Math.random() < 0.3) drop.add(new Gem(x, y, handler, 0));
+		if (rng.nextDouble() < 0.30) drop.add(new Ore(x, y, handler, 0));
+		if (rng.nextDouble() < 0.30) drop.add(new TileBlock(x, y, handler, 6));
+		if (rng.nextDouble() < 0.03) drop.add(new Gem(x, y, handler, 0));
 		return drop;
 	}
 

@@ -57,9 +57,11 @@ public abstract class Mob extends Entity {
 			return amount;
 		case Effect.DAMAGE_TYPE_PHYSICAL:
 			val = amount - arm;
+			if (val < 0)
+				val = 0;
 			if (health - val <= 0)
 				val = health;
-			health -= amount - arm;
+			health -= val;
 			if (health <= 0)
 				this.die();
 			return amount - arm;
@@ -85,6 +87,8 @@ public abstract class Mob extends Entity {
 			return val;
 		case Effect.DAMAGE_TYPE_PHYSICAL:
 			val = amount - arm;
+			if (val < 0)
+				val = 0;
 			if (health + amount - arm > healthMax)
 				val = healthMax - health;
 			health += val;
@@ -102,5 +106,5 @@ public abstract class Mob extends Entity {
 	public void adjSpeed(double adj) {
 		speed += adj;
 	}
-	
+
 }

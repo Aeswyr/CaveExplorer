@@ -40,6 +40,11 @@ public class TileBlock extends Item {
 		case 6:
 			this.sprite = Assets.limestone;
 			this.invSprite = Assets.limestone_inv;
+			break;
+		case 9:
+			this.sprite = Assets.clay;
+			this.invSprite = Assets.clay_inv;
+			break;
 		default:
 			break;
 		}
