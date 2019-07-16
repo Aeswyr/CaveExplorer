@@ -2,7 +2,6 @@ package items;
 
 import core.Assets;
 import entity.Mob;
-import gfx.DrawGraphics;
 import item.Item;
 import runtime.Handler;
 
@@ -26,7 +25,7 @@ public class Ore extends Item{
 	
 	@Override
 	protected void setup() {
-		tags = "";
+		tags = "mineral";
 		this.ID = "1:" + id;
 		
 		useTime = 30;
@@ -36,16 +35,12 @@ public class Ore extends Item{
 		case 0:
 			this.sprite = Assets.ironOre;
 			this.invSprite = Assets.ironOre_inv;
+			name = "Iron Ore";
+			statPackage[ITEM_WEIGHT] = 1;
 			break;
 		default:
 			break;
 		}
-		
-	}
-
-	@Override
-	public void renderTextBox(int x, int y, DrawGraphics g) {
-		// TODO Auto-generated method stub
 		
 	}
 

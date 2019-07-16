@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import core.Assets;
 import crafting.Craft;
 import crafting.Recipe;
+import crafting.Tag;
 import effects.Effect;
 import entity.Entity;
 import entity.Hitbox;
@@ -34,10 +35,13 @@ public class Player extends Mob {
 	int woundMax;
 
 	// Inventory
-	Inventory inventory;
+	
 	ItemContainer<Item> lHand;
 	ItemContainer<Item> rHand;
 
+	boolean[] researchFlags;
+	boolean[] stationFlags;
+	
 	public Player(Handler handler) {
 		super(handler);
 		this.x = 10 * Tile.tileSize;
@@ -47,12 +51,18 @@ public class Player extends Mob {
 		this.hitbox = new Hitbox(-22, -8, 10, 10, this, handler);
 		activeSprite = Assets.player_idle;
 
+		researchFlags = new boolean[Tag.RESEARCH_MAX_ARRAY];
+		researchFlags[Tag.RESEARCH_BASIC_CRAFT] = true;
+		stationFlags = new boolean[Tag.STATION_MAX_ARRAY];
+		
 		speed = 2;
 		health = 50;
 		healthMax = 100;
 		woundMax = 1;
 		wounds = 0;
-
+		spiritMax = 50;
+		spirit = 50;
+		
 		str = 5;
 		agi = 5;
 		con = 5;
@@ -161,6 +171,7 @@ public class Player extends Mob {
 
 		lastFframe = handler.getKeys().f;
 		lastCframe = handler.getKeys().c;
+		
 	}
 
 	@Override
@@ -202,9 +213,6 @@ public class Player extends Mob {
 		}
 
 		inventory.render(g);
-
-		if (craftShowing)
-			renderCraft(g);
 
 	}
 
@@ -272,7 +280,7 @@ public class Player extends Mob {
 	private boolean craftShowing = false;
 	private ArrayList<ContainerButton> crafts;
 
-	private void showCraft() {
+	public void showCraft() {
 		craftShowing = true;
 		crafts = new ArrayList<ContainerButton>();
 		ArrayList<Recipe> recipes = Craft.getRecipes(this);
@@ -283,18 +291,15 @@ public class Player extends Mob {
 			handler.getUI().addObject(b);
 			crafts.add(b);
 		}
+		if (recipes.size() == 0) craftShowing = false;
 
 	}
 
-	private void closeCraft() {
+	public void closeCraft() {
 		craftShowing = false;
 		for (int i = 0; i < crafts.size(); i++)  {
 			handler.getUI().removeObject(crafts.get(i));
 		}
-	}
-
-	private void renderCraft(DrawGraphics g) {
-
 	}
 
 	private ClickListener setAction(Recipe r) {
@@ -312,5 +317,30 @@ public class Player extends Mob {
 			}
 
 		};
+	}
+	
+	
+	public void setResearchFlag(int index, boolean value) {
+		researchFlags[index] = value;
+	}
+	
+	public boolean[] getResearchFlags() {
+		return researchFlags;
+	}
+	
+	public void setStationFlag(int index, boolean value) {
+		stationFlags[index] = value;
+	}
+	
+	public boolean[] getStationFlags() {
+		return stationFlags;
+	}
+
+	public void resetStationFlags() {
+		stationFlags = new boolean[Tag.STATION_MAX_ARRAY];
+	}
+	
+	public boolean getCraftingShown() {
+		return craftShowing;
 	}
 }

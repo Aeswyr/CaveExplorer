@@ -2,7 +2,6 @@ package items;
 
 import core.Assets;
 import entity.Mob;
-import gfx.DrawGraphics;
 import interactables.AnvilInteractable;
 import item.Item;
 import runtime.Handler;
@@ -24,7 +23,8 @@ public class Anvil extends Item {
 	protected void setup() {
 		tags = "hand";
 		ID = "0:2";
-
+		name = "Anvil";
+		
 		useTime = 30;
 		timer = useTime;
 		
@@ -32,13 +32,11 @@ public class Anvil extends Item {
 		this.invSprite = Assets.anvil_inv;
 		
 		interact = new AnvilInteractable(handler);
+		
+		stackable = false;
 	}
 
-	@Override
-	public void renderTextBox(int x, int y, DrawGraphics g) {
-		// TODO Auto-generated method stub
 
-	}
 
 	@Override
 	public void use() {

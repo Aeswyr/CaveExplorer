@@ -2,7 +2,6 @@ package items;
 
 import core.Assets;
 import entity.Mob;
-import gfx.DrawGraphics;
 import item.Item;
 import runtime.Handler;
 
@@ -20,21 +19,21 @@ public class Cloak extends Item {
 
 	@Override
 	protected void setup() {
-		ID = "u1";
+		ID = "7";
 		tags = "trinket body";
+		name = "Cloak";
+		
 
 		useMax = 80;
 		use = useMax;
 
 		this.sprite = Assets.cloak;
 		this.invSprite = Assets.cloak_inv;
+		
+		stackable = false;
 	}
 
-	@Override
-	public void renderTextBox(int x, int y, DrawGraphics g) {
-		// TODO Auto-generated method stub
 
-	}
 
 	@Override
 	public void use() {

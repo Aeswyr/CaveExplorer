@@ -5,7 +5,6 @@ import core.Assets;
 import entity.Mob;
 import geometry.Shape;
 import geometry.Square;
-import gfx.DrawGraphics;
 import gfx.Sprite;
 import item.Item;
 import particle.Particle;
@@ -24,8 +23,10 @@ public class Pickaxe extends Item {
 
 	@Override
 	protected void setup() {
-		ID = "u2";
+		ID = "8";
 		tags = "mainhand";
+		name = "Pickaxe";
+		
 
 		useMax = 128;
 		use = useMax;
@@ -34,12 +35,8 @@ public class Pickaxe extends Item {
 
 		sprite = Assets.pickaxe;
 		invSprite = Assets.pickaxe_inv;
-	}
-
-	@Override
-	public void renderTextBox(int x, int y, DrawGraphics g) {
-		// TODO Auto-generated method stub
-
+		
+		stackable = false;
 	}
 
 	private Shape spark = new Square(1, 1, 0xffffff00, Sprite.TYPE_ITEM_DROP);

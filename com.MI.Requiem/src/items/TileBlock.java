@@ -2,7 +2,6 @@ package items;
 
 import core.Assets;
 import entity.Mob;
-import gfx.DrawGraphics;
 import item.Item;
 import runtime.Handler;
 
@@ -36,24 +35,27 @@ public class TileBlock extends Item {
 		case 1:
 			this.sprite = Assets.dirt;
 			this.invSprite = Assets.dirt_inv;
+			tags += " soil";
+			name = "Dirt";
+			
 			break;
 		case 6:
 			this.sprite = Assets.limestone;
 			this.invSprite = Assets.limestone_inv;
+			tags += " mineral";
+			name = "Limestone";
+			
 			break;
 		case 9:
 			this.sprite = Assets.clay;
 			this.invSprite = Assets.clay_inv;
+			tags += " soil";
+			name = "Clay";
+			
 			break;
 		default:
 			break;
 		}
-	}
-
-	@Override
-	public void renderTextBox(int x, int y, DrawGraphics g) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override

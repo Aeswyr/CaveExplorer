@@ -43,7 +43,10 @@ public class ItemContainer<T extends Storeable> {
 				contained.renderInventory(handler.getMouse().getAdjX(), handler.getMouse().getAdjY(), g);
 			else {
 				contained.renderInventory(x, y, g);
-				if (amount > 1) g.write("" + amount, x + 20, y + 18);
+				if (amount > 1)
+					g.write("" + amount, x + 20, y + 18);
+				if (this.h.containsMouse())
+					contained.renderTextBox(x, y, g);
 			}
 		} else {
 			if (empty != null)
@@ -54,7 +57,8 @@ public class ItemContainer<T extends Storeable> {
 	@SuppressWarnings("unchecked")
 	public void update() {
 		if (this instanceof ItemContainer<?>) {
-			if ((handler.getMouse().getLeft() || handler.getMouse().getRight() || handler.getMouse().getMiddle()) && h.containsMouse()) {
+			if ((handler.getMouse().getLeft() || handler.getMouse().getRight() || handler.getMouse().getMiddle())
+					&& h.containsMouse()) {
 				if (handler.getMouse().getStartHovered() == null)
 					handler.getMouse().setStartHovered((ItemContainer<Item>) this);
 				else {
@@ -73,28 +77,31 @@ public class ItemContainer<T extends Storeable> {
 	}
 
 	public boolean store(T item) {
-		if ((contained != null && !contained.canStack(item)) || (acceptedTags != null && !Utility.tagOverlaps(acceptedTags, item.getTags())))
+		if ((contained != null && !contained.canStack(item))
+				|| (acceptedTags != null && !Utility.tagOverlaps(acceptedTags, item.getTags())))
 			return false;
 		if (contained == null)
-		contained = item;
+			contained = item;
 		amount++;
 		return true;
 	}
-	
+
 	public boolean store(T item, int amount) {
-		if ((contained != null && !contained.canStack(item)) || (acceptedTags != null && !Utility.tagOverlaps(acceptedTags, item.getTags())))
+		if ((contained != null && !contained.canStack(item))
+				|| (acceptedTags != null && !Utility.tagOverlaps(acceptedTags, item.getTags())))
 			return false;
 		if (contained == null)
-		contained = item;
+			contained = item;
 		this.amount += amount;
 		return true;
 	}
-	
+
 	public void remove() {
 		amount--;
-		if (amount <= 0) contained = null;
+		if (amount <= 0)
+			contained = null;
 	}
-	
+
 	public int remove(int num) {
 		if (amount - num <= 0) {
 			amount = 0;
@@ -105,15 +112,15 @@ public class ItemContainer<T extends Storeable> {
 			return num;
 		}
 	}
-	
+
 	public int getAmount() {
 		return amount;
 	}
-	
+
 	public void drop() {
 		if (contained instanceof Item) {
 			try {
-				Item i = (Item) ((Item)contained).clone();
+				Item i = (Item) ((Item) contained).clone();
 				i.drop();
 				remove();
 			} catch (CloneNotSupportedException e) {
@@ -126,5 +133,9 @@ public class ItemContainer<T extends Storeable> {
 
 	public boolean containsMouse() {
 		return h.containsMouse();
+	}
+
+	public boolean isEmpty() {
+		return (contained == null);
 	}
 }

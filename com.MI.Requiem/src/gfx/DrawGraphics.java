@@ -139,8 +139,10 @@ public class DrawGraphics {
 			int unicode = text.codePointAt(i) - 32;
 			for (int y = 0; y < fontSprite.getHeight(); y++)
 				for (int x = 0; x < wid[unicode]; x++) {
-					if (fontSprite.getRawFrame()[x + off[unicode] + y * fontSprite.getWidth()] == 0xffffffff)
+					if (fontSprite.getRawFrame()[x + off[unicode] + y * fontSprite.getWidth()] == 0xffffffff) {
 						drawPixel(x + xOff + offset, y + yOff, color);
+						this.drawLuminosity(x + xOff + offset, y + yOff, 0xffffffff);;
+					}
 				}
 			offset += wid[unicode];
 		}

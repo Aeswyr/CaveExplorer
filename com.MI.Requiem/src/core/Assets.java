@@ -79,6 +79,8 @@ public class Assets {
 	public static Sprite ironIngot_inv;
 	public static Sprite clay;
 	public static Sprite clay_inv;
+	public static Sprite mold;
+	public static Sprite mold_inv;
 
 	// Sound
 
@@ -158,6 +160,8 @@ public class Assets {
 		ironIngot_inv = new Sprite(96, 64, 32, item, Sprite.TYPE_INVENTORY_ITEM);
 		clay = new Sprite(128, 96, 32, item, Sprite.TYPE_ENTITY);
 		clay_inv = new Sprite(128, 64, 32, item, Sprite.TYPE_INVENTORY_ITEM);
+		mold = new Sprite(160, 96, 32, item, Sprite.TYPE_ENTITY);
+		mold_inv = new Sprite(160, 64, 32, item, Sprite.TYPE_INVENTORY_ITEM);
 	}
 
 	private static void initSound() {

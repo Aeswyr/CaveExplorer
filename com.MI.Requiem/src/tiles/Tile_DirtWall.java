@@ -21,7 +21,7 @@ public class Tile_DirtWall extends Tile {
 	public ArrayList<Item> tileDrop(int x, int y, Handler handler) {
 		ArrayList<Item> drop = new ArrayList<Item>();
 		drop.add(new TileBlock(x, y, handler, id));
-		if (rng.nextDouble() < 0.05)drop.add(new TileBlock(x, y, handler, 9));
+		if (rng.nextDouble() < 0.1)drop.add(new TileBlock(x, y, handler, 9));
 		return drop;
 	}
 

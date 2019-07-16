@@ -2,7 +2,6 @@ package items;
 
 import core.Assets;
 import entity.Mob;
-import gfx.DrawGraphics;
 import item.Item;
 import runtime.Handler;
 
@@ -26,7 +25,7 @@ public class Ingot extends Item{
 	
 	@Override
 	protected void setup() {
-		tags = "";
+		tags = "metal";
 		this.ID = "3:" + id;
 		
 		useTime = 30;
@@ -36,6 +35,11 @@ public class Ingot extends Item{
 		case 0:
 			this.sprite = Assets.ironIngot;
 			this.invSprite = Assets.ironIngot_inv;
+			name = "Iron Ingot";
+			statPackage[ITEM_WEIGHT] = 1;
+			statPackage[ITEM_ARMOR] = 2;
+			statPackage[ITEM_DAMAGE] = 1;
+			statPackage[ITEM_DURABILITY] = 10;
 			break;
 		default:
 			break;
@@ -43,11 +47,6 @@ public class Ingot extends Item{
 		
 	}
 
-	@Override
-	public void renderTextBox(int x, int y, DrawGraphics g) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public void use() {

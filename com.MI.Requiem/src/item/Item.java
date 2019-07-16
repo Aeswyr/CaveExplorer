@@ -1,5 +1,7 @@
 package item;
 
+import java.util.Random;
+
 import entities.Player;
 import entity.Hitbox;
 import entity.Interactable;
@@ -7,11 +9,18 @@ import entity.Mob;
 import geometry.Square;
 import gfx.DrawGraphics;
 import gfx.Sprite;
+import items.Anvil;
+import items.Cloak;
+import items.Forge;
 import items.Gem;
 import items.Ingot;
+import items.Mold;
 import items.Ore;
+import items.Pickaxe;
 import items.Spineberry;
+import items.TheOrb;
 import items.TileBlock;
+import items.Torch;
 import runtime.Handler;
 import utility.Storeable;
 
@@ -31,11 +40,14 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 	protected boolean consumed = false;
 	protected int useTime = 0;
 	protected int timer;
+	protected String name;
+
+	protected boolean stackable = true;
 
 	protected int useMax = 1;
 	protected int use = useMax;
-	
-	protected double[] statPackage = new double[9];
+
+	protected int[] statPackage = new int[9];
 	public static final int ITEM_WEIGHT = 0;
 	public static final int ITEM_DURABILITY = 1;
 	public static final int ITEM_ARMOR = 2;
@@ -45,6 +57,7 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 	public static final int ITEM_HEALTH = 6;
 	public static final int ITEM_SPIRIT = 7;
 	public static final int ITEM_LUCK = 8;
+	protected static Random rng = new Random();
 
 	public Item(Handler handler, Mob holder) {
 		super(handler);
@@ -76,6 +89,50 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 			s.render(x + 3, y + 24, g);
 		}
 	}
+	
+	@Override
+	public void renderTextBox(int x, int y, DrawGraphics g) {
+		g.write(name, x - 36, y, 0xffffffff);
+		int count = 1;
+		String str = null;
+		for (int i = 0; i < statPackage.length; i++) {
+			if (statPackage[i] != 0) {
+				switch (i) {
+				case ITEM_WEIGHT:
+					str = statPackage[i] + "lbs";
+					break;
+				case ITEM_DURABILITY:
+					str = "";
+					count--;
+					break;
+				case ITEM_ARMOR:
+					str = "Armor: " + statPackage[i];
+					break;
+				case ITEM_DAMAGE:
+					str = "Damage: " + statPackage[i];
+					break;
+				case ITEM_CAPACITY:
+					str = "Storage: " + statPackage[i];
+					break;
+				case ITEM_SPEED:
+					str = "Speed: " + statPackage[i];
+					break;
+				case ITEM_HEALTH:
+					str = "Health: " + statPackage[i];
+					break;
+				case ITEM_SPIRIT:
+					str = "Spirit: " + statPackage[i];
+					break;
+				case ITEM_LUCK:
+					str = "Luck: " + statPackage[i];
+					break;
+				}
+				g.write(str, x - 36, y + count * 12);
+				count++;
+			}
+		}
+
+	}
 
 	@Override
 	public void interact(Object interactor) {
@@ -95,7 +152,7 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 	public void onEquip() {
 		this.equipped = true;
 		applyStats();
-		
+
 	}
 
 	public void onDequip() {
@@ -112,7 +169,7 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 	}
 
 	public boolean canStack(Storeable s) {
-		if (s instanceof Item && ((Item) s).ID.equals(this.ID) && this.ID.charAt(0) != 'u')
+		if (s instanceof Item && ((Item) s).ID.equals(this.ID) && this.stackable)
 			return true;
 		return false;
 	}
@@ -147,40 +204,78 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 	 */
 	public static Item toItem(String id, Mob holder, Handler handler) {
 		String[] sec = id.split(":");
-		switch (sec[0]) {
-		case "0":
-			return new TileBlock(handler, holder, Integer.parseInt(sec[1]));
-		case "1":
+		switch (Integer.parseInt(sec[0])) {
+		case 0:
+			switch (Integer.parseInt(sec[1])) {
+			case 2:
+				return new Anvil(handler, holder);
+			case 3:
+				return new Forge(handler, holder);
+			default:
+				return new TileBlock(handler, holder, Integer.parseInt(sec[1]));
+			}
+		case 1:
 			return new Ore(handler, holder, Integer.parseInt(sec[1]));
-		case "2":
+		case 2:
 			return new Gem(handler, holder, Integer.parseInt(sec[1]));
-		case "3":
+		case 3:
 			return new Ingot(handler, holder, Integer.parseInt(sec[1])); // Ingot
-		case "4":
+		case 4:
 			return new Spineberry(handler, holder);
+		case 5:
+			return new Mold(handler, holder);
+		case 6:
+			return new Torch(handler, holder);
+		case 7:
+			return new Cloak(handler, holder);
+		case 8:
+			return new Pickaxe(handler, holder);
+		case 9:
+			return new TheOrb(handler, holder);
 		default:
 			return new TileBlock(handler, holder, 1); // default returns dirt block
 		}
 	}
-	
-	
-	public double[] getStatPackage() {
+
+	public int[] getStatPackage() {
 		return statPackage;
 	}
-	
-	public void editStatPackage(double[] edit) {
-		if (holder != null) removeStats();
+
+	public void editStatPackage(int[] edit) {
+		if (holder != null)
+			removeStats();
 		for (int i = 0; i < statPackage.length; i++) {
 			statPackage[i] += edit[i];
 		}
-		if (holder != null) applyStats();
+		if (holder != null)
+			applyStats();
+
 	}
 	
-	protected void applyStats() { //TODO actually write methods to apply stats to mobs
-		
+	public void finalize() {
+		this.use += statPackage[ITEM_DURABILITY];
+		this.useMax += statPackage[ITEM_DURABILITY];
 	}
-	
-	protected void removeStats() { //TODO actually write methods to apply stats to mobs
-		
+
+	protected void applyStats() {
+		holder.adjArmor((int)statPackage[ITEM_ARMOR]);
+		holder.adjInv((int)statPackage[ITEM_CAPACITY]);
+		holder.adjMaxhp((int)statPackage[ITEM_HEALTH]);
+		holder.adjMaxsp((int)statPackage[ITEM_SPIRIT]);
+		holder.adjSpeed((int)statPackage[ITEM_SPEED] / 4.0);
+		holder.adjLuck((int)statPackage[ITEM_LUCK]);
+	}
+
+	protected void removeStats() {
+		holder.adjArmor(-(int)statPackage[ITEM_ARMOR]);
+		holder.adjInv(-(int)statPackage[ITEM_CAPACITY]);
+		holder.adjMaxhp(-(int)statPackage[ITEM_HEALTH]);
+		holder.adjMaxsp(-(int)statPackage[ITEM_SPIRIT]);
+		holder.adjSpeed(-(int)statPackage[ITEM_SPEED] / 4.0);
+		holder.adjLuck(-(int)statPackage[ITEM_LUCK]);
+	}
+
+	public boolean getStackable() {
+		return stackable;
 	}
 }

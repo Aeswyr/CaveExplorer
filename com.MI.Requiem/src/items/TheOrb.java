@@ -2,7 +2,6 @@ package items;
 
 import core.Assets;
 import entity.Mob;
-import gfx.DrawGraphics;
 import item.Item;
 import runtime.Handler;
 import runtime.Light;
@@ -21,20 +20,18 @@ public class TheOrb extends Item {
 	
 	@Override
 	protected void setup() {
-		ID = "u3";
+		ID = "9";
 		tags = "hand";
+		name = "The Orb";
+		
 
 		this.sprite = Assets.theOrb;
 		this.invSprite = Assets.theOrb_inv;
 
 		light = new Light(96, 0xff002669, handler);
 		light.light();
-	}
-
-	@Override
-	public void renderTextBox(int x, int y, DrawGraphics g) {
-		// TODO Auto-generated method stub
-
+		
+		stackable = false;
 	}
 
 	@Override

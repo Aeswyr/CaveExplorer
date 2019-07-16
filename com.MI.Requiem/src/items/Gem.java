@@ -2,7 +2,6 @@ package items;
 
 import core.Assets;
 import entity.Mob;
-import gfx.DrawGraphics;
 import item.Item;
 import runtime.Handler;
 
@@ -27,7 +26,7 @@ public class Gem extends Item{
 	
 	@Override
 	protected void setup() {
-		tags = "";
+		tags = "gem";
 		this.ID = "2:" + id;
 		
 		useTime = 30;
@@ -37,6 +36,8 @@ public class Gem extends Item{
 		case 0:
 			this.sprite = Assets.corundum;
 			this.invSprite = Assets.corundum_inv;
+			name = "Corundum";
+			
 			break;
 		default:
 			break;
@@ -44,11 +45,7 @@ public class Gem extends Item{
 		
 	}
 
-	@Override
-	public void renderTextBox(int x, int y, DrawGraphics g) {
-		// TODO Auto-generated method stub
-		
-	}
+
 
 	@Override
 	public void use() {

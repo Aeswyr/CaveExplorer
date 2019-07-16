@@ -2,7 +2,6 @@ package items;
 
 import core.Assets;
 import entity.Mob;
-import gfx.DrawGraphics;
 import interactables.ForgeInteractable;
 import item.Item;
 import runtime.Handler;
@@ -26,6 +25,8 @@ public class Forge extends Item {
 	protected void setup() {
 		tags = "hand";
 		ID = "0:3";
+		name = "Forge";
+		
 
 		useTime = 30;
 		timer = useTime;
@@ -34,13 +35,11 @@ public class Forge extends Item {
 		this.invSprite = Assets.forge_inv;
 
 		interact = new ForgeInteractable(handler);
+		
+		stackable = false;
 	}
 
-	@Override
-	public void renderTextBox(int x, int y, DrawGraphics g) {
-		// TODO Auto-generated method stub
 
-	}
 
 	@Override
 	public void use() {

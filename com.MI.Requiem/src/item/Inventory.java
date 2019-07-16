@@ -3,8 +3,10 @@ package item;
 import java.util.ArrayList;
 
 import core.Assets;
+import crafting.Tag;
 import gfx.DrawGraphics;
 import runtime.Handler;
+import utility.Utility;
 
 public class Inventory {
 
@@ -83,7 +85,7 @@ public class Inventory {
 			storage = new ArrayList<ItemContainer<Item>>();
 			for (int i = 0; i < hold.size(); i++) {
 				if (i < size) storage.add(hold.get(i));
-				else hold.get(i).getContained().drop();
+				else if (!hold.get(i).isEmpty()) hold.get(i).getContained().drop();
 			}
 		}
 		this.size = size;
@@ -119,6 +121,68 @@ public class Inventory {
 				return true;
 		}
 		return false;
+	}
+	
+	public ArrayList<IdCountPair> getRawHeld() {
+		ArrayList<IdCountPair> pairs = new ArrayList<IdCountPair>();
+		for (int i = 0; i < storage.size(); i++) {
+			ItemContainer<Item> c = storage.get(i);
+			if (!c.isEmpty()) {
+				IdCountPair pair = new IdCountPair(c.getContained().ID, c.amount);
+				if (pairs.contains(pair)) {
+				for (int j = 0; j < pairs.size(); j++) {
+					if (pairs.get(j).equals(pair)) {
+						pairs.get(j).count += pair.count;
+						break;
+					}
+				}
+				} else pairs.add(pair);
+			}
+		}
+		return pairs;
+	}
+	
+	public int[] getResourceHeld() {
+		int[] res = new int[Tag.RESOURCE_MAX_ARRAY];
+		for (int i = 0; i < storage.size(); i++) {
+			ItemContainer<Item> c = storage.get(i);
+			if (!c.isEmpty()) {
+				Item t = c.getContained();
+				if (Utility.tagOverlaps(t.getTags(), "carvable")) res[Tag.RESOURCE_CARVABLE] += c.amount;
+				if (Utility.tagOverlaps(t.getTags(), "cloth")) res[Tag.RESOURCE_CLOTH] += c.amount;
+				if (Utility.tagOverlaps(t.getTags(), "cord")) res[Tag.RESOURCE_CORD] += c.amount;
+				if (Utility.tagOverlaps(t.getTags(), "gem")) res[Tag.RESOURCE_GEM] += c.amount;
+				if (Utility.tagOverlaps(t.getTags(), "metal")) res[Tag.RESOURCE_METAL] += c.amount;
+				if (Utility.tagOverlaps(t.getTags(), "mineral")) res[Tag.RESOURCE_MINERAL] += c.amount;
+				if (Utility.tagOverlaps(t.getTags(), "phantasm")) res[Tag.RESOURCE_PHANTASM] += c.amount;
+				if (Utility.tagOverlaps(t.getTags(), "soil")) res[Tag.RESOURCE_SOIL] += c.amount;
+				if (Utility.tagOverlaps(t.getTags(), "tissue")) res[Tag.RESOURCE_TISSUE] += c.amount;
+			}
+		}
+		return res;
+	}
+	
+	public Item removeItemID(String id) {
+		Item it = null;
+		for (int i = 0; i < storage.size(); i++) {
+			if (!storage.get(i).isEmpty() && storage.get(i).getContained().ID.equals(id)) {
+				it = storage.get(i).getContained();
+				storage.get(i).remove();
+				break;
+			}
+		}
+		return it;
+	}
+	public Item removeItemTag(String tag) {
+		Item it = null;
+		for (int i = 0; i < storage.size(); i++) {
+			if (!storage.get(i).isEmpty() && Utility.tagOverlaps(storage.get(i).getContained().getTags(), tag)) {
+				it = storage.get(i).getContained();
+				storage.get(i).remove();
+				break;
+			}
+		}
+		return it;
 	}
 
 }

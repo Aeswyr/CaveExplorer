@@ -3,6 +3,7 @@ package entity;
 import effects.Effect;
 import gfx.DrawGraphics;
 import gfx.Sprite;
+import item.Inventory;
 import item.Item;
 import runtime.Handler;
 
@@ -16,6 +17,8 @@ public abstract class Mob extends Entity {
 	protected double speed;
 	protected int health, healthMax, spirit, spiritMax;
 	protected int con, wil, str, agi, kno, arm, luk;
+	protected Inventory inventory;
+	protected double move = speed;
 
 	@Override
 	public void render(DrawGraphics g) {
@@ -102,9 +105,47 @@ public abstract class Mob extends Entity {
 	public abstract void equip(Item i);
 
 	public abstract boolean pickup(Item i);
+	
+	public Inventory getInventory() {
+		return inventory;
+	}
 
 	public void adjSpeed(double adj) {
 		speed += adj;
+		if (speed < 1) move = 1;
+		else move = speed;
 	}
+	
+	public void adjInv(int adj) {
+		inventory.resize(inventory.getSize() + adj);
+	}
+	
+	public void adjArmor(int adj) {
+		this.arm += adj;
+	}
+	
+	public void adjMaxhp(int adj) {
+		this.healthMax += adj;
+		if (health > healthMax) health = healthMax;
+	}
+	
+	public void adjMaxsp(int adj) {
+		this.spiritMax += adj;
+		if (spirit > spiritMax) spirit = spiritMax;
+	}
+	
+	public void adjLuck(int adj) {
+		this.luk += adj;
+	}
+	
+	public int getHealth() {
+		return this.health;
+	}
+	
+	public int getSpirit() {
+		return this.spirit;
+	}
+	
+	
 
 }

@@ -3,7 +3,6 @@ package items;
 import core.Assets;
 import effects.Effect;
 import entity.Mob;
-import gfx.DrawGraphics;
 import item.Item;
 import runtime.Handler;
 
@@ -23,18 +22,14 @@ public class Spineberry extends Item {
 	protected void setup() {
 		ID = "4";
 		tags = "hand";
+		name = "Spineberry";
+		
 
 		useTime = 30;
 		timer = useTime;
 
 		sprite = Assets.spineberry;
 		invSprite = Assets.spineberry_inv;
-	}
-
-	@Override
-	public void renderTextBox(int x, int y, DrawGraphics g) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override

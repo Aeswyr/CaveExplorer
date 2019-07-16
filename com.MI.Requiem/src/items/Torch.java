@@ -2,7 +2,6 @@ package items;
 
 import core.Assets;
 import entity.Mob;
-import gfx.DrawGraphics;
 import item.Item;
 import runtime.Handler;
 import runtime.Light;
@@ -23,8 +22,10 @@ public class Torch extends Item {
 	
 	@Override
 	protected void setup() {
-		ID = "u0";
+		ID = "6";
 		tags = "hand";
+		name = "Torch";
+		
 
 		useMax = 10800;
 		use = useMax;
@@ -36,11 +37,8 @@ public class Torch extends Item {
 		dim = new Light(128, 0xffffffAA, handler);
 		burnt = new Light(90, 0xff111111, handler);
 		dim.light();
-	}
-
-	@Override
-	public void renderTextBox(int x, int y, DrawGraphics g) {
-		// TODO Auto-generated method stub
+		
+		stackable = false;
 	}
 
 	@Override
