@@ -10,6 +10,7 @@ import geometry.Square;
 import gfx.DrawGraphics;
 import gfx.Sprite;
 import items.Anvil;
+import items.Bone;
 import items.Cloak;
 import items.Forge;
 import items.Gem;
@@ -21,6 +22,7 @@ import items.Spineberry;
 import items.TheOrb;
 import items.TileBlock;
 import items.Torch;
+import items.Worktable;
 import runtime.Handler;
 import utility.Storeable;
 
@@ -211,6 +213,8 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 				return new Anvil(handler, holder);
 			case 3:
 				return new Forge(handler, holder);
+			case 10:
+				return new Worktable(handler, holder);
 			default:
 				return new TileBlock(handler, holder, Integer.parseInt(sec[1]));
 			}
@@ -232,6 +236,8 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 			return new Pickaxe(handler, holder);
 		case 9:
 			return new TheOrb(handler, holder);
+		case 10:
+			return new Bone(handler, holder);
 		default:
 			return new TileBlock(handler, holder, 1); // default returns dirt block
 		}
@@ -277,5 +283,16 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 
 	public boolean getStackable() {
 		return stackable;
+	}
+	
+	public Sprite getAsset() {
+		return this.invSprite;
+	}
+	
+	/**
+	 * removes all non-essential parts of the item resulting in a skeleton
+	 */
+	public Item strip() {
+		return this;
 	}
 }

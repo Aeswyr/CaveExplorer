@@ -1,7 +1,6 @@
 package entities;
 
 import java.util.ArrayList;
-
 import core.Assets;
 import crafting.Craft;
 import crafting.Recipe;
@@ -20,8 +19,7 @@ import gui.UIObject;
 import item.Inventory;
 import item.Item;
 import item.ItemContainer;
-import items.Anvil;
-import items.Forge;
+import items.Bone;
 import items.Pickaxe;
 import items.Torch;
 import runtime.Handler;
@@ -97,8 +95,13 @@ public class Player extends Mob {
 
 		inventory.add(new Torch(handler, this));
 		inventory.add(new Pickaxe(handler, this));
-		inventory.add(new Anvil(handler, this));
-		inventory.add(new Forge(handler, this));
+		inventory.add(new Pickaxe(handler, this));
+		inventory.add(new Bone(handler, this));
+		inventory.add(new Bone(handler, this));
+		inventory.add(new Bone(handler, this));
+		inventory.add(new Bone(handler, this));
+		inventory.add(new Bone(handler, this));
+		inventory.add(new Bone(handler, this));
 	}
 
 	@Override
@@ -287,7 +290,7 @@ public class Player extends Mob {
 
 		for (int i = 0; i < recipes.size(); i++) {
 			ContainerButton b = new ContainerButton(setAction(recipes.get(i)), 120 + i * 48, 64, 32, 32,
-					recipes.get(i).getResult(this, handler), handler);
+					recipes.get(i).getResult(this, handler).strip(), handler);
 			handler.getUI().addObject(b);
 			crafts.add(b);
 		}

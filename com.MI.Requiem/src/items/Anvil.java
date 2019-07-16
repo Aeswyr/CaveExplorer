@@ -62,4 +62,10 @@ public class Anvil extends Item {
 		}
 	}
 
+	@Override
+	public Item strip() {
+		this.interact = null;
+		return this;
+	}
+	
 }

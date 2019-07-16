@@ -2,44 +2,39 @@ package items;
 
 import core.Assets;
 import entity.Mob;
-import interactables.ForgeInteractable;
+import interactables.WorktableInteractable;
 import item.Item;
 import runtime.Handler;
 import world.Tile;
 
-public class Forge extends Item {
+public class Worktable extends Item {
 
-	private ForgeInteractable interact;
+	private WorktableInteractable interact;
 
-	public Forge(int x, int y, Handler handler) {
+	public Worktable(int x, int y, Handler handler) {
 		super(x, y, handler);
-
 	}
 
-	public Forge(Handler handler, Mob holder) {
+	public Worktable(Handler handler, Mob holder) {
 		super(handler, holder);
-
 	}
 
 	@Override
 	protected void setup() {
 		tags = "hand";
-		ID = "0:3";
-		name = "Forge";
-		
+		ID = "0:10";
+		name = "Worktable";
 
 		useTime = 30;
 		timer = useTime;
 
-		this.sprite = Assets.forge_inv;
-		this.invSprite = Assets.forge_inv;
+		this.sprite = Assets.worktable;
+		this.invSprite = Assets.worktable_inv;
 
-		interact = new ForgeInteractable(handler);
-		
+		interact = new WorktableInteractable(handler);
+
 		stackable = false;
 	}
-
-
 
 	@Override
 	public void use() {
@@ -53,10 +48,8 @@ public class Forge extends Item {
 			int dx = mouseX - holderX;
 			int dy = mouseY - holderY;
 
-			if (dx * dx + dy * dy < 4096 && !handler.getWorld().getTile(mouseX, mouseY).isSolid()
-					&& !handler.getWorld().getTile(mouseX + Tile.tileSize, mouseY).isSolid()) {
-				handler.getWorld().setOverlay(mouseX, mouseY, 3);
-				handler.getWorld().setOverlay(mouseX + Tile.tileSize, mouseY, 4);
+			if (dx * dx + dy * dy < 4096 && !handler.getWorld().getTile(mouseX, mouseY).isSolid()) {
+				handler.getWorld().setOverlay(mouseX, mouseY, 10);
 				interact.setX((mouseX / Tile.tileSize) * Tile.tileSize);
 				interact.setY((mouseY / Tile.tileSize) * Tile.tileSize);
 				handler.getWorld().getEntities().addEntity(interact);
@@ -66,11 +59,9 @@ public class Forge extends Item {
 
 		}
 	}
-	
-	@Override
+
 	public Item strip() {
 		this.interact = null;
 		return this;
 	}
-
 }

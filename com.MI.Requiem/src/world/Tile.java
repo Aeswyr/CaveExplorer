@@ -16,6 +16,7 @@ import tiles.Tile_ForgeRight;
 import tiles.Tile_IronVein;
 import tiles.Tile_LimestoneFloor;
 import tiles.Tile_LimestoneWall;
+import tiles.Tile_Worktable;
 
 public class Tile {
 
@@ -28,7 +29,7 @@ public class Tile {
 
 	private static Tile[] tiles = { new Tile_DirtFloor(), new Tile_DirtWall(), new Tile_Anvil(), new Tile_ForgeLeft(),
 			new Tile_ForgeRight(), new Tile_LimestoneFloor(), new Tile_LimestoneWall(), new Tile_IronVein(),
-			new Tile_ClayFloor(), new Tile_ClayWall() };
+			new Tile_ClayFloor(), new Tile_ClayWall(), new Tile_Worktable() };
 	protected final int id;
 
 	public Tile(int id) {

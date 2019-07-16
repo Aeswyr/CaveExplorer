@@ -27,6 +27,7 @@ public class Assets {
 	public static TileSet ironOreTile;
 	public static TileSet azuriteOreTile; // copper ore
 	public static TileSet casseriteTile; // tin ore
+	public static TileSet worktableTile;
 
 	private static SpriteSheet ui;
 	public static Sprite heart;
@@ -81,6 +82,10 @@ public class Assets {
 	public static Sprite clay_inv;
 	public static Sprite mold;
 	public static Sprite mold_inv;
+	public static Sprite bone;
+	public static Sprite bone_inv;
+	public static Sprite worktable;
+	public static Sprite worktable_inv;
 
 	// Sound
 
@@ -114,6 +119,7 @@ public class Assets {
 		azuriteOreTile = new TileSet(32, 32, tile); // copper ore
 		casseriteTile = new TileSet(96, 32, tile); // tin ore
 		clayTile = new TileSet(0, 64, tile);
+		worktableTile = new TileSet(48, 64, tile, true);
 
 		player_idle = new Sprite(0, 0, 32, player, Sprite.TYPE_ENTITY);
 		player_run = new Sprite(32, 0, 32, 32, 8, 10, player, Sprite.TYPE_ENTITY);
@@ -162,6 +168,10 @@ public class Assets {
 		clay_inv = new Sprite(128, 64, 32, item, Sprite.TYPE_INVENTORY_ITEM);
 		mold = new Sprite(160, 96, 32, item, Sprite.TYPE_ENTITY);
 		mold_inv = new Sprite(160, 64, 32, item, Sprite.TYPE_INVENTORY_ITEM);
+		bone = new Sprite(192, 96, 32, item, Sprite.TYPE_ENTITY);
+		bone_inv = new Sprite(192, 64, 32, item, Sprite.TYPE_INVENTORY_ITEM);
+		worktable = new Sprite(224, 64, 32, item, Sprite.TYPE_ENTITY);
+		worktable_inv = new Sprite(224, 64, 32, item, Sprite.TYPE_INVENTORY_ITEM);
 	}
 
 	private static void initSound() {

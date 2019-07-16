@@ -1,6 +1,7 @@
 package utility;
 
 import gfx.DrawGraphics;
+import gfx.Sprite;
 
 public interface Storeable {
 
@@ -9,6 +10,8 @@ public interface Storeable {
 	public void renderTextBox(int x, int y, DrawGraphics g);
 	
 	public String getTags();
+	
+	public Sprite getAsset();
 	
 	public boolean canStack(Storeable s);
 }

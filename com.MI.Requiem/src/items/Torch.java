@@ -106,4 +106,16 @@ public class Torch extends Item {
 
 	}
 
+	@Override
+	public Item strip() {
+		this.bright.snuff();
+		this.burnt.snuff();
+		this.dim.snuff();
+		
+		this.bright = null;
+		this.burnt = null;
+		this.dim = null;
+		return this;
+	}
+	
 }

@@ -15,7 +15,7 @@ public class ContainerButton extends Button{
 	
 	
 	public void render(DrawGraphics g) {
-		stored.renderInventory(x, y, g);
+		stored.getAsset().render(x, y, g);
 		if (hovered) stored.renderTextBox(x, y, g);
 	}
 

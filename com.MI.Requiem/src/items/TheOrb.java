@@ -49,4 +49,11 @@ public class TheOrb extends Item {
 
 	}
 
+	@Override
+	public Item strip() {
+		this.light.snuff();
+		this.light = null;
+		return this;
+	}
+	
 }
