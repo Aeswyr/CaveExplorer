@@ -25,6 +25,8 @@ public class Worktable extends Item {
 		ID = "0:10";
 		name = "Worktable";
 
+		statPackage[ITEM_WEIGHT] = 20;
+		
 		useTime = 30;
 		timer = useTime;
 

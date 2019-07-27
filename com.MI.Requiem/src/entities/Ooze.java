@@ -17,7 +17,7 @@ public class Ooze extends Mob {
 		this.xOff = 32;
 		this.yOff = 32;
 
-		this.healthMax = 200;
+		this.healthMax = 10;
 		this.health = healthMax;
 
 		this.speed = 1;

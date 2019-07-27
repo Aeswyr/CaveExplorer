@@ -1,5 +1,9 @@
 package utility;
 
+import java.io.BufferedReader;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+
 public class Utility {
 
 	public static <T> boolean listOverlaps(T[] a, T[] b) {
@@ -23,5 +27,37 @@ public class Utility {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * replaces a specified line within a text document
+	 */
+	public static boolean editText(String input, int lineNum, String path) {
+		try {
+	        // input the (modified) file content to the StringBuffer "input"
+	        BufferedReader file = new BufferedReader(new FileReader(path));
+	        StringBuffer inputBuffer = new StringBuffer();
+	        String line;
+
+	        int count = 0;
+	        while ((line = file.readLine()) != null) {
+	            if (count == lineNum) line = input;
+	            inputBuffer.append(line);
+	            inputBuffer.append('\n');
+	            count++;
+	        }
+	        file.close();
+
+	        // write the new string with the replaced line OVER the same file
+	        FileOutputStream fileOut = new FileOutputStream(path);
+	        fileOut.write(inputBuffer.toString().getBytes());
+	        fileOut.close();
+
+	    } catch (Exception e) {
+	        System.out.println("Problem reading file.");
+	        return false;
+	    }
+		
+		return true;
 	}
 }

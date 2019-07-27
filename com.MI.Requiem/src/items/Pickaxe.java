@@ -27,6 +27,7 @@ public class Pickaxe extends Item {
 		tags = "mainhand";
 		name = "Pickaxe";
 		
+		statPackage[ITEM_WEIGHT] = 4;
 
 		useMax = 128;
 		use = useMax;

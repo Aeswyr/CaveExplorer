@@ -23,6 +23,7 @@ public class Mold extends Item{
 		tags = "";
 		name = "Mold";
 		
+		statPackage[ITEM_WEIGHT] = 2;
 		
 		useTime = 30;
 		timer = useTime;

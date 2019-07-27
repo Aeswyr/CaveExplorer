@@ -20,7 +20,7 @@ public class WillowWisp extends Mob {
 		this.xOff = 32;
 		this.yOff = 32;
 
-		this.healthMax = 25;
+		this.healthMax = 3;
 		this.health = healthMax;
 
 		this.speed = 1.75;

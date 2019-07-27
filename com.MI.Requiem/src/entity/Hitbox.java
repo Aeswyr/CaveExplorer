@@ -116,12 +116,12 @@ public class Hitbox {
 		return null;
 	}
 
-	public Entity collidingWithMob() {
+	public Mob collidingWithMob() {
 		EntityManager em = handler.getWorld().getEntities();
 		for (int i = 0; i < em.totalEntities(); i++) {
 			if (em.getEntity(i).getHitbox() != null && this.contains(em.getEntity(i).getHitbox())
 					&& em.getEntity(i) instanceof Mob)
-				return em.getEntity(i);
+				return ((Mob)em.getEntity(i));
 		}
 		return null;
 	}

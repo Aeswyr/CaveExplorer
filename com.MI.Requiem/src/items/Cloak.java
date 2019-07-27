@@ -23,6 +23,8 @@ public class Cloak extends Item {
 		tags = "trinket body";
 		name = "Cloak";
 		
+		statPackage[ITEM_WEIGHT] = 1;
+		statPackage[ITEM_SPEED] = 1;
 
 		useMax = 80;
 		use = useMax;

@@ -98,8 +98,9 @@ public class ItemContainer<T extends Storeable> {
 
 	public void remove() {
 		amount--;
-		if (amount <= 0)
+		if (amount <= 0) {
 			contained = null;
+		}
 	}
 
 	public int remove(int num) {
@@ -110,6 +111,14 @@ public class ItemContainer<T extends Storeable> {
 		} else {
 			amount -= num;
 			return num;
+		}
+	}
+	
+	public void destroy() {
+		amount--;
+		if (amount <= 0) {
+			if (contained instanceof Item) ((Item) contained).strip();
+			contained = null;
 		}
 	}
 

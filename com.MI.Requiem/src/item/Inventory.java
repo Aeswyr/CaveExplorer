@@ -167,7 +167,7 @@ public class Inventory {
 		for (int i = 0; i < storage.size(); i++) {
 			if (!storage.get(i).isEmpty() && storage.get(i).getContained().ID.equals(id)) {
 				it = storage.get(i).getContained();
-				storage.get(i).remove();
+				storage.get(i).destroy();
 				break;
 			}
 		}
@@ -178,7 +178,7 @@ public class Inventory {
 		for (int i = 0; i < storage.size(); i++) {
 			if (!storage.get(i).isEmpty() && Utility.tagOverlaps(storage.get(i).getContained().getTags(), tag)) {
 				it = storage.get(i).getContained();
-				storage.get(i).remove();
+				storage.get(i).destroy();
 				break;
 			}
 		}

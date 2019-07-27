@@ -5,7 +5,6 @@ import core.Assets;
 import crafting.Craft;
 import crafting.Recipe;
 import crafting.Tag;
-import effects.Effect;
 import entity.Entity;
 import entity.Hitbox;
 import entity.Interactable;
@@ -16,10 +15,14 @@ import gfx.Sprite;
 import gui.ClickListener;
 import gui.ContainerButton;
 import gui.UIObject;
+import interactables.AnvilInteractable;
+import interactables.ForgeInteractable;
+import interactables.WorktableInteractable;
 import item.Inventory;
 import item.Item;
 import item.ItemContainer;
 import items.Bone;
+import items.CrystalRod;
 import items.Pickaxe;
 import items.Torch;
 import runtime.Handler;
@@ -31,15 +34,16 @@ public class Player extends Mob {
 
 	int wounds;
 	int woundMax;
+	int timer;
 
 	// Inventory
-	
+
 	ItemContainer<Item> lHand;
 	ItemContainer<Item> rHand;
 
 	boolean[] researchFlags;
 	boolean[] stationFlags;
-	
+
 	public Player(Handler handler) {
 		super(handler);
 		this.x = 10 * Tile.tileSize;
@@ -52,15 +56,15 @@ public class Player extends Mob {
 		researchFlags = new boolean[Tag.RESEARCH_MAX_ARRAY];
 		researchFlags[Tag.RESEARCH_BASIC_CRAFT] = true;
 		stationFlags = new boolean[Tag.STATION_MAX_ARRAY];
-		
+
 		speed = 2;
-		health = 50;
-		healthMax = 100;
+		health = 6;
+		healthMax = 6;
 		woundMax = 1;
 		wounds = 0;
-		spiritMax = 50;
-		spirit = 50;
-		
+		spiritMax = 6;
+		spirit = 6;
+
 		str = 5;
 		agi = 5;
 		con = 5;
@@ -102,12 +106,17 @@ public class Player extends Mob {
 		inventory.add(new Bone(handler, this));
 		inventory.add(new Bone(handler, this));
 		inventory.add(new Bone(handler, this));
+		inventory.add(new CrystalRod(handler, this));
 	}
 
 	@Override
 	public void update() {
 		inventory.update();
 		super.update();
+		timer++;
+
+		if (timer % 180 == 0 && spirit < spiritMax)
+			spirit++;
 	}
 
 	@Override
@@ -122,59 +131,71 @@ public class Player extends Mob {
 	@Override
 	public void move() {
 		moving = false;
-		if (handler.getKeys().w || handler.getKeys().up) {
-			if (!hitbox.tileYCollide(-speed))
-				y -= speed;
-			moving = true;
-		}
-		if (handler.getKeys().s || handler.getKeys().down) {
-			if (!hitbox.tileYCollide(speed))
-				y += speed;
-			moving = true;
-		}
-		if (handler.getKeys().a || handler.getKeys().left) {
-			if (!hitbox.tileXCollide(-speed))
-				x -= speed;
-			moving = true;
-		}
-		if (handler.getKeys().d || handler.getKeys().right) {
-			if (!hitbox.tileXCollide(speed))
-				x += speed;
-			moving = true;
-		}
-		if (moving) {
-			activeSprite = Assets.player_run;
+		if (!locked) {
+			if (handler.getKeys().w || handler.getKeys().up) {
+				if (!hitbox.tileYCollide(-speed))
+					y -= speed;
+				moving = true;
+			}
+			if (handler.getKeys().s || handler.getKeys().down) {
+				if (!hitbox.tileYCollide(speed))
+					y += speed;
+				moving = true;
+			}
+			if (handler.getKeys().a || handler.getKeys().left) {
+				if (!hitbox.tileXCollide(-speed))
+					x -= speed;
+				moving = true;
+			}
+			if (handler.getKeys().d || handler.getKeys().right) {
+				if (!hitbox.tileXCollide(speed))
+					x += speed;
+				moving = true;
+			}
+			if (moving) {
+				activeSprite = Assets.player_run;
 
-		} else {
-			activeSprite = Assets.player_idle;
+			} else {
+				activeSprite = Assets.player_idle;
+			}
+
+			if (!handler.getMouse().getDragging()) {
+				if (handler.getMouse().getLeft() && lHand.getContained() != null)
+					lHand.getContained().use();
+				if (handler.getMouse().getRight() && rHand.getContained() != null)
+					rHand.getContained().use();
+			}
 		}
 
-		if (!handler.getMouse().getDragging()) {
-			if (handler.getMouse().getLeft() && lHand.getContained() != null)
-				lHand.getContained().use();
-			if (handler.getMouse().getRight() && rHand.getContained() != null)
-				rHand.getContained().use();
-		}
-		if (handler.getKeys().f) {
+		if (handler.getKeys().c) {
 			ArrayList<Entity> col = hitbox.collidingAll();
 			boolean interacted = false;
 			for (int i = 0; i < col.size(); i++) {
-				if (col.get(i) instanceof Interactable) {
+				if (col.get(i) instanceof AnvilInteractable || col.get(i) instanceof ForgeInteractable
+						|| col.get(i) instanceof WorktableInteractable) {
 					((Interactable) col.get(i)).interact(this);
 					interacted = true;
 				}
 			}
-			if (!interacted && !lastFframe) {
+			if (!interacted && !lastCframe) {
 				if (craftShowing)
 					closeCraft();
 				else
 					showCraft();
 			}
+		} else if (handler.getKeys().f) {
+			ArrayList<Entity> col = hitbox.collidingAll();
+			for (int i = 0; i < col.size(); i++) {
+				if (col.get(i) instanceof Interactable) {
+					((Interactable) col.get(i)).interact(this);
+				}
+			}
+
 		}
 
 		lastFframe = handler.getKeys().f;
 		lastCframe = handler.getKeys().c;
-		
+
 	}
 
 	@Override
@@ -189,29 +210,35 @@ public class Player extends Mob {
 		Square s = new Square(w / 6, h, 0xff202020, Sprite.TYPE_GUI_BACKGROUND_SHAPE);
 		s.render(0, 0, g);
 		s.render(w - w / 6, 0, g);
+		int healOff = healthMax / 12;
 
-		Square hp = new Square((int) (118 * health / healthMax), (int) (26), 0xff691920,
-				Sprite.TYPE_GUI_FOREGROUND_SHAPE);
-		Assets.healthBar.render((int) (posX), (int) (posY), g);
-		hp.render(posX + 5, posY + 5, g);
+		int spiCeil = (int) Math.ceil(spiritMax / 12.0);
+		int healCeil = (int) Math.ceil(healthMax / 12.0);
+		Assets.uiTop.render(posX - 6, posY - 6, g);
+		for (int i = 0; i < spiCeil + healCeil + 1; i++) {
+			if (i < healCeil + spiCeil)
+				Assets.uiMid16.render(posX - 6, posY + i * 16, g);
+			else {
+				Assets.uiMid20.render(posX - 6, posY + i * 16, g);
+				Assets.uiBottom.render(posX - 6, posY + i * 16 + 20, g);
+			}
+		}
 
+		for (int i = 0; i < healthMax; i++)
+			Assets.resContainer.render(posX + 8 * (i % 12), posY + 16 * (i / 12), g);
+		for (int i = 0; i < health; i++)
+			Assets.life.render(posX + 8 * (i % 12), posY + 16 * (i / 12), g);
+		for (int i = 0; i < spiritMax; i++)
+			Assets.resContainer.render(posX + 8 * (i % 12), posY + 18 + 16 * (i / 12) + 16 * healOff, g);
+		for (int i = 0; i < spirit; i++)
+			Assets.spirit.render(posX + 8 * (i % 12), posY + 18 + 16 * (i / 12) + 16 * healOff, g);
 		for (int i = 0; i < woundMax; i++) {
 			int pos = (int) (i * 24) + posX;
-			int pos2 = 35 + posY;
-			if (i == 0)
-				Assets.heartContainer_Left.render((int) ((10 + pos)), (int) (pos2), g);
-			else
-				Assets.heartContainer_Mid.render((int) ((10 + pos)), (int) (pos2), g);
-			Assets.heartContainer_Mid.render((int) ((10 + pos + 8)), (int) (pos2), g);
-			if (i == woundMax - 1)
-				Assets.heartContainer_Right.render((int) ((10 + pos + 16)), (int) (pos2), g);
-			else
-				Assets.heartContainer_Mid.render((int) ((10 + pos + 16)), (int) (pos2), g);
-
+			int pos2 = posY + 16 * (healCeil + spiCeil) + 2;
 			if (i >= woundMax - wounds)
-				Assets.heartDead.render((int) ((12 + pos)), (int) ((pos2 + 3)), g);
+				Assets.heartDead.render(pos, pos2, g);
 			else
-				Assets.heart.render((int) ((12 + pos)), (int) ((pos2 + 3)), g);
+				Assets.heart.render(pos, pos2, g);
 
 		}
 
@@ -220,47 +247,16 @@ public class Player extends Mob {
 	}
 
 	@Override
-	public int harm(int amount, int type) {
-		int val;
-		switch (type) {
-		case Effect.DAMAGE_TYPE_ENERGY:
-			val = amount;
-			if (health - amount <= 0)
-				val = health;
-			health -= amount;
-			if (health <= 0) {
-				wounds++;
-				if (wounds > woundMax) {
-					health = 0;
-					this.die();
-				} else {
-					health = healthMax;
-				}
+	public void die() {
+		if (spirit <= 0) super.die();
+		if (health <= 0) {
+			wounds++;
+			if (wounds > woundMax) {
+				health = 0;
+				super.die();
+			} else {
+				health = healthMax;
 			}
-			return amount;
-		case Effect.DAMAGE_TYPE_MENTAL:
-			val = amount;
-			if (spirit - amount <= 0)
-				val = spirit;
-			spirit -= amount;
-			return amount;
-		case Effect.DAMAGE_TYPE_PHYSICAL:
-			val = amount - arm;
-			if (health - val <= 0)
-				val = health;
-			health -= amount - arm;
-			if (health <= 0) {
-				wounds++;
-				if (wounds > woundMax) {
-					health = 0;
-					this.die();
-				} else {
-					health = healthMax;
-				}
-			}
-			return amount - arm;
-		default:
-			return 0;
 		}
 	}
 
@@ -294,13 +290,18 @@ public class Player extends Mob {
 			handler.getUI().addObject(b);
 			crafts.add(b);
 		}
-		if (recipes.size() == 0) craftShowing = false;
+		lock();
+		if (recipes.size() == 0) {
+			craftShowing = false;
+			unlock();
+		}
 
 	}
 
 	public void closeCraft() {
 		craftShowing = false;
-		for (int i = 0; i < crafts.size(); i++)  {
+		unlock();
+		for (int i = 0; i < crafts.size(); i++) {
 			handler.getUI().removeObject(crafts.get(i));
 		}
 	}
@@ -315,26 +316,27 @@ public class Player extends Mob {
 					Item item = r.craft(p, handler);
 					if (!p.pickup(item))
 						item.drop();
+					closeCraft();
+					showCraft();
 				}
 
 			}
 
 		};
 	}
-	
-	
+
 	public void setResearchFlag(int index, boolean value) {
 		researchFlags[index] = value;
 	}
-	
+
 	public boolean[] getResearchFlags() {
 		return researchFlags;
 	}
-	
+
 	public void setStationFlag(int index, boolean value) {
 		stationFlags[index] = value;
 	}
-	
+
 	public boolean[] getStationFlags() {
 		return stationFlags;
 	}
@@ -342,7 +344,7 @@ public class Player extends Mob {
 	public void resetStationFlags() {
 		stationFlags = new boolean[Tag.STATION_MAX_ARRAY];
 	}
-	
+
 	public boolean getCraftingShown() {
 		return craftShowing;
 	}

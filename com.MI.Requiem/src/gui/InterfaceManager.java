@@ -15,14 +15,14 @@ public class InterfaceManager {
 	}
 
 	public void render(DrawGraphics g) {
-		for (UIObject o : list) {
-			o.render(g);
+		for (int i = 0; i < list.size(); i++) {
+			 list.get(i).render(g);
 		}
 	}
 
 	public void update() {
-		for (UIObject o : list)
-			o.update();
+		for (int i = 0; i < list.size(); i++)
+			list.get(i).update();
 		for (UIObject o : remove)
 			list.remove(o);
 		remove.clear();

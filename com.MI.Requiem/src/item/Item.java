@@ -12,6 +12,7 @@ import gfx.Sprite;
 import items.Anvil;
 import items.Bone;
 import items.Cloak;
+import items.CrystalRod;
 import items.Forge;
 import items.Gem;
 import items.Ingot;
@@ -101,7 +102,7 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 			if (statPackage[i] != 0) {
 				switch (i) {
 				case ITEM_WEIGHT:
-					str = statPackage[i] + "lbs";
+					str = statPackage[i] + " lbs";
 					break;
 				case ITEM_DURABILITY:
 					str = "";
@@ -238,6 +239,8 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 			return new TheOrb(handler, holder);
 		case 10:
 			return new Bone(handler, holder);
+		case 11:
+			return new CrystalRod(handler, holder);
 		default:
 			return new TileBlock(handler, holder, 1); // default returns dirt block
 		}

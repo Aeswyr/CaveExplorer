@@ -28,6 +28,8 @@ public class TileBlock extends Item {
 		tags = "hand";
 		ID = "0:" + id;
 
+		statPackage[ITEM_WEIGHT] = 1;
+		
 		useTime = 30;
 		timer = useTime;
 

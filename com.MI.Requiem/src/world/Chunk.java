@@ -7,6 +7,7 @@ import core.Driver;
 import gfx.DrawGraphics;
 import runtime.Handler;
 import utility.Loader;
+import utility.Utility;
 import world.Tile;
 import world.World;
 
@@ -124,6 +125,18 @@ public class Chunk {
 	 * unloads a chunk's data from memory
 	 */
 	public void unload() {
+		String c =  "";
+		String m = "";
+		for (int y = 0; y < chunkDim; y++) {
+			for (int x = 0; x < chunkDim; x++) {
+				c += chunk[x][y] + " ";
+				m += map[x][y] + " ";
+			}
+		}
+		int find = y * World.maxChunks + x;
+		Utility.editText(c, find, Driver.saveDir + "saves/world/world.dat");
+		Utility.editText(m, find, Driver.saveDir + "saves/world/map.dat");
+		
 		chunk = null;
 		map = null;
 		loaded = false;

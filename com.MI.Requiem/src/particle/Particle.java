@@ -27,8 +27,9 @@ public class Particle {
 	boolean textEnabled = false;
 
 	private int size;
+	private int color;
 	private Sprite sprite;
-	
+
 	private Handler handler;
 	boolean dead = false;
 
@@ -44,7 +45,7 @@ public class Particle {
 		data = new int[max][5];
 
 		this.handler = handler;
-		
+
 		if (this.dispersal == DISPERSE_BURST) {
 			for (size = 0; size < max; size++) {
 				switch (shape) {
@@ -58,6 +59,9 @@ public class Particle {
 						break;
 					case DIRECTION_SWEEP:
 						break;
+					case DIRECTION_FLOAT:
+						data[size][4] = -1;
+						break;
 					}
 					break;
 				case SHAPE_CIRCLE:
@@ -69,6 +73,9 @@ public class Particle {
 						data[size][4] = rng.nextInt(5) - 2;
 						break;
 					case DIRECTION_SWEEP:
+						break;
+					case DIRECTION_FLOAT:
+						data[size][4] = -1;
 						break;
 					}
 					break;
@@ -82,24 +89,35 @@ public class Particle {
 
 	}
 
-	public Particle(Sprite s, String st, int max, int lifetime, int x, int y, int x0, int y0, int shape, int dispersal,
-			int direction, int lifetype, Handler handler) {
+	public Particle(Sprite s, String st, int color, int max, int lifetime, int x, int y, int x0, int y0, int shape,
+			int dispersal, int direction, int lifetype, Handler handler) {
 		this(s, max, lifetime, x, y, x0, y0, shape, dispersal, direction, lifetype, handler);
 		this.text = st;
+		this.color = color;
+		this.textEnabled = true;
+
+	}
+
+	public Particle(String st, int color, int max, int lifetime, int x, int y, int x0, int y0, int shape, int dispersal,
+			int direction, int lifetype, Handler handler) {
+		this(((Sprite) null), max, lifetime, x, y, x0, y0, shape, dispersal, direction, lifetype, handler);
+		this.text = st;
+		this.color = color;
 		this.textEnabled = true;
 
 	}
 
 	public void render(DrawGraphics g) {
-		
+
 		int xOff = handler.getCamera().xOffset();
 		int yOff = handler.getCamera().yOffset();
-		
+
 		for (int i = 0; i < size; i++) {
 			if (data[i][2] > 0) {
-				sprite.render(data[i][0] - xOff, data[i][1] - yOff, g);
+				if (sprite != null)
+					sprite.render(data[i][0] - xOff, data[i][1] - yOff, g);
 				if (this.textEnabled)
-					g.write(text, data[i][0] - xOff, data[i][1] - yOff);
+					g.write(text, data[i][0] - xOff, data[i][1] - yOff, color);
 			}
 		}
 	}
@@ -164,7 +182,7 @@ public class Particle {
 	public boolean isDead() {
 		return dead;
 	}
-	
+
 	public void start() {
 		handler.getParticles().add(this);
 	}

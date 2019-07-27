@@ -109,7 +109,7 @@ public class World {
 			}
 		}
 		if (id == -1)
-			return Tile.toTile(0);
+			return Tile.toTile(1);
 		return Tile.toTile(id);
 	}
 	

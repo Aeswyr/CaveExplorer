@@ -24,6 +24,7 @@ public class TheOrb extends Item {
 		tags = "hand";
 		name = "The Orb";
 		
+		statPackage[ITEM_WEIGHT] = 2;
 
 		this.sprite = Assets.theOrb;
 		this.invSprite = Assets.theOrb_inv;

@@ -8,8 +8,8 @@ import gfx.DrawGraphics;
 import runtime.Handler;
 import world.Tile;
 
-public class WorktableInteractable extends Interactable{
-	
+public class WorktableInteractable extends Interactable {
+
 	public WorktableInteractable(Handler handler) {
 		super(handler);
 		hitbox = new Hitbox(0, 0, Tile.tileSize + 2, Tile.tileSize * 2, this, handler);
@@ -21,12 +21,19 @@ public class WorktableInteractable extends Interactable{
 	@Override
 	public void interact(Object interactor) {
 		if (interactor instanceof Player) {
-			p = (Player) interactor;
-			interacted = true;
-			if (p.getCraftingShown())
+			if (interacted) {
+				interacted = false;
+				p.setStationFlag(Tag.STATION_WORKTABLE, false);
 				p.closeCraft();
-			p.setStationFlag(Tag.STATION_WORKTABLE, true);
-			p.showCraft();
+				p = null;
+			} else {
+				p = (Player) interactor;
+				interacted = true;
+				if (p.getCraftingShown())
+					p.closeCraft();
+				p.setStationFlag(Tag.STATION_WORKTABLE, true);
+				p.showCraft();
+			}
 		}
 	}
 
@@ -50,5 +57,12 @@ public class WorktableInteractable extends Interactable{
 	public void render(DrawGraphics g) {
 		hitbox.render(g);
 
+	}
+
+	@Override
+	public void die() {
+		super.die();
+		if (p != null && p.getCraftingShown())
+			p.closeCraft();
 	}
 }

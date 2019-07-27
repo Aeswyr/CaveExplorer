@@ -25,6 +25,8 @@ public class Anvil extends Item {
 		ID = "0:2";
 		name = "Anvil";
 		
+		statPackage[ITEM_WEIGHT] = 20;
+		
 		useTime = 30;
 		timer = useTime;
 		

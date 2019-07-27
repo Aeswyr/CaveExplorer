@@ -27,6 +27,7 @@ public class Forge extends Item {
 		ID = "0:3";
 		name = "Forge";
 		
+		statPackage[ITEM_WEIGHT] = 20;
 
 		useTime = 30;
 		timer = useTime;

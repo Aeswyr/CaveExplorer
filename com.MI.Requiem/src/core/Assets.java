@@ -30,12 +30,15 @@ public class Assets {
 	public static TileSet worktableTile;
 
 	private static SpriteSheet ui;
+	public static Sprite uiTop;
+	public static Sprite uiMid16;
+	public static Sprite uiMid20;
+	public static Sprite uiBottom;
+	public static Sprite life;
+	public static Sprite spirit;
+	public static Sprite resContainer;
 	public static Sprite heart;
 	public static Sprite heartDead;
-	public static Sprite healthBar;
-	public static Sprite heartContainer_Left;
-	public static Sprite heartContainer_Mid;
-	public static Sprite heartContainer_Right;
 	public static Sprite inventory_Empty;
 	public static Sprite inventory_Trinket;
 	public static Sprite inventory_Head;
@@ -86,6 +89,8 @@ public class Assets {
 	public static Sprite bone_inv;
 	public static Sprite worktable;
 	public static Sprite worktable_inv;
+	public static Sprite crystalRod;
+	public static Sprite crystalRod_inv;
 
 	// Sound
 
@@ -127,12 +132,15 @@ public class Assets {
 		ooze_idle = new Sprite(0, 0, 32, ooze, Sprite.TYPE_ENTITY);
 		willowWisp_idle = new Sprite(0, 0, 32, willowWisp, Sprite.TYPE_ENTITY);
 
-		healthBar = new Sprite(0, 0, 128, 36, ui, Sprite.TYPE_GUI_COMPONENT);
+		uiTop = new Sprite(0, 0, 128, 6, ui, Sprite.TYPE_GUI_COMPONENT);
+		uiMid16 = new Sprite(0, 6, 128, 16, ui, Sprite.TYPE_GUI_COMPONENT);
+		uiMid20 = new Sprite(0, 10, 128, 20, ui, Sprite.TYPE_GUI_COMPONENT);
+		uiBottom = new Sprite(0, 30, 128, 6, ui, Sprite.TYPE_GUI_COMPONENT);
+		life = new Sprite(112, 36, 16, ui, Sprite.TYPE_GUI_COMPONENT);
+		spirit = new Sprite(112, 52, 16, ui, Sprite.TYPE_GUI_COMPONENT);
+		resContainer = new Sprite(96, 36, 16, ui, Sprite.TYPE_GUI_COMPONENT);
 		heart = new Sprite(27, 36, 20, ui, Sprite.TYPE_GUI_COMPONENT);
 		heartDead = new Sprite(47, 36, 20, ui, Sprite.TYPE_GUI_COMPONENT);
-		heartContainer_Left = new Sprite(0, 36, 9, 24, ui, Sprite.TYPE_GUI_COMPONENT);
-		heartContainer_Mid = new Sprite(9, 36, 9, 24, ui, Sprite.TYPE_GUI_COMPONENT);
-		heartContainer_Right = new Sprite(18, 36, 9, 24, ui, Sprite.TYPE_GUI_COMPONENT);
 		inventory_Empty = new Sprite(0, 64, 32, ui, Sprite.TYPE_GUI_COMPONENT);
 		inventory_Trinket = new Sprite(64, 96, 32, ui, Sprite.TYPE_GUI_COMPONENT);
 		inventory_Head = new Sprite(32, 64, 32, ui, Sprite.TYPE_GUI_COMPONENT);
@@ -172,6 +180,8 @@ public class Assets {
 		bone_inv = new Sprite(192, 64, 32, item, Sprite.TYPE_INVENTORY_ITEM);
 		worktable = new Sprite(224, 64, 32, item, Sprite.TYPE_ENTITY);
 		worktable_inv = new Sprite(224, 64, 32, item, Sprite.TYPE_INVENTORY_ITEM);
+		crystalRod = new Sprite(0, 160, 32, item, Sprite.TYPE_ENTITY);
+		crystalRod_inv = new Sprite(0, 128, 32, item, Sprite.TYPE_INVENTORY_ITEM);
 	}
 
 	private static void initSound() {
