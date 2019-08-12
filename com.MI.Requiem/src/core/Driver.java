@@ -57,12 +57,14 @@ public class Driver implements Runnable {
 	}
 
 	public synchronized void start() {
-		handler = new Handler(this);
+		handler = new Handler(this);		
 		running = true;
 		Thread t = new Thread(this);
 		render = new Renderer(handler, screen, canvas);
 		t.start();
+		screen.setClosing(this, render, handler);
 		render.start();
+		handler.init();
 	}
 
 	public void update() {
@@ -100,5 +102,9 @@ public class Driver implements Runnable {
 	
 	public void close() {
 		screen.close();
+	}
+	
+	public void stop() {
+		this.running = false;
 	}
 }

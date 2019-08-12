@@ -48,7 +48,7 @@ public abstract class Mob extends Entity {
 		switch (type) {
 		case Effect.DAMAGE_TYPE_ENERGY:
 			val = amount;
-			if (health - amount <= 0)
+			if (health - amount < 0)
 				val = health;
 			health -= val;
 			if (health <= 0)
@@ -59,7 +59,7 @@ public abstract class Mob extends Entity {
 			return val;
 		case Effect.DAMAGE_TYPE_MENTAL:
 			val = amount;
-			if (spirit - amount <= 0)
+			if (spirit - amount < 0)
 				val = spirit;
 			spirit -= val;
 			if (spirit <= 0)
@@ -72,7 +72,7 @@ public abstract class Mob extends Entity {
 			val = amount - arm;
 			if (val < 0)
 				val = 0;
-			if (health - val <= 0)
+			if (health - val < 0)
 				val = health;
 			health -= val;
 			if (health <= 0)

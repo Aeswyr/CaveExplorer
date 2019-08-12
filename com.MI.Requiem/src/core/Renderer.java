@@ -85,5 +85,9 @@ public class Renderer implements Runnable {
 		frames = 0;
 		return hold;
 	}
+	
+	public void stop() {
+		this.running = false;
+	}
 
 }

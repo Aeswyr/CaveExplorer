@@ -9,6 +9,7 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 
+import runtime.Handler;
 import sfx.Sound;
 
 public class Screen extends Canvas {
@@ -47,17 +48,7 @@ public class Screen extends Canvas {
 			frame.setMaximumSize(d);
 		}
 
-		frame.addWindowListener(new WindowAdapter() // Operations to complete upon window closing
-		{
-			public void windowClosing(WindowEvent we) {
-				try {
-					Sound.shutdown();
-				} catch (NullPointerException e) {
-					e.printStackTrace();
-				}
-				System.out.println("Game Closed");
-			}
-		});
+		
 		frame.setTitle("Unto the Abyss");
 		frame.setName("Unto the Abyss");
 		frame.setVisible(true);
@@ -82,5 +73,22 @@ public class Screen extends Canvas {
 
 	public void close() {
 		frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+	}
+	
+	public void setClosing(Driver d, Renderer r, Handler h) {
+		frame.addWindowListener(new WindowAdapter() // Operations to complete upon window closing
+				{
+					public void windowClosing(WindowEvent we) {
+						d.stop();
+						r.stop();
+						try {
+							Sound.shutdown();
+						} catch (NullPointerException e) {
+							e.printStackTrace();
+						}
+						h.getWorld().unloadWorld();
+						System.out.println("Game Closed");
+					}
+				});
 	}
 }

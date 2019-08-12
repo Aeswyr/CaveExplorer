@@ -8,6 +8,7 @@ import gui.InterfaceManager;
 import input.KeyManager;
 import input.MouseManager;
 import particle.ParticleManager;
+import utility.LoadingScreen;
 import world.TileSet;
 import world.World;
 
@@ -28,10 +29,13 @@ public class Handler {
 	
 	private InterfaceManager uiManager;
 
+	private LoadingScreen loadingScreen;
+	
 	public Handler(Driver d) {
 		driver = d;
 		TileSet.handler = this;
-
+		LoadingScreen.handler = this;
+		
 		lightManager = new LightManager(this);
 		particles = new ParticleManager();
 		uiManager = new InterfaceManager();
@@ -46,7 +50,10 @@ public class Handler {
 		d.setMouseListener(mouse);
 		d.setKeyListener(keys);
 		world = new World(this);
-
+	}
+	
+	public void init() {
+		world.init();
 	}
 
 	public void update() {
@@ -56,13 +63,23 @@ public class Handler {
 		lightManager.update();
 		camera.update();
 		uiManager.update();
-
+		if (keys.getRBracketTyped()) {
+			if (devMode) devMode = false;
+			else devMode = true;
+		}
 	}
 
 	public void render(DrawGraphics g) {
-		world.render(g);
-		particles.render(g);
-		uiManager.render(g);
+		if (loadingScreen != null)
+			loadingScreen.render(g);
+		else {
+			world.render(g);
+			particles.render(g);
+			uiManager.render(g);
+
+			if (devMode)
+				world.getEntities().renderDevMode(g);
+		}
 	}
 
 	// Getters and Setters
@@ -113,5 +130,17 @@ public class Handler {
 	
 	public InterfaceManager getUI() {
 		return uiManager;
+	}
+	
+	public void setFPSCap(boolean capped) {
+		driver.setCapped(capped);
+	}
+	
+	public void setLoadingScreen(LoadingScreen l) {
+		this.loadingScreen = l;
+	}
+	
+	public void closeLoadingScreen() {
+		loadingScreen = null;
 	}
 }

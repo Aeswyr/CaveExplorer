@@ -141,7 +141,7 @@ public class DrawGraphics {
 				for (int x = 0; x < wid[unicode]; x++) {
 					if (fontSprite.getRawFrame()[x + off[unicode] + y * fontSprite.getWidth()] == 0xffffffff) {
 						drawPixel(x + xOff + offset, y + yOff, color);
-						this.drawLuminosity(x + xOff + offset, y + yOff, 0xffffffff);;
+						this.drawLuminosity(x + xOff + offset, y + yOff, 0xffffffff);
 					}
 				}
 			offset += wid[unicode];

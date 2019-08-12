@@ -10,6 +10,7 @@ public abstract class Shape {
 	int width, height;
 	int xpos, ypos;
 	int type;
+	int color;
 	Sprite sprite;
 	
 	public abstract boolean contains(Shape s);

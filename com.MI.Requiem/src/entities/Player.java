@@ -22,7 +22,6 @@ import item.Inventory;
 import item.Item;
 import item.ItemContainer;
 import items.Bone;
-import items.CrystalRod;
 import items.Pickaxe;
 import items.Torch;
 import runtime.Handler;
@@ -106,7 +105,6 @@ public class Player extends Mob {
 		inventory.add(new Bone(handler, this));
 		inventory.add(new Bone(handler, this));
 		inventory.add(new Bone(handler, this));
-		inventory.add(new CrystalRod(handler, this));
 	}
 
 	@Override
@@ -167,7 +165,7 @@ public class Player extends Mob {
 			}
 		}
 
-		if (handler.getKeys().c) {
+		if (handler.getKeys().getCTyped()) {
 			ArrayList<Entity> col = hitbox.collidingAll();
 			boolean interacted = false;
 			for (int i = 0; i < col.size(); i++) {
@@ -186,7 +184,8 @@ public class Player extends Mob {
 		} else if (handler.getKeys().f) {
 			ArrayList<Entity> col = hitbox.collidingAll();
 			for (int i = 0; i < col.size(); i++) {
-				if (col.get(i) instanceof Interactable) {
+				if (col.get(i) instanceof Interactable && !(col.get(i) instanceof AnvilInteractable
+						|| col.get(i) instanceof ForgeInteractable || col.get(i) instanceof WorktableInteractable)) {
 					((Interactable) col.get(i)).interact(this);
 				}
 			}
@@ -248,7 +247,8 @@ public class Player extends Mob {
 
 	@Override
 	public void die() {
-		if (spirit <= 0) super.die();
+		if (spirit <= 0)
+			super.die();
 		if (health <= 0) {
 			wounds++;
 			if (wounds > woundMax) {

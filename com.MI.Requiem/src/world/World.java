@@ -1,12 +1,15 @@
 package world;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
-import entities.Ooze;
-import entities.WillowWisp;
+import core.Driver;
 import entity.EntityManager;
 import gfx.DrawGraphics;
 import runtime.Handler;
+import utility.Loader;
 
 public class World {
 
@@ -24,21 +27,28 @@ public class World {
 		maxChunks = 64;
 		entities = new EntityManager();
 		entities.addEntity(handler.getPlayer());
-		MapGenerator.generateMap();
-		
+
 		Chunk.handler = this.handler;
 		chunkLoader = new ChunkLoader();
 		chunks = chunkLoader.getActive();
 		currChunk = new Chunk(-1, -1);
-		
+
+	}
+
+	public void init() {
+		MapGenerator.generateMap(this, handler);
 		chunkLoader.start();
-		
-		entities.addEntity(new Ooze(handler, 64, 64));
-		entities.addEntity(new WillowWisp(handler, 64, 64));
-		entities.addEntity(new WillowWisp(handler, 64, 64));
-		entities.addEntity(new WillowWisp(handler, 64, 64));
-		entities.addEntity(new WillowWisp(handler, 64, 64));
-		entities.addEntity(new WillowWisp(handler, 64, 64));
+
+		BufferedReader info = Loader.loadTextFromFile(Driver.saveDir + "saves/world/data.dat");
+		try {
+			String[] playerCoord = info.readLine().split(" ");
+			handler.getPlayer().setX(Integer.parseInt(playerCoord[0]) * Tile.tileSize);
+			handler.getPlayer().setY(Integer.parseInt(playerCoord[1]) * Tile.tileSize);
+			info.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void render(DrawGraphics g) {
@@ -112,7 +122,7 @@ public class World {
 			return Tile.toTile(1);
 		return Tile.toTile(id);
 	}
-	
+
 	/**
 	 * returns the tile id at the given position
 	 * 
@@ -128,14 +138,47 @@ public class World {
 					id = pos;
 			}
 		}
-		if (id == -1) return 0;
+		if (id == -1)
+			return 0;
+		return id;
+	}
+
+	/**
+	 * returns the tile id at the given position even if the chunk is unloaded
+	 * 
+	 * @param x - the x coordinate of the tile (tile position)
+	 * @param y - the y coordinate of the tile (tile position)
+	 */
+	public int getUnloadedTileID(int x, int y) {
+		int id = -1;
+		int chunkx = x / Chunk.chunkDim;
+		int chunky = y / Chunk.chunkDim;
+		String line = null;
+		BufferedReader read = Loader.loadTextFromFile(Driver.saveDir + "saves/world/world.dat");
+		int find = chunky * World.maxChunks + chunkx;
+
+		try {
+			for (int i = 0; i < find; i++) {
+				read.readLine();
+			}
+			line = read.readLine();
+			read.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		StringTokenizer data = new StringTokenizer(line);
+		for (int i = 0; i < (y % Chunk.chunkDim) * Chunk.chunkDim + x % Chunk.chunkDim; i++) {
+			data.nextToken();
+		}
+		id = Integer.parseInt(data.nextToken());
 		return id;
 	}
 
 	public void setTile(int x, int y, int id) {
-		for (int i = 0; i < chunks.size(); i++) chunks.get(i).setTile(x / Tile.tileSize, y / Tile.tileSize, id);
+		for (int i = 0; i < chunks.size(); i++)
+			chunks.get(i).setTile(x / Tile.tileSize, y / Tile.tileSize, id);
 	}
-	
+
 	/**
 	 * returns the tile at the given position
 	 * 
@@ -155,7 +198,7 @@ public class World {
 			return null;
 		return Tile.toTile(id);
 	}
-	
+
 	/**
 	 * returns the tile id at the given position
 	 * 
@@ -175,11 +218,18 @@ public class World {
 	}
 
 	public void setOverlay(int x, int y, int id) {
-		for (int i = 0; i < chunks.size(); i++) chunks.get(i).setOverlay(x / Tile.tileSize, y / Tile.tileSize, id);
+		for (int i = 0; i < chunks.size(); i++)
+			chunks.get(i).setOverlay(x / Tile.tileSize, y / Tile.tileSize, id);
 	}
-	
+
 	public EntityManager getEntities() {
 		return entities;
+	}
+
+	public void unloadWorld() {
+		for (int i = 0; i < chunks.size(); i++) {
+			chunks.get(i).unload();
+		}
 	}
 
 }

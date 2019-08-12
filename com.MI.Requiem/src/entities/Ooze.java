@@ -31,7 +31,7 @@ public class Ooze extends Mob {
 
 	@Override
 	public void renderUI(DrawGraphics g) {
-		hitbox.render(g);
+		//hitbox.render(g);
 	}
 
 	@Override

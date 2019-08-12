@@ -50,6 +50,7 @@ public class Torch extends Item {
 		if (use == 0 || use == -1) {
 			invSprite = Assets.burntTorch_inv;
 			sprite = Assets.burntTorch;
+			tags += " carvable";
 			if (equipped) {
 				bright.snuff();
 				dim.snuff();

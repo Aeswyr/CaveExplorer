@@ -65,6 +65,15 @@ public class EntityManager {
 		for (int i = mobs.size() - 1; i >= 0; i--)
 			mobs.get(i).renderUI(g);
 	}
+	
+	/**
+	 * 
+	 */
+	public void renderDevMode(DrawGraphics g) {
+		for (int i = entities.size() - 1; i >= 0; i--) {
+			entities.get(i).getHitbox().render(g);
+		}
+	}
 
 	/**
 	 * Updates all entities in added to the current level, then removes any entities

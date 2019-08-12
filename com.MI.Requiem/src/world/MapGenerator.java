@@ -7,12 +7,19 @@ import java.io.IOException;
 import java.util.Random;
 
 import core.Driver;
+import runtime.Handler;
+import utility.LoadingScreen;
 import utility.NoiseGenerator;
 
 public class MapGenerator {
 
-	public static void generateMap() {
-		Random rng = new Random(12); // for temp id 12
+	public static void generateMap(World w, Handler h) {
+		
+		//LOADING SCREEN START
+		LoadingScreen load = new LoadingScreen(World.maxChunks * World.maxChunks);
+		load.displayText("Shaping Caverns");
+		
+		Random rng = new Random(); // for temp id 12
 		BufferedWriter write = null;
 		try {
 			File f = new File(Driver.saveDir + "saves/world/world.dat");
@@ -31,10 +38,20 @@ public class MapGenerator {
 			writeMap = new BufferedWriter(file);
 		} catch (IOException e) {
 		}
+		BufferedWriter writeData = null;
+		try {
+			File f = new File(Driver.saveDir + "saves/world/data.dat");
+			f.delete();
+			f.createNewFile();
+			FileWriter file = new FileWriter(f);
+			writeData = new BufferedWriter(file);
+		} catch (IOException e) {
+		}
 
 		NoiseGenerator noise = new NoiseGenerator(rng);
 		noise.enableTesselation(World.maxChunks * Chunk.chunkDim, 256);
 		NoiseGenerator ore = new NoiseGenerator(new Random(rng.nextLong()));
+		NoiseGenerator texture = new NoiseGenerator(new Random(rng.nextLong()));
 
 		for (int j = 0; j < World.maxChunks; j++) { // Primary loop establishes various densities of things like water
 													// within each cell
@@ -47,6 +64,7 @@ public class MapGenerator {
 						int yf = j * Chunk.chunkDim + y;
 						double mod = noise.fractalNoise(xf, yf, 8, 256 / (World.maxChunks * Chunk.chunkDim), 2);
 						double modOre = ore.fractalNoise(xf, yf, 8, 64, 2);
+						double tex = texture.fractalNoise(xf, yf, 8, 64, 2);
 
 						int id = 0;
 						int mapID = -1;
@@ -56,6 +74,8 @@ public class MapGenerator {
 								id = 1;
 								if (modOre > 0.5)
 									mapID = 7;
+								if (tex > 0.5)
+									id = 9;
 							} else {
 								id = 6;
 								if (modOre > 0.5)
@@ -68,6 +88,8 @@ public class MapGenerator {
 									id = 1;
 									if (modOre > 0.5)
 										mapID = 7;
+									if (tex > 0.5)
+										id = 9;
 								} else {
 									id = 6;
 									if (modOre > 0.5)
@@ -81,12 +103,10 @@ public class MapGenerator {
 
 							}
 						}
-						
 						try {
 							write.write(id + " ");
 							writeMap.write(mapID + " ");
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 
@@ -96,11 +116,48 @@ public class MapGenerator {
 					write.newLine();
 					writeMap.newLine();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				load.increment(1);
 			}
 		}
+		load.displayText("Placing Player");
+
+		boolean spawnFound = false;
+		int spawnX = 0, spawnY = 0;
+		while (!spawnFound) {
+			spawnX = rng.nextInt(World.maxChunks * Chunk.chunkDim);
+			spawnY = rng.nextInt(World.maxChunks * Chunk.chunkDim);
+			switch (w.getUnloadedTileID(spawnX, spawnY)) {
+			case 0:
+				spawnFound = true;
+				break;
+			case 5:
+				spawnFound = true;
+				break;
+			default:
+				break;
+			}
+					
+		}
+		
+		try {
+			writeData.write(spawnX + " " + spawnY);
+			writeData.newLine();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		
+		try {
+			write.close();
+			writeMap.close();
+			writeData.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		load.close();
 	}
 
 }

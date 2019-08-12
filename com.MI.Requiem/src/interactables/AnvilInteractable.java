@@ -55,7 +55,7 @@ public class AnvilInteractable extends Interactable {
 
 	@Override
 	public void render(DrawGraphics g) {
-		hitbox.render(g);
+		//hitbox.render(g);
 
 	}
 
