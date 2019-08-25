@@ -61,11 +61,13 @@ public class Chunk {
 		if (endY > y * chunkDim + chunkDim)
 			endY = y * chunkDim + chunkDim;
 
-		for (int i = startX; i < endX; i++) {
-			for (int j = startY; j < endY; j++) {
-				Tile.toTile(chunk[i - x * chunkDim][j - y * chunkDim]).render(i, j, g);
-				if (map[i - x * chunkDim][j - y * chunkDim] != -1)
-					Tile.toTile(map[i - x * chunkDim][j - y * chunkDim]).render(i, j, g);
+		if (chunk != null) {
+			for (int i = startX; i < endX; i++) {
+				for (int j = startY; j < endY; j++) {
+					Tile.toTile(chunk[i - x * chunkDim][j - y * chunkDim]).render(i, j, g);
+					if (map[i - x * chunkDim][j - y * chunkDim] != -1)
+						Tile.toTile(map[i - x * chunkDim][j - y * chunkDim]).render(i, j, g);
+				}
 			}
 		}
 
@@ -74,8 +76,31 @@ public class Chunk {
 	/**
 	 * updates all tiles in the chunk
 	 */
-	public void update() {
-		// TODO update
+	public void update(int[] biomeData) {
+		int offx = handler.getCamera().xOffset() / Tile.tileSize;
+		int offy = handler.getCamera().yOffset() / Tile.tileSize;
+
+		int startX = offx + (int) (12 / Driver.scale);
+		int startY = offy;
+		int endX = offx + handler.getWidth() / Tile.tileSize - (int) (18 / Driver.scale);
+		int endY = offy + handler.getHeight() / Tile.tileSize + (int) (9 / Driver.scale);
+
+		if (startX < x * chunkDim)
+			startX = x * chunkDim;
+		if (startY < y * chunkDim)
+			startY = y * chunkDim;
+		if (endX > x * chunkDim + chunkDim)
+			endX = x * chunkDim + chunkDim;
+		if (endY > y * chunkDim + chunkDim)
+			endY = y * chunkDim + chunkDim;
+
+		if (chunk != null) {
+			for (int i = startX; i < endX; i++) {
+				for (int j = startY; j < endY; j++) {
+					biomeData[chunk[i - x * chunkDim][j - y * chunkDim]]++;
+				}
+			}
+		}
 	}
 
 	/**
@@ -125,7 +150,7 @@ public class Chunk {
 	 * unloads a chunk's data from memory
 	 */
 	public void unload() {
-		String c =  "";
+		String c = "";
 		String m = "";
 		for (int y = 0; y < chunkDim; y++) {
 			for (int x = 0; x < chunkDim; x++) {
@@ -136,7 +161,7 @@ public class Chunk {
 		int find = y * World.maxChunks + x;
 		Utility.editText(c, find, Driver.saveDir + "saves/world/world.dat");
 		Utility.editText(m, find, Driver.saveDir + "saves/world/map.dat");
-		
+
 		chunk = null;
 		map = null;
 		loaded = false;

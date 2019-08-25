@@ -23,11 +23,12 @@ public class LoadingScreen {
 		displayText = "";
 		tip = Data.getLoadTip();
 		handler.setFPSCap(false);
-		handler.setLoadingScreen(this);
 		
 		back = new Square(handler.getWidth(), handler.getHeight(), 0xff333333, Sprite.TYPE_GUI_BACKGROUND_SHAPE);
 		bar = new Square(300, 20, 0xff000000, Sprite.TYPE_GUI_FOREGROUND_SHAPE);
 		load = new Square(1, 16, 0xff990000, Sprite.TYPE_GUI_FOREGROUND_SHAPE);
+		
+		handler.setLoadingScreen(this);
 	}
 	
 

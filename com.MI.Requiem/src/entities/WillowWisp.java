@@ -3,7 +3,6 @@ package entities;
 import core.Assets;
 import entity.Hitbox;
 import entity.Mob;
-import gfx.DrawGraphics;
 import item.Item;
 import runtime.Handler;
 import runtime.Light;
@@ -22,22 +21,22 @@ public class WillowWisp extends Mob {
 
 		this.healthMax = 3;
 		this.health = healthMax;
+		
+		this.spiritMax = 5;
+		this.spirit = spiritMax;
 
-		this.speed = 1.75;
+		this.speed = 1.25;
 
 		l = new Light(32, 0xff666633, handler);
 		l.light();
+		
+		uiSetup();
 	}
 
 	public WillowWisp(Handler handler, int x, int y) {
 		this(handler);
 		this.x = x;
 		this.y = y;
-	}
-
-	@Override
-	public void renderUI(DrawGraphics g) {
-
 	}
 
 	@Override

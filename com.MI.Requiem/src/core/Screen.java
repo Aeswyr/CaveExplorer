@@ -4,6 +4,7 @@ import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -30,20 +31,21 @@ public class Screen extends Canvas {
 		frame.setResizable(false);
 
 		if (width == -1 && height == -1) {
-			GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-			if (gd.isFullScreenSupported()) {
+			GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0];
 				frame.setUndecorated(true);
 				gd.setFullScreenWindow(frame);
 				d.setSize(gd.getFullScreenWindow().getWidth(), gd.getFullScreenWindow().getHeight());
-			} else {
-				d.setSize(800, 600);
-				frame.setSize(d);
-				frame.setMinimumSize(d);
-				frame.setMaximumSize(d);
-			}
+		} else if (width == 0 && height == 0) {
+			frame.setUndecorated(true);
+			d = Toolkit.getDefaultToolkit().getScreenSize();
+			frame.setSize(d);
+			frame.setPreferredSize(d);
+			frame.setMinimumSize(d);
+			frame.setMaximumSize(d);
 		} else {
 			d.setSize(width, height);
 			frame.setSize(d);
+			frame.setPreferredSize(d);
 			frame.setMinimumSize(d);
 			frame.setMaximumSize(d);
 		}
@@ -51,7 +53,7 @@ public class Screen extends Canvas {
 		
 		frame.setTitle("Unto the Abyss");
 		frame.setName("Unto the Abyss");
-		frame.setVisible(true);
+		
 
 		this.setPreferredSize(d);
 		this.setMaximumSize(d);
@@ -61,14 +63,16 @@ public class Screen extends Canvas {
 		
 		frame.add(this);
 		frame.pack();
+		
+		frame.setVisible(true);
 	}
 
 	public int getWidth() {
-		return (int) (d.width / Driver.scale);
+		return d.width;
 	}
 
 	public int getHeight() {
-		return (int) (d.height / Driver.scale);
+		return d.height;
 	}
 
 	public void close() {

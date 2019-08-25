@@ -12,13 +12,13 @@ public class Driver implements Runnable {
 
 	private boolean running = false;
 	private Renderer render;
-	Handler handler;
-	Screen screen;
-	DrawGraphics canvas;
+	protected Handler handler;
+	protected Screen screen;
+	protected DrawGraphics canvas;
 
 	public Driver() {
 
-		screen = new Screen(1600, 900);
+		screen = new Screen(0, 0);
 		canvas = new DrawGraphics(this);
 
 	}

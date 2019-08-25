@@ -22,10 +22,12 @@ import item.Inventory;
 import item.Item;
 import item.ItemContainer;
 import items.Bone;
+import items.CrystalRod;
 import items.Pickaxe;
 import items.Torch;
 import runtime.Handler;
 import world.Tile;
+import world.World;
 
 public class Player extends Mob {
 
@@ -49,7 +51,7 @@ public class Player extends Mob {
 		this.y = 10 * Tile.tileSize;
 		this.xOff = 32;
 		this.yOff = 32;
-		this.hitbox = new Hitbox(-22, -8, 10, 10, this, handler);
+		this.hitbox = new Hitbox(-22, -16, 10, 10, this, handler);
 		activeSprite = Assets.player_idle;
 
 		researchFlags = new boolean[Tag.RESEARCH_MAX_ARRAY];
@@ -104,7 +106,7 @@ public class Player extends Mob {
 		inventory.add(new Bone(handler, this));
 		inventory.add(new Bone(handler, this));
 		inventory.add(new Bone(handler, this));
-		inventory.add(new Bone(handler, this));
+		inventory.add(new CrystalRod(handler, this));
 	}
 
 	@Override
@@ -242,7 +244,7 @@ public class Player extends Mob {
 		}
 
 		inventory.render(g);
-
+		g.write(World.biomeToString(handler.getWorld().getCurrentBiome()), 4, handler.getHeight() - 20);
 	}
 
 	@Override

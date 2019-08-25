@@ -63,9 +63,9 @@ public class Torch extends Item {
 		}
 
 		if (holder != null) {
-			bright.setPos(holder.getCenteredX(), holder.getCenteredY());
-			dim.setPos(holder.getCenteredX(), holder.getCenteredY());
-			burnt.setPos(holder.getCenteredX(), holder.getCenteredY());
+			bright.setPos(holder.getLightX(), holder.getLightY());
+			dim.setPos(holder.getLightX(), holder.getLightY());
+			burnt.setPos(holder.getLightX(), holder.getLightY());
 		} else {
 			bright.setPos((int) x, (int) y);
 			dim.setPos((int) x, (int) y);

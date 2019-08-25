@@ -67,6 +67,9 @@ public class Handler {
 			if (devMode) devMode = false;
 			else devMode = true;
 		}
+		if (keys.getEscTyped()) {
+			driver.close();
+		}
 	}
 
 	public void render(DrawGraphics g) {
@@ -105,11 +108,11 @@ public class Handler {
 	}
 
 	public int getWidth() {
-		return driver.getWidth();
+		return (int) (driver.getWidth() / Driver.scale);
 	}
 
 	public int getHeight() {
-		return driver.getHeight();
+		return (int) (driver.getHeight() / Driver.scale);
 	}
 
 	public Screen getScreen() {

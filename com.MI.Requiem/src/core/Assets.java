@@ -45,7 +45,11 @@ public class Assets {
 	public static Sprite inventory_Body;
 	public static Sprite inventory_Offhand;
 	public static Sprite inventory_Mainhand;
-
+	public static Sprite hTick;
+	public static Sprite sTick;
+	public static Sprite pTick;
+	public static Sprite bTick;
+	
 	private static SpriteSheet player;
 	public static Sprite player_idle;
 	public static Sprite player_run;
@@ -92,6 +96,9 @@ public class Assets {
 	public static Sprite crystalRod;
 	public static Sprite crystalRod_inv;
 
+	public static SpriteSheet corpse_sheet;
+	public static Sprite corpse;
+	
 	// Sound
 
 	public static Sound pickaxe1;
@@ -112,6 +119,8 @@ public class Assets {
 		willowWisp = new SpriteSheet(ENTITY + "willowWisp.png");
 
 		font = new Font(UI + "font.png");
+		
+		corpse_sheet = new SpriteSheet(WORLD + "corpse.png");
 	}
 
 	private static void initSprite() {
@@ -147,7 +156,11 @@ public class Assets {
 		inventory_Body = new Sprite(64, 64, 32, ui, Sprite.TYPE_GUI_COMPONENT);
 		inventory_Offhand = new Sprite(32, 96, 32, ui, Sprite.TYPE_GUI_COMPONENT);
 		inventory_Mainhand = new Sprite(0, 96, 32, ui, Sprite.TYPE_GUI_COMPONENT);
-
+		hTick = new Sprite(0, 36, 1, 3, ui, Sprite.TYPE_ENTITY);
+		sTick = new Sprite(1, 36, 1, 3, ui, Sprite.TYPE_ENTITY);
+		pTick = new Sprite(2, 36, 1, 3, ui, Sprite.TYPE_ENTITY);
+		bTick = new Sprite(3, 36, 1, 3, ui, Sprite.TYPE_ENTITY);
+		
 		litTorch_inv = new Sprite(0, 0, 32, item, Sprite.TYPE_INVENTORY_ITEM);
 		litTorch = new Sprite(0, 32, 32, item, Sprite.TYPE_ENTITY);
 		burntTorch_inv = new Sprite(32, 0, 32, item, Sprite.TYPE_INVENTORY_ITEM);
@@ -182,6 +195,10 @@ public class Assets {
 		worktable_inv = new Sprite(224, 64, 32, item, Sprite.TYPE_INVENTORY_ITEM);
 		crystalRod = new Sprite(0, 160, 32, item, Sprite.TYPE_ENTITY);
 		crystalRod_inv = new Sprite(0, 128, 32, item, Sprite.TYPE_INVENTORY_ITEM);
+		
+		corpse = new Sprite(0, 0, 32, corpse_sheet, Sprite.TYPE_ENTITY);
+		
+		
 	}
 
 	private static void initSound() {

@@ -18,6 +18,7 @@ public class DrawGraphics {
 	ArrayList<LightRequest> lightRequest;
 	ArrayList<FontRequest> textRequest;
 
+	int fullWidth, fullHeight;
 	int width, height;
 	BufferedImage screen;
 	int[] raster;
@@ -32,8 +33,10 @@ public class DrawGraphics {
 	private Font font;
 
 	public DrawGraphics(Driver d) {
-		width = d.getWidth();
-		height = d.getHeight();
+		width = 960; //(int) (d.getWidth() / Driver.scale);
+		height = 540;//(int) (d.getHeight()  / Driver.scale);
+		fullWidth = d.getWidth();
+		fullHeight = d.getHeight();
 		screen = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		raster = ((DataBufferInt) screen.getRaster().getDataBuffer()).getData();
 		zBuffer = new int[raster.length];
@@ -56,7 +59,7 @@ public class DrawGraphics {
 					| (int) ((raster[i] & 0xff) * ((lightMap[i] & 0xff) / 255f));
 		}
 
-		g.drawImage(screen, 0, 0, (int) (width * Driver.scale), (int) (height * Driver.scale), null);
+		g.drawImage(screen, 0, 0, fullWidth, fullHeight, null);
 	}
 
 	public void process() {

@@ -3,8 +3,8 @@ package entities;
 import core.Assets;
 import entity.Hitbox;
 import entity.Mob;
-import gfx.DrawGraphics;
 import item.Item;
+import items.Bone;
 import runtime.Handler;
 
 public class Ooze extends Mob {
@@ -19,19 +19,23 @@ public class Ooze extends Mob {
 
 		this.healthMax = 10;
 		this.health = healthMax;
-
+		
+		this.spiritMax = 2;
+		this.spirit = spiritMax;
+		
 		this.speed = 1;
+		
+		if (rng.nextDouble() < 0.3) inventory.add(new Bone(handler, this));
+		if (rng.nextDouble() < 0.3) inventory.add(new Bone(handler, this));
+		if (rng.nextDouble() < 0.3) inventory.add(new Bone(handler, this));
+		
+		uiSetup();
 	}
 
 	public Ooze(Handler handler, int x, int y) {
 		this(handler);
 		this.x = x;
 		this.y = y;
-	}
-
-	@Override
-	public void renderUI(DrawGraphics g) {
-		//hitbox.render(g);
 	}
 
 	@Override

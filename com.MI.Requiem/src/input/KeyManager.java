@@ -6,8 +6,8 @@ import java.awt.event.KeyListener;
 public class KeyManager implements KeyListener {
 
 	boolean[] keys = new boolean[256];
-	public boolean w, a, s, d, up, left, down, right, f, c, v, rightBracket, shift;
-	private boolean w0, a0, s0, d0, up0, left0, down0, right0, f0, c0, v0, rightBracket0, shift0;
+	public boolean w, a, s, d, up, left, down, right, f, c, v, rightBracket, shift, esc;
+	private boolean w0, a0, s0, d0, up0, left0, down0, right0, f0, c0, v0, rightBracket0, shift0, esc0;
 
 	@Override
 	public void keyPressed(KeyEvent e) {
@@ -33,6 +33,7 @@ public class KeyManager implements KeyListener {
 		v0 =  v;
 		rightBracket0 = rightBracket;
 		shift0 = shift;
+		esc0 = esc;
 		
 		w = keys[KeyEvent.VK_W];
 		a = keys[KeyEvent.VK_A];
@@ -47,6 +48,7 @@ public class KeyManager implements KeyListener {
 		v =  keys[KeyEvent.VK_V];
 		rightBracket = keys[KeyEvent.VK_CLOSE_BRACKET];
 		shift = keys[KeyEvent.VK_SHIFT];
+		esc = keys[KeyEvent.VK_ESCAPE];
 	}
 
 	@Override
@@ -74,4 +76,40 @@ public class KeyManager implements KeyListener {
 		return !rightBracket0 && rightBracket;
 	}
 
+	public boolean getEscTyped() {
+		return !esc0 && esc;
+	}
+	
+	public boolean getWTyped() {
+		return !w0 && w;
+	}
+
+	public boolean getATyped() {
+		return !a0 && a;
+	}
+	
+	public boolean getSTyped() {
+		return !s0 && s;
+	}
+	
+	public boolean getDTyped() {
+		return !d0 && d;
+	}
+	
+	public boolean getUpTyped() {
+		return !up0 && up;
+	}
+	
+	public boolean getDownTyped() {
+		return !down0 && down;
+	}
+	
+	public boolean getLeftTyped() {
+		return !left0 && left;
+	}
+	
+	public boolean getRightTyped() {
+		return !right0 && right;
+	}
+	
 }

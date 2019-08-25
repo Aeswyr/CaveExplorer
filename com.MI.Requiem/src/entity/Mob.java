@@ -1,8 +1,12 @@
 package entity;
 
+import java.util.Random;
+
+import core.Assets;
 import effects.Effect;
 import gfx.DrawGraphics;
 import gfx.Sprite;
+import interactables.Corpse;
 import item.Inventory;
 import item.Item;
 import particle.Particle;
@@ -10,10 +14,32 @@ import runtime.Handler;
 
 public abstract class Mob extends Entity {
 
+	protected static Random rng = new Random();
+
 	public Mob(Handler handler) {
 		super(handler);
+		inventory = new Inventory(handler);
+		this.deathSprite = Assets.corpse;
+	}
+	
+	protected  void uiSetup() {
+		if (healthMax >= 40) maxH = 40;
+		else if (healthMax >= 24) maxH = 24;
+		else if (healthMax >= 15) maxH = 15;
+		else if (healthMax >= 7) maxH = 7;
+		else if (healthMax >= 3) maxH = 3;
+		else maxH = healthMax;
+		if (spiritMax >= 40) maxS = 40;
+		else if (spiritMax >= 24) maxS = 24;
+		else if (spiritMax >= 15) maxS = 15;
+		else if (spiritMax >= 7) maxS = 7;
+		else if (spiritMax >= 3) maxS = 3;
+		else maxS = spiritMax;
+		divH = healthMax / maxH;
+		divS = healthMax / maxS;
 	}
 
+	protected Sprite deathSprite;
 	protected Sprite activeSprite;
 	protected double speed;
 	protected int health, healthMax, spirit, spiritMax;
@@ -34,7 +60,25 @@ public abstract class Mob extends Entity {
 		move();
 	}
 
-	public abstract void renderUI(DrawGraphics g);
+	int divH, divS;
+	int maxH, maxS;
+	int off = 0;
+	public void renderUI(DrawGraphics g) {
+		
+		for (int i = 0; i < maxH; i++) {
+			Assets.bTick.render((int) x - handler.getCamera().xOffset() - xOff + i * 2 + off,
+					(int) y - handler.getCamera().yOffset() - yOff - 7, g);
+			if (i < health / divH) Assets.hTick.render((int) x - handler.getCamera().xOffset() - xOff + i * 2 + off,
+					(int) y - handler.getCamera().yOffset() - yOff - 7, g);
+		}
+		
+		for (int i = 0; i < maxS; i++) {
+			Assets.bTick.render((int) x - handler.getCamera().xOffset() - xOff + i * 2 + off,
+					(int) y - handler.getCamera().yOffset() - yOff - 3, g);
+			if (i < spirit / divS) Assets.sTick.render((int) x - handler.getCamera().xOffset() - xOff + i * 2 + off,
+					(int) y - handler.getCamera().yOffset() - yOff - 3, g);
+		}
+	}
 
 	public abstract void move();
 
@@ -178,6 +222,21 @@ public abstract class Mob extends Entity {
 
 	public void unlock() {
 		this.locked = false;
+	}
+
+	public int getLightX() {
+		return (int) (x - xOff / 2);
+	}
+
+	public int getLightY() {
+		return (int) (y - (2 * yOff / 3));
+	}
+
+	@Override
+	public void die() {
+		if (inventory.getRawHeld().size() > 0)
+			handler.getWorld().getEntities().addEntity(new Corpse(handler, deathSprite, hitbox, inventory, x, y));
+		super.die();
 	}
 
 }

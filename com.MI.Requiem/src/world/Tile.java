@@ -31,7 +31,8 @@ public class Tile {
 			new Tile_ForgeRight(), new Tile_LimestoneFloor(), new Tile_LimestoneWall(), new Tile_IronVein(),
 			new Tile_ClayFloor(), new Tile_ClayWall(), new Tile_Worktable() };
 	protected final int id;
-
+	public static final int TILE_MAX = tiles.length;
+	
 	public Tile(int id) {
 		this.id = id;
 	}

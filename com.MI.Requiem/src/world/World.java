@@ -3,15 +3,20 @@ package world;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.StringTokenizer;
 
 import core.Driver;
+import entities.Ooze;
+import entities.WillowWisp;
 import entity.EntityManager;
 import gfx.DrawGraphics;
 import runtime.Handler;
 import utility.Loader;
 
 public class World {
+
+	private static Random rng = new Random();
 
 	Handler handler;
 
@@ -21,6 +26,7 @@ public class World {
 	ArrayList<Chunk> chunks;
 	Chunk currChunk;
 	public static int maxChunks;
+	int biome;
 
 	public World(Handler handler) {
 		this.handler = handler;
@@ -63,9 +69,68 @@ public class World {
 		entities.renderEntityUI(g);
 	}
 
+	int[] biomeData;
+	int spawnTick;
+
 	public void update() {
+		spawnTick++;
+		biomeData = new int[Tile.TILE_MAX];
+		synchronized (chunks) {
+			for (int i = 0; i < chunks.size(); i++) {
+				chunks.get(i).update(biomeData);
+			}
+		}
+
+		if (biomeData[0] + biomeData[1] + biomeData[8] + biomeData[9] > 400) {
+			biome = 0;
+		} else if (biomeData[5] + biomeData[6] > 400) {
+			biome = 1;
+		} else {
+			biome = 0;
+		}
 		updateChunks();
 		entities.update();
+
+		if (spawnTick % 600 == 0) {
+			switch (biome) {
+			case 0:
+				if (rng.nextDouble() < 0.3) {
+					int x = rng.nextInt(256) + handler.getPlayer().getX();
+					int y = rng.nextInt(256) + handler.getPlayer().getY();
+					int attempts = 0;
+					while ((getTile(x, y).isSolid() || getTile(x, y).isSolid() || getTile(x, y).isSolid()
+							|| getTile(x, y).isSolid()) && attempts < 10) {
+						attempts++;
+						x = rng.nextInt(256) + handler.getPlayer().getX();
+						y = rng.nextInt(256) + handler.getPlayer().getY();
+					}
+
+					if (attempts != 10) {
+						entities.addEntity(new WillowWisp(handler, x, y));
+						System.out.println("wisp spawned");
+					}
+				}
+				break;
+			case 1:
+				if (rng.nextDouble() < 0.3) {
+					int x = rng.nextInt(256) + handler.getPlayer().getX();
+					int y = rng.nextInt(256) + handler.getPlayer().getY();
+					int attempts = 0;
+					while ((getTile(x, y).isSolid() || getTile(x, y).isSolid() || getTile(x, y).isSolid()
+							|| getTile(x, y).isSolid()) && attempts < 10) {
+						attempts++;
+						x = rng.nextInt(256) + handler.getPlayer().getX();
+						y = rng.nextInt(256) + handler.getPlayer().getY();
+					}
+
+					if (attempts != 10) {
+						entities.addEntity(new Ooze(handler, x, y));
+						System.out.println("Ooze spawned");
+					}
+				}
+				break;
+			}
+		}
 	}
 
 	private void updateChunks() {
@@ -229,6 +294,21 @@ public class World {
 	public void unloadWorld() {
 		for (int i = 0; i < chunks.size(); i++) {
 			chunks.get(i).unload();
+		}
+	}
+
+	public int getCurrentBiome() {
+		return biome;
+	}
+
+	public static String biomeToString(int biome) {
+		switch (biome) {
+		case 0:
+			return "Earthen Caverns";
+		case 1:
+			return "Limestone Tunnels";
+		default:
+			return "Hip and Fresh Land";
 		}
 	}
 
