@@ -13,40 +13,31 @@ import utility.NoiseGenerator;
 
 public class MapGenerator {
 
-	public static void generateMap(World w, Handler h) {
-		
-		//LOADING SCREEN START
+	public static void generateMap(World w, Handler h, String name) throws IOException {
+
+		// LOADING SCREEN START
 		LoadingScreen load = new LoadingScreen(World.maxChunks * World.maxChunks);
 		load.displayText("Shaping Caverns");
-		
-		Random rng = new Random(); // for temp id 12
-		BufferedWriter write = null;
-		try {
-			File f = new File(Driver.saveDir + "saves/world/world.dat");
-			f.delete();
-			f.createNewFile();
-			FileWriter file = new FileWriter(f);
-			write = new BufferedWriter(file);
-		} catch (IOException e) {
-		}
-		BufferedWriter writeMap = null;
-		try {
-			File f = new File(Driver.saveDir + "saves/world/map.dat");
-			f.delete();
-			f.createNewFile();
-			FileWriter file = new FileWriter(f);
-			writeMap = new BufferedWriter(file);
-		} catch (IOException e) {
-		}
-		BufferedWriter writeData = null;
-		try {
-			File f = new File(Driver.saveDir + "saves/world/data.dat");
-			f.delete();
-			f.createNewFile();
-			FileWriter file = new FileWriter(f);
-			writeData = new BufferedWriter(file);
-		} catch (IOException e) {
-		}
+
+		Random rng = new Random();
+
+		File f1 = new File(Driver.saveDir + "saves/" + name + "/world.dat");
+		f1.delete();
+		f1.createNewFile();
+		FileWriter file1 = new FileWriter(f1);
+		BufferedWriter write = new BufferedWriter(file1);
+
+		File f2 = new File(Driver.saveDir + "saves/" + name + "/map.dat");
+		f2.delete();
+		f2.createNewFile();
+		FileWriter file2 = new FileWriter(f2);
+		BufferedWriter writeMap = new BufferedWriter(file2);
+
+		File f3 = new File(Driver.saveDir + "saves/" + name + "/data.dat");
+		f3.delete();
+		f3.createNewFile();
+		FileWriter file3 = new FileWriter(f3);
+		BufferedWriter writeData = new BufferedWriter(file3);
 
 		NoiseGenerator noise = new NoiseGenerator(rng);
 		noise.enableTesselation(World.maxChunks * Chunk.chunkDim, 256);
@@ -103,21 +94,14 @@ public class MapGenerator {
 
 							}
 						}
-						try {
-							write.write(id + " ");
-							writeMap.write(mapID + " ");
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+
+						write.write(id + " ");
+						writeMap.write(mapID + " ");
 
 					}
 				}
-				try {
-					write.newLine();
-					writeMap.newLine();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				write.newLine();
+				writeMap.newLine();
 				load.increment(1);
 			}
 		}
@@ -138,25 +122,16 @@ public class MapGenerator {
 			default:
 				break;
 			}
-					
+
 		}
-		
-		try {
-			writeData.write(spawnX + " " + spawnY);
-			writeData.newLine();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		
-		try {
-			write.close();
-			writeMap.close();
-			writeData.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+
+		writeData.write(spawnX + " " + spawnY);
+		writeData.newLine();
+
+		write.close();
+		writeMap.close();
+		writeData.close();
+
 		load.close();
 	}
 

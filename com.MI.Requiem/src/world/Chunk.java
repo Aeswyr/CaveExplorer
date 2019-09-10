@@ -117,8 +117,8 @@ public class Chunk {
 		String line = null;
 		String mapLine = null;
 		try {
-			BufferedReader read = Loader.loadTextFromFile(Driver.saveDir + "saves/world/world.dat");
-			BufferedReader readMap = Loader.loadTextFromFile(Driver.saveDir + "saves/world/map.dat");
+			BufferedReader read = Loader.loadTextFromFile(Driver.saveDir + "saves/" + handler.getWorld().loadedWorld + "/world.dat");
+			BufferedReader readMap = Loader.loadTextFromFile(Driver.saveDir + "saves/" + handler.getWorld().loadedWorld + "/map.dat");
 			int find = y * World.maxChunks + x;
 			for (int i = 0; i < find; i++) {
 				read.readLine();
@@ -159,8 +159,8 @@ public class Chunk {
 			}
 		}
 		int find = y * World.maxChunks + x;
-		Utility.editText(c, find, Driver.saveDir + "saves/world/world.dat");
-		Utility.editText(m, find, Driver.saveDir + "saves/world/map.dat");
+		Utility.editText(c, find, Driver.saveDir + "saves/" + handler.getWorld().loadedWorld + "/world.dat");
+		Utility.editText(m, find, Driver.saveDir + "saves/" + handler.getWorld().loadedWorld + "/map.dat");
 
 		chunk = null;
 		map = null;

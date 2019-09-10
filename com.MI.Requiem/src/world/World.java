@@ -1,6 +1,7 @@
 package world;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
@@ -27,6 +28,8 @@ public class World {
 	Chunk currChunk;
 	public static int maxChunks;
 	int biome;
+	
+	String loadedWorld = null;
 
 	public World(Handler handler) {
 		this.handler = handler;
@@ -41,11 +44,18 @@ public class World {
 
 	}
 
-	public void init() {
-		MapGenerator.generateMap(this, handler);
+	public void init(String name) {
+		File dir = new File(Driver.saveDir + "saves/" + name + "/");
+		loadedWorld = name;
+		try {
+			if (dir.mkdir()) MapGenerator.generateMap(this, handler, name);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		chunkLoader.start();
 
-		BufferedReader info = Loader.loadTextFromFile(Driver.saveDir + "saves/world/data.dat");
+		BufferedReader info = Loader.loadTextFromFile(Driver.saveDir + "saves/" + name + "/data.dat");
 		try {
 			String[] playerCoord = info.readLine().split(" ");
 			handler.getPlayer().setX(Integer.parseInt(playerCoord[0]) * Tile.tileSize);
@@ -219,7 +229,7 @@ public class World {
 		int chunkx = x / Chunk.chunkDim;
 		int chunky = y / Chunk.chunkDim;
 		String line = null;
-		BufferedReader read = Loader.loadTextFromFile(Driver.saveDir + "saves/world/world.dat");
+		BufferedReader read = Loader.loadTextFromFile(Driver.saveDir + "saves/" + loadedWorld + "/world.dat");
 		int find = chunky * World.maxChunks + chunkx;
 
 		try {
@@ -293,7 +303,7 @@ public class World {
 
 	public void unloadWorld() {
 		for (int i = 0; i < chunks.size(); i++) {
-			chunks.get(i).unload();
+			if (chunks.get(i).loaded) chunks.get(i).unload();
 		}
 	}
 

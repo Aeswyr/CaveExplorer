@@ -4,7 +4,6 @@ import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -32,39 +31,45 @@ public class Screen extends Canvas {
 
 		if (width == -1 && height == -1) {
 			GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0];
-				frame.setUndecorated(true);
-				gd.setFullScreenWindow(frame);
-				d.setSize(gd.getFullScreenWindow().getWidth(), gd.getFullScreenWindow().getHeight());
-		} else if (width == 0 && height == 0) {
 			frame.setUndecorated(true);
-			d = Toolkit.getDefaultToolkit().getScreenSize();
+			gd.setFullScreenWindow(frame);
+			d.setSize(gd.getFullScreenWindow().getWidth(), gd.getFullScreenWindow().getHeight());
+			this.setSize(d);
+			this.setPreferredSize(d);
+			this.setMaximumSize(d);
+			this.setMinimumSize(d);
+		} else if (width == 0 && height == 0) {
+			GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+			frame.setUndecorated(true);
+			d.setSize(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight());
 			frame.setSize(d);
 			frame.setPreferredSize(d);
 			frame.setMinimumSize(d);
 			frame.setMaximumSize(d);
+			this.setSize(d);
+			this.setPreferredSize(d);
+			this.setMaximumSize(d);
+			this.setMinimumSize(d);
 		} else {
 			d.setSize(width, height);
 			frame.setSize(d);
 			frame.setPreferredSize(d);
 			frame.setMinimumSize(d);
 			frame.setMaximumSize(d);
+			this.setSize(d);
+			this.setPreferredSize(d);
+			this.setMaximumSize(d);
+			this.setMinimumSize(d);
 		}
 
-		
 		frame.setTitle("Unto the Abyss");
 		frame.setName("Unto the Abyss");
-		
 
-		this.setPreferredSize(d);
-		this.setMaximumSize(d);
-		this.setMinimumSize(d);
-
-		frame.setResizable(false);
-		
 		frame.add(this);
 		frame.pack();
-		
+
 		frame.setVisible(true);
+		System.out.println(d.width + ", " + d.height);
 	}
 
 	public int getWidth() {
@@ -78,21 +83,21 @@ public class Screen extends Canvas {
 	public void close() {
 		frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
 	}
-	
+
 	public void setClosing(Driver d, Renderer r, Handler h) {
 		frame.addWindowListener(new WindowAdapter() // Operations to complete upon window closing
-				{
-					public void windowClosing(WindowEvent we) {
-						d.stop();
-						r.stop();
-						try {
-							Sound.shutdown();
-						} catch (NullPointerException e) {
-							e.printStackTrace();
-						}
-						h.getWorld().unloadWorld();
-						System.out.println("Game Closed");
-					}
-				});
+		{
+			public void windowClosing(WindowEvent we) {
+				d.stop();
+				r.stop();
+				try {
+					Sound.shutdown();
+				} catch (NullPointerException e) {
+					e.printStackTrace();
+				}
+				h.getWorld().unloadWorld();
+				System.out.println("Game Closed");
+			}
+		});
 	}
 }

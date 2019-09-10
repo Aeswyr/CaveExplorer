@@ -14,6 +14,8 @@ import world.World;
 
 public class Handler {
 
+	private State activeState;
+
 	public boolean devMode = false;
 
 	private Driver driver;
@@ -26,21 +28,20 @@ public class Handler {
 
 	private LightManager lightManager;
 	private ParticleManager particles;
-	
+
 	private InterfaceManager uiManager;
 
 	private LoadingScreen loadingScreen;
-	
+
 	public Handler(Driver d) {
 		driver = d;
 		TileSet.handler = this;
 		LoadingScreen.handler = this;
-		
+
 		lightManager = new LightManager(this);
 		particles = new ParticleManager();
 		uiManager = new InterfaceManager();
-		
-		
+
 		camera = new Camera(this);
 		player = new Player(this);
 		camera.centerOnEntity(player);
@@ -50,22 +51,22 @@ public class Handler {
 		d.setMouseListener(mouse);
 		d.setKeyListener(keys);
 		world = new World(this);
+		
+		activeState = new Menustate(this);
 	}
-	
-	public void init() {
-		world.init();
+
+	public void init(String name) {
+		world.init(name);
 	}
 
 	public void update() {
 		keys.update();
-		world.update();
-		particles.update();
-		lightManager.update();
-		camera.update();
-		uiManager.update();
+		activeState.update();
 		if (keys.getRBracketTyped()) {
-			if (devMode) devMode = false;
-			else devMode = true;
+			if (devMode)
+				devMode = false;
+			else
+				devMode = true;
 		}
 		if (keys.getEscTyped()) {
 			driver.close();
@@ -75,14 +76,9 @@ public class Handler {
 	public void render(DrawGraphics g) {
 		if (loadingScreen != null)
 			loadingScreen.render(g);
-		else {
-			world.render(g);
-			particles.render(g);
-			uiManager.render(g);
+		else
+			activeState.render(g);
 
-			if (devMode)
-				world.getEntities().renderDevMode(g);
-		}
 	}
 
 	// Getters and Setters
@@ -108,11 +104,11 @@ public class Handler {
 	}
 
 	public int getWidth() {
-		return (int) (driver.getWidth() / Driver.scale);
+		return 960;
 	}
 
 	public int getHeight() {
-		return (int) (driver.getHeight() / Driver.scale);
+		return 540;
 	}
 
 	public Screen getScreen() {
@@ -126,24 +122,28 @@ public class Handler {
 	public LightManager getLights() {
 		return lightManager;
 	}
-	
+
 	public ParticleManager getParticles() {
 		return particles;
 	}
-	
+
 	public InterfaceManager getUI() {
 		return uiManager;
 	}
-	
+
 	public void setFPSCap(boolean capped) {
 		driver.setCapped(capped);
 	}
-	
+
 	public void setLoadingScreen(LoadingScreen l) {
 		this.loadingScreen = l;
 	}
-	
+
 	public void closeLoadingScreen() {
 		loadingScreen = null;
+	}
+	
+	public void setState(State state) {
+		this.activeState = state;
 	}
 }

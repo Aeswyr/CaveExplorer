@@ -64,7 +64,6 @@ public class Driver implements Runnable {
 		t.start();
 		screen.setClosing(this, render, handler);
 		render.start();
-		handler.init();
 	}
 
 	public void update() {

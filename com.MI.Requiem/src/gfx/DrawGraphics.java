@@ -33,10 +33,11 @@ public class DrawGraphics {
 	private Font font;
 
 	public DrawGraphics(Driver d) {
-		width = 960; //(int) (d.getWidth() / Driver.scale);
-		height = 540;//(int) (d.getHeight()  / Driver.scale);
+		width = 960;
+		height = 540;
 		fullWidth = d.getWidth();
 		fullHeight = d.getHeight();
+		System.out.println(fullWidth + ", " + fullHeight);
 		screen = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		raster = ((DataBufferInt) screen.getRaster().getDataBuffer()).getData();
 		zBuffer = new int[raster.length];

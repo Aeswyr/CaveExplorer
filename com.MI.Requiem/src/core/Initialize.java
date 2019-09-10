@@ -29,9 +29,7 @@ public class Initialize {
 		File file = new File(Driver.saveDir);
 		if (file.mkdir()) {
 			System.out.println("Created directory at: " + Driver.saveDir);
-			new File(Driver.saveDir + "saves/world/").mkdirs();
-			new File(Driver.saveDir + "saves/character/").mkdirs();
-			new File(Driver.saveDir + "saves/data/").mkdirs();
+			new File(Driver.saveDir + "saves/").mkdirs();
 		} else {
 			System.out.println("Directory already exists");
 		}
