@@ -6,6 +6,11 @@ import gfx.SpriteSheet;
 import sfx.Sound;
 import world.TileSet;
 
+/**
+ * stores and initializes all game assets
+ * @author Pascal
+ *
+ */
 public class Assets {
 
 	private static final String WORLD = "/world/";

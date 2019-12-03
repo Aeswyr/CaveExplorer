@@ -6,8 +6,8 @@ import java.awt.event.KeyListener;
 public class KeyManager implements KeyListener {
 
 	boolean[] keys = new boolean[256];
-	public boolean w, a, s, d, up, left, down, right, f, c, v, rightBracket, shift, esc;
-	private boolean w0, a0, s0, d0, up0, left0, down0, right0, f0, c0, v0, rightBracket0, shift0, esc0;
+	public boolean w, a, s, d, up, left, down, right, f, c, v, rightBracket, shift, esc, space;
+	private boolean w0, a0, s0, d0, up0, left0, down0, right0, f0, c0, v0, rightBracket0, shift0, esc0, space0;
 
 	@Override
 	public void keyPressed(KeyEvent e) {
@@ -34,6 +34,7 @@ public class KeyManager implements KeyListener {
 		rightBracket0 = rightBracket;
 		shift0 = shift;
 		esc0 = esc;
+		space0 = space;
 		
 		w = keys[KeyEvent.VK_W];
 		a = keys[KeyEvent.VK_A];
@@ -49,6 +50,7 @@ public class KeyManager implements KeyListener {
 		rightBracket = keys[KeyEvent.VK_CLOSE_BRACKET];
 		shift = keys[KeyEvent.VK_SHIFT];
 		esc = keys[KeyEvent.VK_ESCAPE];
+		space = keys[KeyEvent.VK_SPACE];
 	}
 
 	@Override
@@ -70,6 +72,10 @@ public class KeyManager implements KeyListener {
 	
 	public boolean getShiftTyped() {
 		return !shift0 && shift;
+	}
+	
+	public boolean getSpaceTyped() {
+		return !space0 && space;
 	}
 	
 	public boolean getRBracketTyped() {

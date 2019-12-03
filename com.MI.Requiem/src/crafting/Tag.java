@@ -1,5 +1,10 @@
 package crafting;
 
+/**
+ * contains integer tags associated with different research, crafting table, and resource requirements
+ * @author Pascal
+ *
+ */
 public class Tag {
 	// RESEARCH tags
 	static int r = 0;

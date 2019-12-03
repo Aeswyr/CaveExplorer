@@ -9,6 +9,11 @@ import item.IdCountPair;
 import item.Item;
 import runtime.Handler;
 
+/**
+ * details a single individual crafting recipe and the process of creating it
+ * @author Pascal
+ *
+ */
 public class Recipe {
 
 	boolean[] stationReq;
@@ -136,8 +141,8 @@ public class Recipe {
 
 	/**
 	 * consumes resources from the player's inventory in order to craft the item
-	 * NOTE - this method does not check if the player can craft the item and should
-	 * always be preceeded by a call to the qualify method
+	 * @NOTE - this method does not check if the player can craft the item and should
+	 * always be preceded by a call to the qualify method
 	 * 
 	 * @param p - the player to consume items from
 	 * @param h - the game handler
@@ -200,6 +205,12 @@ public class Recipe {
 		return prod;
 	}
 
+	/**
+	 * Returns the item created by this recipe and binds it to the specified player
+	 * @param p - the player who crafted the item
+	 * @param h
+	 * @returns the item created by this recipe
+	 */
 	public Item getResult(Player p, Handler h) {
 		return Item.toItem(result, p, h);
 	}

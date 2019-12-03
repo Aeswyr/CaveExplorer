@@ -5,7 +5,7 @@ import utility.Loader;
 
 /**
  * Represents a sprite sheet within the program
- * @author Pascal King
+ * @author Pascal
  *
  */
 public class SpriteSheet {

@@ -5,9 +5,14 @@ import input.KeyManager;
 import input.MouseManager;
 import runtime.Handler;
 
+/**
+ * main engine of the game, updates and manages all processes
+ * @author pmkgb
+ *
+ */
 public class Driver implements Runnable {
 
-	public static double scale = 2.0;
+	public static double xScale = 1, yScale = 1;
 	public static String saveDir;
 
 	private boolean running = false;
@@ -55,9 +60,11 @@ public class Driver implements Runnable {
 		}
 
 	}
-
+/**
+ * starts this thread and starts the renderer
+ */
 	public synchronized void start() {
-		handler = new Handler(this);		
+		handler = new Handler(this);
 		running = true;
 		Thread t = new Thread(this);
 		render = new Renderer(handler, screen, canvas);
@@ -66,43 +73,80 @@ public class Driver implements Runnable {
 		render.start();
 	}
 
+	/**
+	 * updates the lower game processes
+	 */
 	public void update() {
 		handler.update();
 	}
 
+	/**
+	 * gets the screen width
+	 * @returns the true width of the screen
+	 */
 	public int getWidth() {
 		return screen.getWidth();
 	}
 
+	/**
+	 * gets the screen height
+	 * @returns the true height of the screen
+	 */
 	public int getHeight() {
 		return screen.getHeight();
 	}
 
+	/**
+	 * gets the game window
+	 * @returns the screen object the game is rendered on
+	 */
 	public Screen getScreen() {
 		return screen;
 	}
 
+	/**
+	 * gets the DrawGraphics component associated with the renderer
+	 * @returns the DrawGraphics component of the renderer
+	 */
 	public DrawGraphics getCanvas() {
 		return canvas;
 	}
 
+	/**
+	 * sets whether or not to cap fps
+	 * @param capped - true to cap fps, false to uncap
+	 */
 	public void setCapped(boolean capped) {
 		render.setCapped(capped);
 	}
 
+	/**
+	 * sets the current keyboard listener
+	 * @param k - the KeyManager with the desired KeyListener
+	 */
 	public void setKeyListener(KeyManager k) {
 		screen.addKeyListener(k);
 	}
 
+	/**
+	 * sets the current mouse listeners
+	 * @param m - the MouseManager with the desired MouseListener and MouseMotionlistener
+	 */
 	public void setMouseListener(MouseManager m) {
 		screen.addMouseListener(m);
 		screen.addMouseMotionListener(m);
 	}
-	
+
+	/**
+	 * closes the game
+	 */
 	public void close() {
 		screen.close();
 	}
-	
+
+	/**
+	 * stops this thread
+	 */
 	public void stop() {
 		this.running = false;
 	}

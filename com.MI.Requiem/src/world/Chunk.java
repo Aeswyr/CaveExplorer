@@ -47,10 +47,10 @@ public class Chunk {
 		int offx = handler.getCamera().xOffset() / Tile.tileSize;
 		int offy = handler.getCamera().yOffset() / Tile.tileSize;
 
-		int startX = offx + (int) (12 / Driver.scale);
+		int startX = offx + (int) (12 / Driver.xScale);
 		int startY = offy;
-		int endX = offx + handler.getWidth() / Tile.tileSize - (int) (18 / Driver.scale);
-		int endY = offy + handler.getHeight() / Tile.tileSize + (int) (9 / Driver.scale);
+		int endX = offx + handler.getWidth() / Tile.tileSize - (int) (18 / Driver.xScale);
+		int endY = offy + handler.getHeight() / Tile.tileSize + (int) (9 / Driver.yScale);
 
 		if (startX < x * chunkDim)
 			startX = x * chunkDim;
@@ -80,10 +80,10 @@ public class Chunk {
 		int offx = handler.getCamera().xOffset() / Tile.tileSize;
 		int offy = handler.getCamera().yOffset() / Tile.tileSize;
 
-		int startX = offx + (int) (12 / Driver.scale);
+		int startX = offx + (int) (12 / Driver.xScale);
 		int startY = offy;
-		int endX = offx + handler.getWidth() / Tile.tileSize - (int) (18 / Driver.scale);
-		int endY = offy + handler.getHeight() / Tile.tileSize + (int) (9 / Driver.scale);
+		int endX = offx + handler.getWidth() / Tile.tileSize - (int) (18 / Driver.xScale);
+		int endY = offy + handler.getHeight() / Tile.tileSize + (int) (9 / Driver.yScale);
 
 		if (startX < x * chunkDim)
 			startX = x * chunkDim;
@@ -117,8 +117,10 @@ public class Chunk {
 		String line = null;
 		String mapLine = null;
 		try {
-			BufferedReader read = Loader.loadTextFromFile(Driver.saveDir + "saves/" + handler.getWorld().loadedWorld + "/world.dat");
-			BufferedReader readMap = Loader.loadTextFromFile(Driver.saveDir + "saves/" + handler.getWorld().loadedWorld + "/map.dat");
+			BufferedReader read = Loader
+					.loadTextFromFile(Driver.saveDir + "saves/" + handler.getWorld().loadedWorld + "/world.dat");
+			BufferedReader readMap = Loader
+					.loadTextFromFile(Driver.saveDir + "saves/" + handler.getWorld().loadedWorld + "/map.dat");
 			int find = y * World.maxChunks + x;
 			for (int i = 0; i < find; i++) {
 				read.readLine();
@@ -147,7 +149,7 @@ public class Chunk {
 	}
 
 	/**
-	 * unloads a chunk's data from memory
+	 * unloads a chunk's data from memory and saves all changes to the world file
 	 */
 	public void unload() {
 		String c = "";
@@ -170,8 +172,8 @@ public class Chunk {
 	/**
 	 * fetches the tile at a given x and y
 	 * 
-	 * @param x - the x coordinate of the node relative to the whole map
-	 * @param y - the y coordinate of the node relative to the whole map
+	 * @param x - the x coordinate (in tiles) relative to the whole map
+	 * @param y - the y coordinate (in tiles) relative to the whole map
 	 * @returns the node at that x, y. If that x, y lies outside the chunk, returns
 	 *          null
 	 */
@@ -185,6 +187,14 @@ public class Chunk {
 		return chunk[x][y];
 	}
 
+	/**
+	 * Changes the tile at the specified coordinate to a new tile with the specified
+	 * id
+	 * 
+	 * @param x  - target x (in tiles) relative to the whole map
+	 * @param y  - target y (in tiles) relative to the whole map
+	 * @param id - desired tile id
+	 */
 	public void setTile(int x, int y, int id) {
 		x -= this.x * chunkDim;
 		y -= this.y * chunkDim;
@@ -193,6 +203,14 @@ public class Chunk {
 		chunk[x][y] = id;
 	}
 
+	/**
+	 * fetches the overlay tile at a given x and y
+	 * 
+	 * @param x - the x coordinate (in tiles) relative to the whole map
+	 * @param y - the y coordinate (in tiles) relative to the whole map
+	 * @returns the node at that x, y. If that x, y lies outside the chunk, returns
+	 *          null
+	 */
 	public int overlayAt(int x, int y) {
 		if (!loaded)
 			return -1;
@@ -203,6 +221,14 @@ public class Chunk {
 		return map[x][y];
 	}
 
+	/**
+	 * Changes the overlay tile at the specified coordinate to a new overlay tile
+	 * with the specified id
+	 * 
+	 * @param x  - target x (in tiles) relative to the whole map
+	 * @param y  - target y (in tiles) relative to the whole map
+	 * @param id - desired overlay tile id
+	 */
 	public void setOverlay(int x, int y, int id) {
 		x -= this.x * chunkDim;
 		y -= this.y * chunkDim;
@@ -212,14 +238,14 @@ public class Chunk {
 	}
 
 	/**
-	 * @returns the x value of this chunk
+	 * @returns the x position of this chunk
 	 */
 	public int getX() {
 		return x;
 	}
 
 	/**
-	 * @returns the y value of this chunk
+	 * @returns the y position of this chunk
 	 */
 	public int getY() {
 		return y;

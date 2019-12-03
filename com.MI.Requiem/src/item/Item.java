@@ -6,7 +6,7 @@ import entities.Player;
 import entity.Hitbox;
 import entity.Interactable;
 import entity.Mob;
-import geometry.Square;
+import geometry.Rect;
 import gfx.DrawGraphics;
 import gfx.Sprite;
 import items.Anvil;
@@ -27,6 +27,12 @@ import items.Worktable;
 import runtime.Handler;
 import utility.Storeable;
 
+/**
+ * base for all items in the game
+ * 
+ * @author Pascal
+ *
+ */
 public abstract class Item extends Interactable implements Storeable, Cloneable {
 
 	/*
@@ -62,12 +68,25 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 	public static final int ITEM_LUCK = 8;
 	protected static Random rng = new Random();
 
+	/**
+	 * initializes an item within an inventory
+	 * 
+	 * @param handler
+	 * @param holder  - the mob who's inventory holds the item
+	 */
 	public Item(Handler handler, Mob holder) {
 		super(handler);
 		this.holder = holder;
 		setup();
 	}
 
+	/**
+	 * initializes an item within the world
+	 * 
+	 * @param x       - x position of the item
+	 * @param y       - y position of the item
+	 * @param handler
+	 */
 	public Item(int x, int y, Handler handler) {
 		super(handler);
 		this.x = x;
@@ -78,21 +97,27 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 		setup();
 	}
 
+	/**
+	 * defines the unique functions of the item which must be set up no mater where
+	 * it's initialized
+	 */
 	protected abstract void setup();
 
+	@Override
 	public void render(DrawGraphics g) {
 		sprite.render((int) x - handler.getCamera().xOffset(), (int) y - handler.getCamera().yOffset(), g);
 //		if (hitbox != null) hitbox.render(g);
 	}
 
+	@Override
 	public void renderInventory(int x, int y, DrawGraphics g) {
 		invSprite.render(x, y, g);
 		if (use > 0 && use != useMax) {
-			Square s = new Square((int) (27.0 * use / useMax), 4, 0xFFFFFF00, Sprite.TYPE_GUI_ITEM_SHAPE);
+			Rect s = new Rect((int) (27.0 * use / useMax), 4, 0xFFFFFF00, Sprite.TYPE_GUI_ITEM_SHAPE);
 			s.render(x + 3, y + 24, g);
 		}
 	}
-	
+
 	@Override
 	public void renderTextBox(int x, int y, DrawGraphics g) {
 		g.write(name, x - 36, y, 0xffffffff);
@@ -145,42 +170,68 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 		}
 	}
 
+	/**
+	 * contains functions of the item when it is used from a hand slot
+	 */
 	public abstract void use();
 
+	/**
+	 * sets which mob is holding this item
+	 * @param m - the mob who will hold the item
+	 */
 	public void setHolder(Mob m) {
 		this.holder = m;
 		this.hitbox = null;
 	}
 
+	/**
+	 * applies item stats to the holder mob and sets the item as equipped
+	 */
 	public void onEquip() {
 		this.equipped = true;
 		applyStats();
 
 	}
 
+	/**
+	 * removes stats from the holder mob and sets the item as not equipped
+	 */
 	public void onDequip() {
 		this.equipped = false;
 		removeStats();
 	}
 
+	@Override
 	public String getTags() {
 		return tags;
 	}
 
+	/**
+	 * @returns true if this item is equipped, false otherwise
+	 */
 	public boolean equipped() {
 		return equipped;
 	}
 
+	@Override
 	public boolean canStack(Storeable s) {
 		if (s instanceof Item && ((Item) s).ID.equals(this.ID) && this.stackable)
 			return true;
 		return false;
 	}
 
+	/**
+	 * sets whether or not this item has been consumed
+	 * 
+	 * @param b - true if this item has been consumed, false otherwise
+	 */
 	public void setConsumed(boolean b) {
 		this.consumed = b;
 	}
 
+	/**
+	 * adds this item to the world at the feet of the mob who was holding it
+	 */
 	public void drop() {
 		this.hitbox = new Hitbox(6, 6, 20, this, handler);
 		if (holder != null) {
@@ -192,6 +243,7 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 		hitbox.updatePos((int) x, (int) y);
 	}
 
+	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		return super.clone();
 	}
@@ -204,6 +256,12 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 
 	/**
 	 * converts an id to an item
+	 * 
+	 * @param id      - the id of the desired item
+	 * @param holder  - the mob whos inventory will contain the new item
+	 * @param handler
+	 * 
+	 * @returns the new item based on the input id
 	 */
 	public static Item toItem(String id, Mob holder, Handler handler) {
 		String[] sec = id.split(":");
@@ -246,10 +304,19 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 		}
 	}
 
+	/**
+	 * @returns the stat adjustments that this item grants
+	 */
 	public int[] getStatPackage() {
 		return statPackage;
 	}
 
+	/**
+	 * edits this item's package of stats
+	 * 
+	 * @param edit - an array containing the adjustment values to be added to this
+	 *             item's stat package
+	 */
 	public void editStatPackage(int[] edit) {
 		if (holder != null)
 			removeStats();
@@ -260,38 +327,51 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 			applyStats();
 
 	}
-	
+
+	/**
+	 * cleanup operations for stat application when an item is first generated
+	 */
 	public void finalize() {
 		this.use += statPackage[ITEM_DURABILITY];
 		this.useMax += statPackage[ITEM_DURABILITY];
 	}
 
+	/**
+	 * applies stat adjustments from the item to the carrying mob
+	 */
 	protected void applyStats() {
-		holder.adjArmor((int)statPackage[ITEM_ARMOR]);
-		holder.adjInv((int)statPackage[ITEM_CAPACITY]);
-		holder.adjMaxhp((int)statPackage[ITEM_HEALTH]);
-		holder.adjMaxsp((int)statPackage[ITEM_SPIRIT]);
-		holder.adjSpeed((int)statPackage[ITEM_SPEED] / 4.0);
-		holder.adjLuck((int)statPackage[ITEM_LUCK]);
+		holder.adjArmor((int) statPackage[ITEM_ARMOR]);
+		holder.adjInv((int) statPackage[ITEM_CAPACITY]);
+		holder.adjMaxhp((int) statPackage[ITEM_HEALTH]);
+		holder.adjMaxsp((int) statPackage[ITEM_SPIRIT]);
+		holder.adjSpeed((int) statPackage[ITEM_SPEED] / 4.0);
+		holder.adjLuck((int) statPackage[ITEM_LUCK]);
 	}
 
+	/**
+	 * removes stat adjustments of the item from the carrying mob
+	 */
 	protected void removeStats() {
-		holder.adjArmor(-(int)statPackage[ITEM_ARMOR]);
-		holder.adjInv(-(int)statPackage[ITEM_CAPACITY]);
-		holder.adjMaxhp(-(int)statPackage[ITEM_HEALTH]);
-		holder.adjMaxsp(-(int)statPackage[ITEM_SPIRIT]);
-		holder.adjSpeed(-(int)statPackage[ITEM_SPEED] / 4.0);
-		holder.adjLuck(-(int)statPackage[ITEM_LUCK]);
+		holder.adjArmor(-(int) statPackage[ITEM_ARMOR]);
+		holder.adjInv(-(int) statPackage[ITEM_CAPACITY]);
+		holder.adjMaxhp(-(int) statPackage[ITEM_HEALTH]);
+		holder.adjMaxsp(-(int) statPackage[ITEM_SPIRIT]);
+		holder.adjSpeed(-(int) statPackage[ITEM_SPEED] / 4.0);
+		holder.adjLuck(-(int) statPackage[ITEM_LUCK]);
 	}
 
+	/**
+	 * @returns whether or not this item can stack with other items
+	 */
 	public boolean getStackable() {
 		return stackable;
 	}
-	
+
+	@Override
 	public Sprite getAsset() {
 		return this.invSprite;
 	}
-	
+
 	/**
 	 * removes all non-essential parts of the item resulting in a skeleton
 	 */

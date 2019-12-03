@@ -1,11 +1,17 @@
 package gui;
 
 import entity.Hitbox;
-import geometry.Square;
+import geometry.Rect;
 import gfx.DrawGraphics;
 import gfx.Sprite;
 import runtime.Handler;
 
+/**
+ * A clickable UI component which perfomes a specified action on click
+ * 
+ * @author Pascal
+ *
+ */
 public class Button extends UIObject {
 
 	private ClickListener action;
@@ -13,16 +19,17 @@ public class Button extends UIObject {
 	private boolean visible = false;
 	private Hitbox hitbox;
 	private Handler handler;
-	private Square base, hover;
+	private Rect base, hover;
 	String text = null;
-	
+
 	/**
 	 * create an invisible button
-	 * @param action
-	 * @param x
-	 * @param y
-	 * @param width
-	 * @param height
+	 * 
+	 * @param action  - action to perform on click
+	 * @param x       - x position of this button
+	 * @param y       - y position of this button
+	 * @param width   - width of the button hitbox
+	 * @param height  - height of the button hitbox
 	 * @param handler
 	 */
 	public Button(ClickListener action, int x, int y, int width, int height, Handler handler) {
@@ -35,13 +42,14 @@ public class Button extends UIObject {
 
 	/**
 	 * creates a visible, blank button
-	 * @param action
-	 * @param x
-	 * @param y
-	 * @param width
-	 * @param height
-	 * @param color1
-	 * @param color2
+	 * 
+	 * @param action  - action to perform on click
+	 * @param x       - x position of this button
+	 * @param y       - y position of this button
+	 * @param width   - width of the button hitbox
+	 * @param height  - height of the button hitbox
+	 * @param color1  - color of the button
+	 * @param color2  - color of the button when the mouse hovers over it
 	 * @param handler
 	 */
 	public Button(ClickListener action, int x, int y, int width, int height, int color1, int color2, Handler handler) {
@@ -51,44 +59,49 @@ public class Button extends UIObject {
 		this.handler = handler;
 		this.x = x;
 		this.y = y;
-		
-		base = new Square(width, height, color1, 0xffffffff, Sprite.TYPE_GUI_COMPONENT);
-		hover = new Square(width, height, color2, 0xffffffff, Sprite.TYPE_GUI_COMPONENT);
+
+		base = new Rect(width, height, color1, 0xffffffff, Sprite.TYPE_GUI_COMPONENT);
+		hover = new Rect(width, height, color2, 0xffffffff, Sprite.TYPE_GUI_COMPONENT);
 	}
-	
+
 	/**
 	 * create a button with text
-	 * @param text
-	 * @param action
-	 * @param x
-	 * @param y
-	 * @param width
-	 * @param height
-	 * @param color1
-	 * @param color2
+	 * 
+	 * @param text    - text to display on the button
+	 * @param action  - action to perform on click
+	 * @param x       - x position of this button
+	 * @param y       - y position of this button
+	 * @param width   - width of the button hitbox
+	 * @param height  - height of the button hitbox
+	 * @param color1  - color of the button
+	 * @param color2  - color of the button when the mouse hovers over it
 	 * @param handler
 	 */
-	public Button(String text, ClickListener action, int x, int y, int width, int height, int color1, int color2, Handler handler) {
+	public Button(String text, ClickListener action, int x, int y, int width, int height, int color1, int color2,
+			Handler handler) {
 		visible = true;
 		this.action = action;
 		hitbox = new Hitbox(x, y, width, height, handler);
 		this.handler = handler;
 		this.x = x;
 		this.y = y;
-		
+
 		this.text = text;
-		
-		base = new Square(width, height, color1, 0xffffffff, Sprite.TYPE_GUI_COMPONENT);
-		hover = new Square(width, height, color2, 0xffffffff, Sprite.TYPE_GUI_COMPONENT);
+
+		base = new Rect(width, height, color1, 0xffffffff, Sprite.TYPE_GUI_COMPONENT);
+		hover = new Rect(width, height, color2, 0xffffffff, Sprite.TYPE_GUI_COMPONENT);
 	}
 
 	@Override
 	public void render(DrawGraphics g) {
 		if (visible) {
-			if  (hovered) hover.render(x, y, g);
-			else base.render(x, y, g);
-			
-			if (text != null) g.write(text, x, y, 0xff000000);
+			if (hovered)
+				hover.render(x, y, g);
+			else
+				base.render(x, y, g);
+
+			if (text != null)
+				g.write(text, x, y, 0xff000000);
 		}
 	}
 
@@ -108,10 +121,16 @@ public class Button extends UIObject {
 		}
 	}
 
+	/**
+	 * @returns true if the mouse is within this button's hitbox, false otherwise
+	 */
 	public boolean getHovered() {
 		return hovered;
 	}
 
+	/**
+	 * Executes the button's onClick action
+	 */
 	public void doClick() {
 		action.onClick(this);
 	}

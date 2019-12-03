@@ -12,11 +12,16 @@ import core.Driver;
 import geometry.Shape;
 import runtime.Light;
 
+/**
+ * handles rendering and ordering as well as lighting
+ * 
+ * @author Pascal
+ *
+ */
 public class DrawGraphics {
 
-	ArrayList<SpriteRequest> requestList;
+	ArrayList<Request> requestList;
 	ArrayList<LightRequest> lightRequest;
-	ArrayList<FontRequest> textRequest;
 
 	int fullWidth, fullHeight;
 	int width, height;
@@ -44,15 +49,19 @@ public class DrawGraphics {
 		lightMap = new int[raster.length];
 		lightCollision = new int[raster.length];
 
-		requestList = new ArrayList<SpriteRequest>();
+		requestList = new ArrayList<Request>();
 		lightRequest = new ArrayList<LightRequest>();
-		textRequest = new ArrayList<FontRequest>();
 
 		ambientColor = 0xff000000;
 
 		this.font = Assets.font;
 	}
 
+	/**
+	 * applies lighting then draws the screen
+	 * 
+	 * @param g - the Graphics object associated with the canvas
+	 */
 	public void render(Graphics g) {
 		for (int i = 0; i < raster.length; i++) {
 			raster[i] = (int) (((raster[i] >> 16) & 0xff) * (((lightMap[i] >> 16) & 0xff) / 255f)) << 16
@@ -63,12 +72,15 @@ public class DrawGraphics {
 		g.drawImage(screen, 0, 0, fullWidth, fullHeight, null);
 	}
 
+	/**
+	 * orders draw requests and light requests
+	 */
 	public void process() {
 
-		Collections.sort(requestList, new Comparator<SpriteRequest>() {
+		Collections.sort(requestList, new Comparator<Request>() {
 
 			@Override
-			public int compare(SpriteRequest i0, SpriteRequest i1) {
+			public int compare(Request i0, Request i1) {
 				if (i0.z < i1.z)
 					return -1;
 				if (i0.z > i1.z)
@@ -79,58 +91,115 @@ public class DrawGraphics {
 		});
 		int temp = 0;
 		for (int i = 0; i < requestList.size(); i++) {
-			SpriteRequest req = requestList.get(i);
+			Request req = requestList.get(i);
 			if (req.z > 50) {
 				temp = i;
 				break;
 			}
 			setZBuffer(req.z);
-			draw(req.s, req.x, req.y);
+			if (req instanceof SpriteRequest) {
+				SpriteRequest r = (SpriteRequest) req;
+				draw(r.s, r.x, r.y);
+			} else if (req instanceof ShapeRequest) {
+				parseShape((ShapeRequest) req);
+			} else if (req instanceof TextRequest) {
+				TextRequest r = (TextRequest) req;
+				this.writeText(r.s, r.x, r.y, r.color);
+			}
 		}
 		for (int i = 0; i < lightRequest.size(); i++) {
 			LightRequest req = lightRequest.get(i);
 			drawLight(req.l, req.x, req.y);
 		}
 		for (int i = temp; i < requestList.size(); i++) {
-			SpriteRequest req = requestList.get(i);
+			Request req = requestList.get(i);
 			setZBuffer(req.z);
-			drawPost(req.s, req.x, req.y);
+			if (req instanceof SpriteRequest) {
+				SpriteRequest r = (SpriteRequest) req;
+				drawPost(r.s, r.x, r.y);
+			} else if (req instanceof ShapeRequest) {
+				parseShapePost((ShapeRequest) req);
+			} else if (req instanceof TextRequest) {
+				TextRequest r = (TextRequest) req;
+				this.writeText(r.s, r.x, r.y, r.color);
+			}
 		}
-		for (int i = 0; i < textRequest.size(); i++) {
-			FontRequest req = textRequest.get(i);
-			writeText(req.s, req.x, req.y, req.color);
-		}
-		textRequest.clear();
 		requestList.clear();
 		lightRequest.clear();
 	}
 
+	/**
+	 * sets the current z level for drawing
+	 * 
+	 * @param z - the new z level
+	 */
 	public void setZBuffer(int z) {
 		this.z = z;
 	}
 
-	public void submitRequest(SpriteRequest s) {
+	/**
+	 * adds a new request to the request list
+	 * 
+	 * @param s - the request to be added
+	 */
+	public void submitRequest(Request s) {
 		requestList.add(s);
 	}
 
+	/**
+	 * adds a new light request to the request list
+	 * 
+	 * @param l - the light request to be added
+	 */
 	public void submitRequest(LightRequest l) {
 		lightRequest.add(l);
 	}
 
+	/**
+	 * sets the light collision value of a specific pixel
+	 * 
+	 * @param x     - x coordinate of the pixel
+	 * @param y     - y coordinate of the pixel
+	 * @param value - new light collision value
+	 */
 	public void setLightCollision(int x, int y, int value) {
 		if (x < 0 || x >= width || y < 0 || y >= height)
 			return;
 		lightCollision[y * width + x] = value;
 	}
 
+	/**
+	 * adds a request to draw the specified text to the screen
+	 * 
+	 * @param text - text to write
+	 * @param x    - x position to write at
+	 * @param y    - y position to write at
+	 */
 	public void write(String text, int x, int y) {
-		textRequest.add(new FontRequest(text, x, y, 0xffffffff));
+		requestList.add(new TextRequest(text, x, y, 0xffffffff));
 	}
 
+	/**
+	 * adds a request to draw the specified text to the screen in the specified
+	 * color
+	 * 
+	 * @param text  - text to write
+	 * @param x     - x position to write at
+	 * @param y     - y position to write at
+	 * @param color - color of the text
+	 */
 	public void write(String text, int x, int y, int color) {
-		textRequest.add(new FontRequest(text, x, y, color));
+		requestList.add(new TextRequest(text, x, y, color));
 	}
 
+	/**
+	 * draws text to the screen
+	 * 
+	 * @param text  - text to draw
+	 * @param xOff  - x coordinate to draw at
+	 * @param yOff  - y coordinate to draw at
+	 * @param color - color of the text
+	 */
 	private void writeText(String text, int xOff, int yOff, int color) {
 		text = text.toUpperCase();
 
@@ -152,6 +221,13 @@ public class DrawGraphics {
 		}
 	}
 
+	/**
+	 * draws a pixel at the specified position
+	 * 
+	 * @param x     - x position to draw at
+	 * @param y     - y position to draw at
+	 * @param value - hexidecimal code for the pixel data
+	 */
 	private void drawPixel(int x, int y, int value) {
 
 		int alpha = (value >> 24) & 0xff;
@@ -173,6 +249,13 @@ public class DrawGraphics {
 		}
 	}
 
+	/**
+	 * draws lighting at the specified position
+	 * 
+	 * @param x     - x position to draw at
+	 * @param y     - y position to draw at
+	 * @param value - hexidecimal code for the lighting data
+	 */
 	private void drawLuminosity(int x, int y, int value) {
 		if (x < 0 || x >= width || y < 0 || y >= height)
 			return;
@@ -187,6 +270,13 @@ public class DrawGraphics {
 		lightMap[y * width + x] = r << 16 | g << 8 | b;
 	}
 
+	/**
+	 * draws a light at the specified coordinates
+	 * 
+	 * @param l    - the light to draw
+	 * @param xOff - x position to draw at
+	 * @param yOff - y position to draw at
+	 */
 	public void drawLight(Light l, int xOff, int yOff) {
 
 		int rad = l.getRadius();
@@ -200,6 +290,17 @@ public class DrawGraphics {
 
 	}
 
+	/**
+	 * draws a single line of light emanating from the source
+	 * 
+	 * @param l    - the light to draw from
+	 * @param x0   - the x origin of the light (in relation to the light raster)
+	 * @param y0   - the y origin of the light (in relation to the light raster)
+	 * @param x1   - the final x of the light (in relation to the light raster)
+	 * @param y1   - the final y of the light (in relation to the light raster)
+	 * @param xOff - x position to draw at
+	 * @param yOff - y position to draw at
+	 */
 	private void drawLightRay(Light l, int x0, int y0, int x1, int y1, int xOff, int yOff) {
 		boolean mark = false; // marked true when the light has passed through a wall
 		boolean done = false;
@@ -227,16 +328,18 @@ public class DrawGraphics {
 				return;
 			if (lightCollision[screenY * width + screenX] == Light.FULL)
 				return;
-			if (mark && lightCollision[screenY * width + screenX] == Light.NONE) done = true;
+			if (mark && lightCollision[screenY * width + screenX] == Light.NONE)
+				done = true;
 			if (lightCollision[screenY * width + screenX] == Light.DIM) {
-				int r = ((color >> 16) & 0xff) / 2; //TODO return to 6 after testing
-				int g = ((color >> 8) & 0xff) / 2; //TODO return to 6 after testing
-				int b = ((color) & 0xff) / 2 ; //TODO return to 6 after testing
+				int r = ((color >> 16) & 0xff) / 2; // TODO return to 6 after testing
+				int g = ((color >> 8) & 0xff) / 2; // TODO return to 6 after testing
+				int b = ((color) & 0xff) / 2; // TODO return to 6 after testing
 				color = r << 16 | g << 8 | b;
 				mark = true;
 			}
 
-			if (!done || lightCollision[screenY * width + screenX] == Light.DIM) drawLuminosity(screenX, screenY, color);
+			if (!done || lightCollision[screenY * width + screenX] == Light.DIM)
+				drawLuminosity(screenX, screenY, color);
 			if (x0 == x1 && y0 == y1)
 				break;
 			e2 = 2 * err;
@@ -251,6 +354,10 @@ public class DrawGraphics {
 		}
 	}
 
+	/**
+	 * clears the raster, z-buffer, and lighting, resetting all values to their
+	 * default
+	 */
 	public void clear() {
 		for (int i = 0; i < raster.length; i++) {
 			raster[i] = 0;
@@ -260,6 +367,13 @@ public class DrawGraphics {
 		}
 	}
 
+	/**
+	 * draws a sprite at the specified coordinate. Accounts for lighting
+	 * 
+	 * @param s    - sprite to draw
+	 * @param xOff - x position to draw at
+	 * @param yOff - y position to draw at
+	 */
 	public void draw(Sprite s, int xOff, int yOff) {
 
 		int xCap = 0;
@@ -294,6 +408,13 @@ public class DrawGraphics {
 
 	}
 
+	/**
+	 * draws a sprite at the specified coordinate, ignoring any lighting changes
+	 * 
+	 * @param s    - the sprite to draw
+	 * @param xOff - x position to draw at
+	 * @param yOff - y position to draw at
+	 */
 	public void drawPost(Sprite s, int xOff, int yOff) {
 
 		int xCap = 0;
@@ -328,6 +449,13 @@ public class DrawGraphics {
 
 	}
 
+	/**
+	 * draws a shape at the specified coordinate, accounting for lighting
+	 * 
+	 * @param s    - the shape to draw
+	 * @param xOff - x position to draw at
+	 * @param yOff - y position to draw at
+	 */
 	public void draw(Shape s, int xOff, int yOff) {
 		int xCap = 0;
 		int yCap = 0;
@@ -357,21 +485,161 @@ public class DrawGraphics {
 		}
 	}
 
-	// TODO shape objects and drawshape method
-	/*
-	 * public void drawCircle(int xOff, int yOff, int radius, int color) { for
-	 * (double i = 0; i < 2 * Math.PI; i += Math.PI / (radius * radius)) {
-	 * this.drawPixel((int)(xOff + Math.cos(i) * radius), (int) (yOff + Math.sin(i)
-	 * * radius), color); this.drawLuminosity((int)(xOff + Math.cos(i) * radius),
-	 * (int) (yOff + Math.sin(i) * radius), 0xff666666); } }
+	/**
+	 * draws a rectangle
+	 * 
+	 * @param xOff   - x position to draw at
+	 * @param yOff   - y position to draw at
+	 * @param width  - width of the rectangle
+	 * @param height - height of the rectangle
+	 * @param color  - color of the rectangle
 	 */
-	public void fillRect(int xOff, int yOff, int width, int height, int color) {
-		setZBuffer(10);
+	private void fillRect(int xOff, int yOff, int width, int height, int color) {
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				this.drawPixel(xOff + x, yOff + y, color);
-				this.drawLuminosity(xOff + x, yOff + y, 0xffffffff);
 			}
+		}
+	}
+
+	/**
+	 * makes a request to draw a rectangle with an arbitrarily high z coordinate
+	 * 
+	 * @param x      - x position to draw at
+	 * @param y      - y position to draw at
+	 * @param width  - width of the rectangle
+	 * @param height - height of the rectangle
+	 * @param color
+	 */
+	public void drawRect(int x, int y, int width, int height, int color) {
+		requestList.add(new ShapeRequest(x, y, width, height, color, true));
+	}
+
+	/**
+	 * makes a request to draw a rectangle with a specific z coordinate
+	 * 
+	 * @param x      - x position to draw at
+	 * @param y      - y position to draw at
+	 * @param width  - width of the rectangle
+	 * @param height - height of the rectangle
+	 * @param z      - z level of the rectangle
+	 * @param color  - color of the rectangle
+	 */
+	public void drawRect(int x, int y, int width, int height, int z, int color) {
+		requestList.add(new ShapeRequest(x, y, width, height, color, z, true));
+	}
+
+	/**
+	 * makes a request to draw a line with an arbitrarily high z coordinate
+	 * 
+	 * @param x0    - origin x of the line
+	 * @param y0    - origin y of the line
+	 * @param x1    - end x of the line
+	 * @param y1    - end y of the line
+	 * @param color - color of the line
+	 */
+	public void drawLine(int x0, int y0, int x1, int y1, int color) {
+		requestList.add(new ShapeRequest(x0, y0, x1, y1, color));
+	}
+
+	/**
+	 * makes a request to draw a line with a specific z coordinate
+	 * 
+	 * @param x0    - origin x of the line
+	 * @param y0    - origin y of the line
+	 * @param x1    - end x of the line
+	 * @param y1    - end y of the line
+	 * @param color - color of the line
+	 * @param z     - z coordinate of the line
+	 */
+	public void drawLine(int x0, int y0, int x1, int y1, int color, int z) {
+		requestList.add(new ShapeRequest(x0, y0, x1, y1, color, z));
+	}
+
+	/**
+	 * draws a line
+	 * 
+	 * @param x0    - origin x of the line
+	 * @param y0    - origin y of the line
+	 * @param x1    - end x of the line
+	 * @param y1    - end y of the line
+	 * @param color - color of the line
+	 */
+	private void fillLine(int x0, int y0, int x1, int y1, int color) {
+
+		int dx = Math.abs(x1 - x0);
+		int dy = Math.abs(y1 - y0);
+
+		int sx = x0 < x1 ? 1 : -1;
+		int sy = y0 < y1 ? 1 : -1;
+
+		int err = dx - dy;
+		int e2;
+
+		while (true) {
+
+			int screenX = x0;
+			int screenY = y0;
+
+			if (screenX < 0 || screenX >= width || screenY < 0 || screenY >= height)
+				return;
+
+			drawPixel(screenX, screenY, color);
+			if (x0 == x1 && y0 == y1)
+				break;
+			e2 = 2 * err;
+			if (e2 > -1 * dy) {
+				err -= dy;
+				x0 += sx;
+			}
+			if (e2 < dx) {
+				err += dx;
+				y0 += sy;
+			}
+		}
+	}
+
+	/**
+	 * takes a ShapeRequest and applies the correct draw method based on the type of
+	 * request
+	 * 
+	 * @param r - ShapeRequest to parse
+	 */
+	private void parseShape(ShapeRequest r) {
+		switch (r.type) {
+		case 0:
+			fillLine(r.x, r.y, r.x1, r.y1, r.color);
+			break;
+		case 1:
+			fillRect(r.x, r.y, r.x1, r.y1, r.color);
+			break;
+		case 2:
+			draw(r.s, r.x, r.y);
+			break;
+		default:
+
+		}
+	}
+
+	/**
+	 * takes a ShapeRequest and applies the correct draw method based on the type of
+	 * request. Run after lighting has been applied
+	 * 
+	 * @param r - ShapeRequest to parse
+	 */
+	private void parseShapePost(ShapeRequest r) {
+		switch (r.type) {
+		case 0:
+			fillLine(r.x, r.y, r.x1, r.y1, r.color);
+			break;
+		case 1:
+			fillRect(r.x, r.y, r.x1, r.y1, r.color);
+			break;
+		case 2:
+			drawPost(r.s.toSprite(), r.x, r.y);
+			break;
+		default:
+
 		}
 	}
 

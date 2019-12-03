@@ -160,6 +160,11 @@ public class HashTable<K, T> {
 
 	}
 
+	/**
+	 * a node for the linked list buckets
+	 * @author pmkgb
+	 *
+	 */
 	private class Node {
 		K key;
 		T stored;

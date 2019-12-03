@@ -4,7 +4,7 @@ import java.util.Random;
 
 /**
  * 
- * creates an object which can generate perlin noise
+ * creates an object which can generate perlin noise as well as voronoi tesselation
  * 
  * @author Pascal
  *
@@ -227,9 +227,10 @@ public class NoiseGenerator {
 		}
 		return close;
 	}
-	
+
 	/**
 	 * Retrieves the cell associated with the input index from the list of cells
+	 * 
 	 * @param index - the index of the desired cell
 	 * @return the coordinates of the cell center
 	 */

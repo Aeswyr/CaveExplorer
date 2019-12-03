@@ -7,12 +7,17 @@ import java.util.ArrayList;
 import entities.Player;
 import utility.Loader;
 
+/**
+ * collection of static utility methods for use with crafting
+ * @author Pascal
+ *
+ */
 public class Craft {
 
 	/**
 	 * gets a list of recipes the player could craft at the current moment
-	 * @param p
-	 * @return
+	 * @param p - the player whos inventory to scan
+	 * @returns a list of all recipies the player could make
 	 */
 	public static ArrayList<Recipe> getRecipes(Player p) {
 		ArrayList<Recipe> recipes = getAllRecipe();
@@ -27,8 +32,8 @@ public class Craft {
 	
 	/**
 	 * turns a recipe string into code
-	 * @param s
-	 * @return
+	 * @param s - a recipe string representation
+	 * @returns the recipe object detailed by the string
 	 */
 	public static Recipe parseRecipe(String s) {
 		Recipe r = new Recipe();
@@ -37,7 +42,7 @@ public class Craft {
 	}
 	/**
 	 * gets all the potential recipes in the game
-	 * @return
+	 * @returns a list containing all the ingame recipes
 	 */
 	private static ArrayList<Recipe> getAllRecipe() {
 		ArrayList<Recipe> recipes = new ArrayList<Recipe>();

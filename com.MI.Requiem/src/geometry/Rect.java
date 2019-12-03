@@ -2,19 +2,25 @@ package geometry;
 
 import gfx.Sprite;
 
-public class Square extends Shape {
+/**
+ * used for drawing square and rectangle shapes
+ * 
+ * @author Pascal
+ *
+ */
+public class Rect extends Shape {
 
 	boolean hollow = false;
 
 	/**
 	 * generates a solid color rectangle
 	 * 
-	 * @param width
-	 * @param height
-	 * @param color
-	 * @param type
+	 * @param width  - width of the rectangle
+	 * @param height - height of the rectangle
+	 * @param color  - color to fill the rectangle
+	 * @param type   - sprite type for render order
 	 */
-	public Square(int width, int height, int color, int type) {
+	public Rect(int width, int height, int color, int type) {
 		this.width = width;
 		this.height = height;
 		this.type = type;
@@ -33,13 +39,14 @@ public class Square extends Shape {
 	/**
 	 * generates a hollow rectangle
 	 * 
-	 * @param width
-	 * @param height
-	 * @param color
-	 * @param type
-	 * @param hollow
+	 * @param width  - width of the rectangle
+	 * @param height - height of the rectangle
+	 * @param color  - color to fill the rectangle
+	 * @param type   - sprite type for render order
+	 * @param hollow - having a boolean here (no matter the value) determines that
+	 *               this rectangle will only be an outline
 	 */
-	public Square(int width, int height, int color, int type, boolean hollow) {
+	public Rect(int width, int height, int color, int type, boolean hollow) {
 		this.width = width;
 		this.height = height;
 		this.type = type;
@@ -59,14 +66,13 @@ public class Square extends Shape {
 	/**
 	 * generates a filled rectangle with an outline
 	 * 
-	 * @param width
-	 * @param height
-	 * @param color1
-	 * @param color2
-	 * @param type
-	 * @param hollow
+	 * @param width  - width of the rectangle
+	 * @param height - height of the rectangle
+	 * @param color1 - color to fill the rectangle
+	 * @param color2 - color to outline the rectangle
+	 * @param type   - sprite type for render order
 	 */
-	public Square(int width, int height, int color1, int color2, int type) {
+	public Rect(int width, int height, int color1, int color2, int type) {
 		this.width = width;
 		this.height = height;
 		this.type = type;
@@ -91,6 +97,11 @@ public class Square extends Shape {
 		return false;
 	}
 
+	/**
+	 * readjusts the raster for a new width and height
+	 * @param width - the new width
+	 * @param height - the new height
+	 */
 	public void resize(int width, int height) {
 		this.width = width;
 		this.height = height;

@@ -8,6 +8,12 @@ import gfx.DrawGraphics;
 import runtime.Handler;
 import utility.Utility;
 
+/**
+ * Object for storing large amounts of items and drawing them to the screen
+ * 
+ * @author Pascal
+ *
+ */
 public class Inventory {
 
 	private ArrayList<ItemContainer<Item>> storage;
@@ -15,6 +21,16 @@ public class Inventory {
 	private Handler handler;
 	private int x, y, size;
 
+	/**
+	 * initializes an inventory with specified size and position
+	 * 
+	 * @param x       - x position for the top leftmost box of the inventory to
+	 *                render
+	 * @param y       - y position for the top leftmost box of the inventory to
+	 *                render
+	 * @param size    - number of base storage spots in the inventory
+	 * @param handler
+	 */
 	public Inventory(int x, int y, int size, Handler handler) {
 		storage = new ArrayList<ItemContainer<Item>>();
 		extra = new ArrayList<ItemContainer<Item>>();
@@ -24,14 +40,24 @@ public class Inventory {
 		this.y = y;
 		for (int i = 0; i < size; i++) {
 			storage.add(
-					new ItemContainer<Item>((i % 3) * 40 + x, (i / 3) * 40 + y, Assets.inventory_Empty, null, handler));
+					new ItemContainer<Item>((i % 3) * 40 + x, (i / 3) * 40 + y, Assets.inventory_Empty, Assets.inventory_Empty, handler));
 		}
 	}
 
+	/**
+	 * initializes a basic inventory with a size of 12
+	 * 
+	 * @param handler
+	 */
 	public Inventory(Handler handler) {
 		this(0, 0, 12, handler);
 	}
 
+	/**
+	 * Draws all item containers associated with this inventory
+	 * 
+	 * @param g
+	 */
 	public void render(DrawGraphics g) {
 		for (int i = 0; i < size; i++) {
 			storage.get(i).render(g);
@@ -41,6 +67,9 @@ public class Inventory {
 		}
 	}
 
+	/**
+	 * updates all stored items, as well as removes items that have been consumed
+	 */
 	public void update() {
 		Item item = null;
 		for (int i = 0; i < size; i++) {
@@ -74,6 +103,12 @@ public class Inventory {
 		}
 	}
 
+	/**
+	 * resizes the inventory, drops excess items if the inventory will not be big
+	 * enough to accomodate
+	 * 
+	 * @param size - the new size of the inventory
+	 */
 	public void resize(int size) {
 		if (size > this.size) {
 
@@ -95,10 +130,19 @@ public class Inventory {
 		this.size = size;
 	}
 
+	/**
+	 * @returns the size of the inventory
+	 */
 	public int getSize() {
 		return size;
 	}
 
+	/**
+	 * attempts to add an item to the inventory
+	 * 
+	 * @param item - the item to add to the inventory
+	 * @returns true if the item was successfully added, false otherwise
+	 */
 	public boolean add(Item item) {
 		for (int i = 0; i < storage.size(); i++) {
 			if (storage.get(i).getContained() != null && storage.get(i).getContained().canStack(item)) {
@@ -115,10 +159,21 @@ public class Inventory {
 		return false;
 	}
 
+	/**
+	 * adds an extra item container to this inventory which is separate of the main
+	 * inventory's functions
+	 * 
+	 * @param c - the new itemcontainer
+	 */
 	public void appendContainer(ItemContainer<Item> c) {
 		extra.add(c);
 	}
 
+	/**
+	 * equips an item
+	 * @param item - the item to equip
+	 * @returns true if the item is successfully eqipt, false otherwise
+	 */
 	public boolean equip(Item item) {
 		for (int i = 0; i < extra.size(); i++) {
 			if (extra.get(i).store(item))
@@ -127,6 +182,9 @@ public class Inventory {
 		return false;
 	}
 
+	/**
+	 * @returns a list of the id and count of each item in the main inventory
+	 */
 	public ArrayList<IdCountPair> getRawHeld() {
 		ArrayList<IdCountPair> pairs = new ArrayList<IdCountPair>();
 		for (int i = 0; i < storage.size(); i++) {
@@ -147,6 +205,9 @@ public class Inventory {
 		return pairs;
 	}
 
+	/**
+	 * @returns an array containing the count of each general resource in the main inventory
+	 */
 	public int[] getResourceHeld() {
 		int[] res = new int[Tag.RESOURCE_MAX_ARRAY];
 		for (int i = 0; i < storage.size(); i++) {
@@ -176,6 +237,11 @@ public class Inventory {
 		return res;
 	}
 
+	/**
+	 * removes an item from the inventory based on an inputed item id
+	 * @param id - id of the item to remove
+	 * @returns the item which was removed
+	 */
 	public Item removeItemID(String id) {
 		Item it = null;
 		for (int i = 0; i < storage.size(); i++) {
@@ -188,6 +254,11 @@ public class Inventory {
 		return it;
 	}
 
+	/**
+	 * removes an item from the inventory based on an inputed item tag
+	 * @param tag - tag of the item to remove
+	 * @returns the item which was removed
+	 */
 	public Item removeItemTag(String tag) {
 		Item it = null;
 		for (int i = 0; i < storage.size(); i++) {
@@ -200,6 +271,9 @@ public class Inventory {
 		return it;
 	}
 
+	/**
+	 * empties the whole inventory and drops each item
+	 */
 	public void dropAll() {
 		for (int i = 0; i < storage.size(); i++) {
 			while (storage.get(i).getContained() != null)

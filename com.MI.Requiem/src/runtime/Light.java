@@ -3,11 +3,32 @@ package runtime;
 import gfx.DrawGraphics;
 import gfx.LightRequest;
 
+/**
+ * Represents a single source of light
+ * @author Pascal
+ *
+ */
 public class Light {
 
+	/**
+	 * Light interaction type: pixel interacts with light normally
+	 */
 	public static final int NONE = 0;
+	/**
+	 * Light interaction type: pixel completely intercepts incoming light,
+	 * preventing it from moving thru
+	 */
 	public static final int FULL = 1;
+	/**
+	 * Light interaction type: pixel ignores any changes made by light and
+	 * is drawn in full light at all times
+	 */
 	public static final int IGNORE = 2;
+	/**
+	 * Light interaction type: pixel intercepts incoming lights, dimming them to a
+	 * portion of their usual value and stopping them completely once they attempt
+	 * to enter a NONE or FULL pixel
+	 */
 	public static final int DIM = 3;
 
 	Handler handler;
@@ -17,6 +38,13 @@ public class Light {
 	int radius, diameter, color;
 	int[] lightMap;
 
+	/**
+	 * Creates a circular light source
+	 * 
+	 * @param radius  - radius of the source
+	 * @param color   - color of light
+	 * @param handler
+	 */
 	public Light(int radius, int color, Handler handler) {
 		this.handler = handler;
 		this.radius = radius;
@@ -38,39 +66,71 @@ public class Light {
 
 	}
 
+	/**
+	 * @returns the array of pixel data for this light source
+	 */
 	public int[] getLightMap() {
 		return lightMap;
 	}
 
+	/**
+	 * @returns the diameter of this light source
+	 */
 	public int getDiameter() {
 		return diameter;
 	}
 
+	/**
+	 * @returns the radius of this light source
+	 */
 	public int getRadius() {
 		return radius;
 	}
 
+	/**
+	 * returns the pixel data at a specific coordinate relative to the light source
+	 * 
+	 * @param x - x in pixels relative to the top left corner of the source
+	 * @param y - y in pixels relative to the top left corner of the source
+	 * @returns the hexidecimal color value of the light at the specified coordinate
+	 */
 	public int getLuminosity(int x, int y) {
 		if (x >= diameter || x < 0 || y >= diameter || y < 0)
 			return 0;
-
 		return lightMap[y * diameter + x];
 
 	}
 
+	/**
+	 * sets the position of this light source
+	 * 
+	 * @param x - new x position of the light (in pixels)
+	 * @param y - new y position of the light (in pixels)
+	 */
 	public void setPos(int x, int y) {
 		this.x = x;
 		this.y = y;
 	}
 
+	/**
+	 * causes this light source to begin emitting light
+	 */
 	public void light() {
 		handler.getLights().add(this);
 	}
 
+	/**
+	 * stops this light source from emitting light
+	 */
 	public void snuff() {
 		handler.getLights().remove(this);
 	}
 
+	/**
+	 * draws this light source's lighting
+	 * 
+	 * @param g - DrawGraphics component associated with renderer
+	 */
 	public void render(DrawGraphics g) {
 		g.submitRequest(new LightRequest(this, x - handler.getCamera().xOffset(), y - handler.getCamera().yOffset()));
 

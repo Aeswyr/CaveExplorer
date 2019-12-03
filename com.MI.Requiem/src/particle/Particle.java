@@ -6,6 +6,11 @@ import gfx.DrawGraphics;
 import gfx.Sprite;
 import runtime.Handler;
 
+/**
+ * Object which manages a cluster of similar particles
+ * @author pmkgb
+ *
+ */
 public class Particle {
 
 	public static Random rng = new Random();
@@ -23,7 +28,7 @@ public class Particle {
 	int x, y, x0, y0;
 	int max;
 	int lifetime;
-	int data[][]; // pos 0 is x, pos 1 is y, pos 2 is life, pos 3 x speed, pos 4 is y speed
+	int data[][]; // pos 0 is x, pos 1 is y, pos 2 is life
 	boolean textEnabled = false;
 
 	private int size;
@@ -35,83 +40,86 @@ public class Particle {
 
 	String text;
 
-	public Particle(Sprite s, int max, int lifetime, int x, int y, int x0, int y0, int shape, int dispersal,
-			int direction, int lifetype, Handler handler) {
-		setBehaviors(shape, dispersal, direction, lifetype);
+	Behavior behavior;
+
+	/**
+	 * Initializes a particle using a sprite for each particle
+	 * @param s - sprite for the particles
+	 * @param max - maximum number of particles
+	 * @param x - origin x point for particles
+	 * @param y - origin y point for particles
+	 * @param x0 - final x point for particles
+	 * @param y0 - final y point for particles
+	 * @param handler - handler for the game
+	 * @param b - behavior object (describes the origin and motion of the particles)
+	 */
+	public Particle(Sprite s, int max, int x, int y, int x0, int y0, Handler handler, Behavior b) {
 		this.sprite = s;
 		this.max = max;
-		this.lifetime = lifetime;
 
-		data = new int[max][5];
-
+		data = new int[max][3];
+		this.x = x;
+		this.x0 = x0;
+		this.y = y;
+		this.y0 = y0;
+		size = max;
 		this.handler = handler;
+		this.behavior = b;
 
-		if (this.dispersal == DISPERSE_BURST) {
-			for (size = 0; size < max; size++) {
-				switch (shape) {
-				case SHAPE_LINE:
-					data[size][0] = x + (int) ((x0 - x) * 1.0 * size / max);
-					data[size][1] = y + (int) ((y0 - y) * 1.0 * size / max);
-					switch (direction) {
-					case DIRECTION_RANDOM:
-						data[size][3] = rng.nextInt(5) - 2;
-						data[size][4] = rng.nextInt(5) - 2;
-						break;
-					case DIRECTION_SWEEP:
-						break;
-					case DIRECTION_FLOAT:
-						data[size][4] = -1;
-						break;
-					}
-					break;
-				case SHAPE_CIRCLE:
-					data[size][0] = x;
-					data[size][1] = y;
-					switch (direction) {
-					case DIRECTION_RANDOM:
-						data[size][3] = rng.nextInt(5) - 2;
-						data[size][4] = rng.nextInt(5) - 2;
-						break;
-					case DIRECTION_SWEEP:
-						break;
-					case DIRECTION_FLOAT:
-						data[size][4] = -1;
-						break;
-					}
-					break;
-				}
-				if (lifetype == LIFETIME_SET)
-					data[size][2] = lifetime;
-				else
-					data[size][2] = 3 * lifetime / 4 + rng.nextInt(lifetime / 2);
-			}
-		}
+		behavior.initial(x, y, x0, y0, data);
 
 	}
 
-	public Particle(Sprite s, String st, int color, int max, int lifetime, int x, int y, int x0, int y0, int shape,
-			int dispersal, int direction, int lifetype, Handler handler) {
-		this(s, max, lifetime, x, y, x0, y0, shape, dispersal, direction, lifetype, handler);
+	/**
+	 * Initializes a particle with both text and a sprite for each particle
+	 * @param s - sprite for the particles
+	 * @param st - text string
+	 * @param color - color of the text
+	 * @param max - maximum number of particles
+	 * @param x - origin x point for particles
+	 * @param y - origin y point for particles
+	 * @param x0 - final x point for particles
+	 * @param y0 - final y point for particles
+	 * @param handler - handler for the game
+	 * @param b - behavior object (describes the origin and motion of the particles)
+	 */
+	public Particle(Sprite s, String st, int color, int max,  int x, int y, int x0, int y0, Handler handler, Behavior b) {
+		this(s, max, x, y, x0, y0, handler, b);
 		this.text = st;
 		this.color = color;
 		this.textEnabled = true;
 
 	}
 
-	public Particle(String st, int color, int max, int lifetime, int x, int y, int x0, int y0, int shape, int dispersal,
-			int direction, int lifetype, Handler handler) {
-		this(((Sprite) null), max, lifetime, x, y, x0, y0, shape, dispersal, direction, lifetype, handler);
+	/**
+	 * Initializes a particle with only text
+	 * @param st - text string
+	 * @param color - color of the text
+	 * @param max - maximum number of particles
+	 * @param x - origin x point for particles
+	 * @param y - origin y point for particles
+	 * @param x0 - final x point for particles
+	 * @param y0 - final y point for particles
+	 * @param handler - handler for the game
+	 * @param b - behavior object (describes the origin and motion of the particles)
+	 */
+	public Particle(String st, int color, int max, int x, int y, int x0, int y0, Handler handler, Behavior b) {
+		this(((Sprite) null), max, x, y, x0, y0, handler, b);
 		this.text = st;
 		this.color = color;
 		this.textEnabled = true;
 
 	}
 
+	/**
+	 * draws all particles to the screen
+	 * 
+	 * @param g - the DrawGraphics component associated with the renderer
+	 */
 	public void render(DrawGraphics g) {
 
 		int xOff = handler.getCamera().xOffset();
 		int yOff = handler.getCamera().yOffset();
-
 		for (int i = 0; i < size; i++) {
 			if (data[i][2] > 0) {
 				if (sprite != null)
@@ -122,68 +130,59 @@ public class Particle {
 		}
 	}
 
+	/**
+	 * updates all particles
+	 */
 	public void update() {
 		dead = true;
-		if (size < max && this.dispersal == DISPERSE_TICK) {
-			switch (shape) {
-			case SHAPE_LINE:
-				data[size][0] = x + (int) ((x0 - x) * 1.0 * size / max);
-				data[size][1] = y + (int) ((y0 - y) * 1.0 * size / max);
-				switch (direction) {
-				case DIRECTION_RANDOM:
-					data[size][3] = rng.nextInt(5) - 2;
-					data[size][4] = rng.nextInt(5) - 2;
-					break;
-				case DIRECTION_SWEEP:
-					break;
-				}
-				break;
-			case SHAPE_CIRCLE:
-				data[size][0] = x;
-				data[size][1] = y;
-				switch (direction) {
-				case DIRECTION_RANDOM:
-					data[size][3] = rng.nextInt(5) - 2;
-					data[size][4] = rng.nextInt(5) - 2;
-					break;
-				case DIRECTION_SWEEP:
-					break;
-				}
-				break;
-			}
-			size++;
-			if (lifetype == LIFETIME_SET)
-				data[size][2] = lifetime;
-			else
-				data[size][2] = 3 * lifetime / 4 + rng.nextInt(lifetime / 2);
-		}
 		for (int i = 0; i < size; i++) {
 			data[i][2]--;
-			data[i][0] += data[i][3];
-			data[i][1] += data[i][4];
+			behavior.update(x, y, x0, y0, data[i], i);
 			if (data[i][2] > 0)
 				dead = false;
 		}
 
 	}
 
-	private int shape;
-	private int dispersal;
-	private int direction;
-	private int lifetype;
-
-	private void setBehaviors(int shape, int dispersal, int direction, int lifetype) {
-		this.shape = shape;
-		this.dispersal = dispersal;
-		this.direction = direction;
-		this.lifetype = lifetype;
-	}
-
+	/**
+	 * @returns true if there are no active particles, false otherwise
+	 */
 	public boolean isDead() {
 		return dead;
 	}
 
+	/**
+	 * begins updating and rendering this particle
+	 */
 	public void start() {
 		handler.getParticles().add(this);
+	}
+
+	/**
+	 * Used to mathematically describe origin points for each particle as well as their motion
+	 * @author pmkgb
+	 *
+	 */
+	public interface Behavior {
+		/**
+		 * determines where each particle begins
+		 * @param x - origin x point of particles
+		 * @param y - origin y point of particles
+		 * @param x0 - end x point of particles
+		 * @param y0 - end y point of particles
+		 * @param data - particle data
+		 */
+		public void initial(int x, int y, int x0, int y0, int[][] data);
+
+		/**
+		 * determines the movement of an individual particle in a frame
+		 * @param x - origin x point of particles
+		 * @param y - origin y point of particles
+		 * @param x0 - end x point of particles
+		 * @param y0 - end y point of particles
+		 * @param data - particle data
+		 * @param index - the index of the currently updating particle
+		 */
+		public void update(int x, int y, int x0, int y0, int[] data, int index);
 	}
 }

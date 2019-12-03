@@ -11,8 +11,17 @@ import gui.ClickListener;
 import gui.Frame;
 import gui.UIObject;
 
+/**
+ * Gamestate for the main menu of the game
+ * @author Pascal
+ *
+ */
 public class Menustate extends State {
 
+	/**
+	 * initializes the main menu and displays it
+	 * @param handler
+	 */
 	public Menustate(Handler handler) {
 		super(handler);
 
@@ -74,6 +83,9 @@ public class Menustate extends State {
 		handler.getUI().addObject(world);
 	}
 
+	/**
+	 * updates the main menu and its components
+	 */
 	@Override
 	public void update() {
 		handler.getLights().update();
@@ -81,6 +93,9 @@ public class Menustate extends State {
 		handler.getParticles().update();
 	}
 
+	/**
+	 * draws the main menu and its components
+	 */
 	@Override
 	public void render(DrawGraphics g) {
 		handler.getUI().render(g);

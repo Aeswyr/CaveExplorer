@@ -1,10 +1,15 @@
 package utility;
 
-import geometry.Square;
+import geometry.Rect;
 import gfx.DrawGraphics;
 import gfx.Sprite;
 import runtime.Handler;
 
+/**
+ * creates loading screens
+ * @author Pascal
+ *
+ */
 public class LoadingScreen {
 
 	public static Handler handler;
@@ -13,25 +18,32 @@ public class LoadingScreen {
 	private final int MAXLOAD;
 	private String displayText;
 	private String tip;
-	Square back;
-	Square bar;
-	Square load;
+	Rect back;
+	Rect bar;
+	Rect load;
 	boolean primeNewTip = false;
 	
+	/**
+	 * creates and displays a loading screen which will have a load bar with a set number of increments
+	 * @param MAXLOAD - number of increments in the load bar
+	 */
 	public LoadingScreen(int MAXLOAD) {
 		this.MAXLOAD = MAXLOAD;
 		displayText = "";
 		tip = Data.getLoadTip();
 		handler.setFPSCap(false);
 		
-		back = new Square(handler.getWidth(), handler.getHeight(), 0xff333333, Sprite.TYPE_GUI_BACKGROUND_SHAPE);
-		bar = new Square(300, 20, 0xff000000, Sprite.TYPE_GUI_FOREGROUND_SHAPE);
-		load = new Square(1, 16, 0xff990000, Sprite.TYPE_GUI_FOREGROUND_SHAPE);
+		back = new Rect(handler.getWidth(), handler.getHeight(), 0xff333333, Sprite.TYPE_GUI_BACKGROUND_SHAPE);
+		bar = new Rect(300, 20, 0xff000000, Sprite.TYPE_GUI_FOREGROUND_SHAPE);
+		load = new Rect(1, 16, 0xff990000, Sprite.TYPE_GUI_FOREGROUND_SHAPE);
 		
 		handler.setLoadingScreen(this);
 	}
 	
-
+	/**
+	 * draws the loading screen
+	 * @param g - the DrawGraphics component to draw with
+	 */
 	public void render(DrawGraphics g) {
 		back.render(0, 0, g);
 		bar.render(40, 40, g);
@@ -44,18 +56,29 @@ public class LoadingScreen {
 		}
 	}
 	
+	/**
+	 * closes the currently displayed loading screen
+	 */
 	public void close() {
 		handler.closeLoadingScreen();
 		handler.setFPSCap(true);
 	}
 	
+	/**
+	 * increments the loading bar by the set value
+	 * @param value
+	 */
 	public void increment(int value) {
 		this.loadProgress += value;
 		double loadFactor = 1.0 * loadProgress / MAXLOAD;
 		load.resize((int)(295 * loadFactor) + 1, 16);
-		if (Math.random() < (2.0 / MAXLOAD)) primeNewTip = true;
+		if (handler.getKeys().getSpaceTyped()) primeNewTip = true;
 	}
 	
+	/**
+	 * displays text beneath the loading bar
+	 * @param text
+	 */
 	public void displayText(String text) {
 		this.displayText = text;
 	}

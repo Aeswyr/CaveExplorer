@@ -1,12 +1,15 @@
 package core;
 
 import java.io.File;
-
-import java.util.Locale;
-
+import javax.swing.JFileChooser;
 import core.Driver;
 import sfx.Sound;
 
+/**
+ * starts the game and sets up any necessary filepaths
+ * @author Pascal
+ *
+ */
 public class Initialize {
 
 	private static final String GAMENAME = "UntoTheAbyss";
@@ -15,23 +18,14 @@ public class Initialize {
 		Assets.init();
 		Sound.initSound();
 		Driver game = new Driver();
-		String OS = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
-		if ((OS.indexOf("mac") >= 0) || (OS.indexOf("darwin") >= 0)) {
-			Driver.saveDir = System.getProperty("user.home") + "/Documents/Saved Games/" + GAMENAME + "/";
-		} else if (OS.indexOf("win") >= 0) {
-			Driver.saveDir = System.getenv("APPDATA") + "/." + GAMENAME + "/";
-		} else if (OS.indexOf("nux") >= 0) {
-			Driver.saveDir = System.getProperty("user.home") + "/Saved Games/" + GAMENAME + "/";
-		} else {
-			Driver.saveDir = System.getProperty("user.home");
-		}
+		Driver.saveDir = new JFileChooser().getFileSystemView().getDefaultDirectory().toString() + "/" + GAMENAME + "/";
 		Driver.saveDir = Driver.saveDir.replace('\\', '/');
 		File file = new File(Driver.saveDir);
 		if (file.mkdir()) {
 			System.out.println("Created directory at: " + Driver.saveDir);
 			new File(Driver.saveDir + "saves/").mkdirs();
 		} else {
-			System.out.println("Directory already exists");
+			System.out.println("Directory at " + Driver.saveDir + " already exists");
 		}
 
 		game.start();

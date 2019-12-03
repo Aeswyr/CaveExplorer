@@ -2,6 +2,11 @@ package runtime;
 
 import entity.Entity;
 
+/**
+ * calculates offsets for onscreen objects to keep a specified entity centered onscreen
+ * @author Pascal
+ *
+ */
 public class Camera {
 	Handler handler;
 	Entity target;
@@ -16,6 +21,9 @@ public class Camera {
 		h = handler.getHeight();
 	}
 
+	/**
+	 * calculates a new offset based on where the target entity's location is
+	 */
 	public void update() {
 		if (target != null) {
 
@@ -28,22 +36,38 @@ public class Camera {
 		}
 	}
 
+	/**
+	 * determines which entity will be the camera target
+	 * @param e - the entity to target
+	 */
 	public void centerOnEntity(Entity e) {
 		target = e;
 	}
 
+	/**
+	 * @returns the x offset for rendering
+	 */
 	public int xOffset() {
 		return xOffset - w / 2;
 	}
 
+	/**
+	 * @returns the y offset for rendering
+	 */
 	public int yOffset() {
 		return yOffset - h / 2;
 	}
 	
+	/**
+	 * @returns the raw x offset, not adjusted for screen centering
+	 */
 	public int xOffsetAdj() {
 		return xOffset;
 	}
 	
+	/**
+	 * @returns the raw y offset, not adjusted for screen centering
+	 */
 	public int yOffsetAdj() {
 		return yOffset;
 	}

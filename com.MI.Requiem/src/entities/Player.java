@@ -9,7 +9,7 @@ import entity.Entity;
 import entity.Hitbox;
 import entity.Interactable;
 import entity.Mob;
-import geometry.Square;
+import geometry.Rect;
 import gfx.DrawGraphics;
 import gfx.Sprite;
 import gui.ClickListener;
@@ -208,7 +208,7 @@ public class Player extends Mob {
 		int posX = w / 60; // previously 16
 		int posY = w / 40; // previously 24
 
-		Square s = new Square(w / 6, h, 0xff202020, Sprite.TYPE_GUI_BACKGROUND_SHAPE);
+		Rect s = new Rect(w / 6, h, 0xff202020, Sprite.TYPE_GUI_BACKGROUND_SHAPE);
 		s.render(0, 0, g);
 		s.render(w - w / 6, 0, g);
 		int healOff = healthMax / 12;

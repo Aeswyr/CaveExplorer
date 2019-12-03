@@ -15,6 +15,12 @@ import gfx.DrawGraphics;
 import runtime.Handler;
 import utility.Loader;
 
+/**
+ * Manages the world, chunks, and entities
+ * 
+ * @author Pascal
+ *
+ */
 public class World {
 
 	private static Random rng = new Random();
@@ -28,7 +34,7 @@ public class World {
 	Chunk currChunk;
 	public static int maxChunks;
 	int biome;
-	
+
 	String loadedWorld = null;
 
 	public World(Handler handler) {
@@ -44,11 +50,17 @@ public class World {
 
 	}
 
+	/**
+	 * loads a selected world file based on it's name and begins the chunk loader
+	 * 
+	 * @param name - name of the world file to load
+	 */
 	public void init(String name) {
 		File dir = new File(Driver.saveDir + "saves/" + name + "/");
 		loadedWorld = name;
 		try {
-			if (dir.mkdir()) MapGenerator.generateMap(this, handler, name);
+			if (dir.mkdir())
+				MapGenerator.generateMap(handler, name);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -67,6 +79,12 @@ public class World {
 		}
 	}
 
+	/**
+	 * draws loaded chunks to the screen, as well as all entities, entity UI, and
+	 * lights
+	 * 
+	 * @param g - the DrawGraphics component to draw on
+	 */
 	public void render(DrawGraphics g) {
 
 		synchronized (chunks) {
@@ -82,6 +100,10 @@ public class World {
 	int[] biomeData;
 	int spawnTick;
 
+	/**
+	 * updates world data: controls biome management, mob spawning, and entity +
+	 * chunk updating
+	 */
 	public void update() {
 		spawnTick++;
 		biomeData = new int[Tile.TILE_MAX];
@@ -143,6 +165,12 @@ public class World {
 		}
 	}
 
+	/**
+	 * updates loaded chunks based on the player movement. If the player enters a
+	 * new chunk, this contacts the chunkloader and collects a new list of chunks,
+	 * unloads the old ones, and loads the new ones
+	 * 
+	 */
 	private void updateChunks() {
 
 		int pcx = handler.getPlayer().getChunkX();
@@ -249,6 +277,13 @@ public class World {
 		return id;
 	}
 
+	/**
+	 * replaces the tile at the given coordinate with a specified one
+	 * 
+	 * @param x  - tile x coordinate (in pixels)
+	 * @param y  - tile y coordinate (in pixels)
+	 * @param id - id of the desired tile
+	 */
 	public void setTile(int x, int y, int id) {
 		for (int i = 0; i < chunks.size(); i++)
 			chunks.get(i).setTile(x / Tile.tileSize, y / Tile.tileSize, id);
@@ -275,7 +310,7 @@ public class World {
 	}
 
 	/**
-	 * returns the tile id at the given position
+	 * returns the overlay tile id at the given position
 	 * 
 	 * @param x - the x coordinate of the tile (pixel position)
 	 * @param y - the y coordinate of the tile (pixel position)
@@ -292,25 +327,46 @@ public class World {
 		return id;
 	}
 
+	/**
+	 * replaces the overlay tile at the given coordinate with a specified one
+	 * 
+	 * @param x  - tile x coordinate (in pixels)
+	 * @param y  - tile y coordinate (in pixels)
+	 * @param id - id of the desired tile
+	 */
 	public void setOverlay(int x, int y, int id) {
 		for (int i = 0; i < chunks.size(); i++)
 			chunks.get(i).setOverlay(x / Tile.tileSize, y / Tile.tileSize, id);
 	}
 
+	/**
+	 * @returns the entitymanager associated with the world
+	 */
 	public EntityManager getEntities() {
 		return entities;
 	}
 
+	/**
+	 * unloads all currently loaded chunks
+	 */
 	public void unloadWorld() {
 		for (int i = 0; i < chunks.size(); i++) {
-			if (chunks.get(i).loaded) chunks.get(i).unload();
+			if (chunks.get(i).loaded)
+				chunks.get(i).unload();
 		}
 	}
 
+	/**
+	 * @returns the id of the biome the player is currently located in
+	 */
 	public int getCurrentBiome() {
 		return biome;
 	}
 
+	/**
+	 * @param biome - id of the desired biome name
+	 * @returns the name of the biome associated with the numerical id
+	 */
 	public static String biomeToString(int biome) {
 		switch (biome) {
 		case 0:

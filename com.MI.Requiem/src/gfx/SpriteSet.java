@@ -31,6 +31,11 @@ public class SpriteSet {
 		}
 	}
 	
+	/**
+	 * gets the sprite at a specific index
+	 * @param index - the index of the sprite in the set
+	 * @returns a sprite
+	 */
 	public Sprite get(int index) {
 		return sprites[index];
 	}

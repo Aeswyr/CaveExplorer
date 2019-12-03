@@ -11,14 +11,27 @@ import runtime.Handler;
 import utility.LoadingScreen;
 import utility.NoiseGenerator;
 
+/**
+ * tools for generating a map file
+ * @author Pascal
+ *
+ */
 public class MapGenerator {
 
-	public static void generateMap(World w, Handler h, String name) throws IOException {
+	/**
+	 * generates the tile setup for a map
+	 * @param h - the gamehandler
+	 * @param name - the name for the world
+	 * @throws IOException
+	 */
+	public static void generateMap(Handler h, String name) throws IOException {
 
 		// LOADING SCREEN START
 		LoadingScreen load = new LoadingScreen(World.maxChunks * World.maxChunks);
 		load.displayText("Shaping Caverns");
 
+		World w = h.getWorld();
+		
 		Random rng = new Random();
 
 		File f1 = new File(Driver.saveDir + "saves/" + name + "/world.dat");

@@ -124,6 +124,9 @@ public class ChunkLoader implements Runnable {
 		}
 	}
 
+	/**
+	 * Organizes chunks according to their x and y positions to avoid incorrect overlap
+	 */
 	public void organizeChunks() {
 		for (int i = 1; i < loading.size(); i++) {
 			int pos = i;

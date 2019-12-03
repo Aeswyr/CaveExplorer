@@ -18,6 +18,11 @@ import tiles.Tile_LimestoneFloor;
 import tiles.Tile_LimestoneWall;
 import tiles.Tile_Worktable;
 
+/**
+ * represents a single 16x16 section of the world
+ * @author Pascal
+ *
+ */
 public class Tile {
 
 	protected boolean wall;
@@ -33,15 +38,29 @@ public class Tile {
 	protected final int id;
 	public static final int TILE_MAX = tiles.length;
 	
+	/**
+	 * initializes a tile with a specific id
+	 * @param id - the id of the new tile
+	 */
 	public Tile(int id) {
 		this.id = id;
 	}
 
-	// An edge starts with 0 in the top left and goes around clockwise up to 7
+	/**
+	 * Draws a tile at the specified position
+	 * @param x - x draw position in pixels
+	 * @param y - y draw position in pixels
+	 * @param g - DrawGraphics component to draw with
+	 */
 	public void render(int x, int y, DrawGraphics g) {
 		tileSet.render(x, y, wall, g);
 	}
 
+	/**
+	 * returns the static tile associated with a specific id
+	 * @param id - the id of the desired tile
+	 * @return
+	 */
 	public static Tile toTile(int id) {
 		return tiles[id];
 	}
@@ -65,14 +84,27 @@ public class Tile {
 		}
 	}
 
+	/**
+	 * @returns if entities can collide with this tile
+	 */
 	public boolean isSolid() {
 		return solid;
 	}
 
+	/**
+	 * @returns if this tile can be broken with tools
+	 */
 	public boolean isBreakable() {
 		return breakable;
 	}
 
+	/**
+	 * 
+	 * @param x - x position to drop the item
+	 * @param y - y position to drop the item
+	 * @param handler - the game handler
+	 * @returns a list of items dropped by this tile, tied to this tiles location
+	 */
 	public ArrayList<Item> tileDrop(int x, int y, Handler handler) {
 		return null;
 	}

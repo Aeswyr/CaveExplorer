@@ -1,5 +1,10 @@
 package item;
 
+/**
+ * object to hold an item id as well as the number of that item
+ * @author Pascal
+ *
+ */
 public class IdCountPair {
 	public String id;
 	public int count;

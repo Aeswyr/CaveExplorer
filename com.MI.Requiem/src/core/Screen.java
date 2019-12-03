@@ -2,6 +2,7 @@ package core;
 
 import java.awt.Canvas;
 import java.awt.Dimension;
+import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.WindowAdapter;
@@ -12,6 +13,11 @@ import javax.swing.JFrame;
 import runtime.Handler;
 import sfx.Sound;
 
+/**
+ * Contains the information for the game window
+ * @author Pascal
+ *
+ */
 public class Screen extends Canvas {
 
 	/**
@@ -22,6 +28,14 @@ public class Screen extends Canvas {
 	private JFrame frame;
 	private Dimension d;
 
+	/**
+	 * initializes the game frame and canvas with the given width and height. using
+	 * -1, -1 will set up true fullscreen, while 0, 0 will set up a limited
+	 * fullscreen
+	 * 
+	 * @param width - desired width
+	 * @param height - desired height
+	 */
 	public Screen(int width, int height) {
 
 		frame = new JFrame();
@@ -39,9 +53,9 @@ public class Screen extends Canvas {
 			this.setMaximumSize(d);
 			this.setMinimumSize(d);
 		} else if (width == 0 && height == 0) {
-			GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+			GraphicsConfiguration gc = frame.getGraphicsConfiguration();
 			frame.setUndecorated(true);
-			d.setSize(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight());
+			d.setSize(gc.getBounds().getWidth(), gc.getBounds().getHeight());
 			frame.setSize(d);
 			frame.setPreferredSize(d);
 			frame.setMinimumSize(d);
@@ -68,22 +82,41 @@ public class Screen extends Canvas {
 		frame.add(this);
 		frame.pack();
 
+		Driver.xScale = d.getWidth() / 960;
+		Driver.yScale = d.getHeight() / 540;
+
 		frame.setVisible(true);
 		System.out.println(d.width + ", " + d.height);
 	}
 
+	/**
+	 * @returns the true width of the window
+	 */
 	public int getWidth() {
 		return d.width;
 	}
 
+	/**
+	 * @returns the true height of the window
+	 */
 	public int getHeight() {
 		return d.height;
 	}
 
+	/**
+	 * runs events that should occur when the game is closed
+	 */
 	public void close() {
 		frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
 	}
 
+	/**
+	 * sets up closing events
+	 * 
+	 * @param d - the game driver
+	 * @param r - the game renderer
+	 * @param h - the game handler
+	 */
 	public void setClosing(Driver d, Renderer r, Handler h) {
 		frame.addWindowListener(new WindowAdapter() // Operations to complete upon window closing
 		{

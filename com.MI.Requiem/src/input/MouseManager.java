@@ -13,7 +13,10 @@ public class MouseManager implements MouseListener, MouseMotionListener {
 	private int x, y, x0, y0; // x0 and y0 are the last positions of the mouse. x and y are current
 	ItemContainer<Item> startHovered, endHovered;
 
-	@Override
+	/**
+	 * When the mouse is moved, updates the current and last x,y positions of the mouse
+	 * @Override
+	 */
 	public void mouseDragged(MouseEvent e) {
 		x0 = x;
 		y0 = y;
@@ -21,7 +24,10 @@ public class MouseManager implements MouseListener, MouseMotionListener {
 		y = e.getY();
 	}
 
-	@Override
+	/**
+	 * When the mouse is moved, updates the current and last x,y positions of the mouse
+	 * @Override
+	 */
 	public void mouseMoved(MouseEvent e) {
 		x0 = x;
 		y0 = y;
@@ -114,7 +120,7 @@ public class MouseManager implements MouseListener, MouseMotionListener {
 		this.dragging = false;
 	}
 
-	// Getters and Setter
+	// Getters and Setters
 
 	public boolean getLeft() {
 		return left;
@@ -147,7 +153,7 @@ public class MouseManager implements MouseListener, MouseMotionListener {
 	 *          frame
 	 */
 	public int getAdjX() {
-		return (int) (x / Driver.scale);
+		return (int) (x / Driver.xScale);
 	}
 
 	/**
@@ -155,7 +161,7 @@ public class MouseManager implements MouseListener, MouseMotionListener {
 	 *          frame
 	 */
 	public int getAdjY() {
-		return (int) (y / Driver.scale);
+		return (int) (y / Driver.yScale);
 	}
 
 	public int getDeltaX() {
