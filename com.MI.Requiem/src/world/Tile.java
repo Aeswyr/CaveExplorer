@@ -1,25 +1,22 @@
 package world;
 
 import java.util.ArrayList;
-import java.util.Random;
 
+import java.util.Random;
+import core.Assets;
 import gfx.DrawGraphics;
 import item.Item;
+import items.Anvil;
+import items.Forge;
+import items.Gem;
+import items.Ore;
+import items.TileBlock;
+import items.Worktable;
 import runtime.Handler;
-import tiles.Tile_Anvil;
-import tiles.Tile_ClayFloor;
-import tiles.Tile_ClayWall;
-import tiles.Tile_DirtFloor;
-import tiles.Tile_DirtWall;
-import tiles.Tile_ForgeLeft;
-import tiles.Tile_ForgeRight;
-import tiles.Tile_IronVein;
-import tiles.Tile_LimestoneFloor;
-import tiles.Tile_LimestoneWall;
-import tiles.Tile_Worktable;
 
 /**
  * represents a single 16x16 section of the world
+ * 
  * @author Pascal
  *
  */
@@ -32,22 +29,310 @@ public class Tile {
 	static final protected Random rng = new Random();
 	public static int tileSize = 16;
 
-	private static Tile[] tiles = { new Tile_DirtFloor(), new Tile_DirtWall(), new Tile_Anvil(), new Tile_ForgeLeft(),
-			new Tile_ForgeRight(), new Tile_LimestoneFloor(), new Tile_LimestoneWall(), new Tile_IronVein(),
-			new Tile_ClayFloor(), new Tile_ClayWall(), new Tile_Worktable() };
+	private static Tile[] tiles = { new Tile(0), new Tile(1), new Tile(2), new Tile(3), new Tile(4), new Tile(5),
+			new Tile(6), new Tile(7), new Tile(8), new Tile(9), new Tile(10), new Tile(11), new Tile(12), new Tile(13),
+			new Tile(14), new Tile(15), new Tile(16), new Tile(17), new Tile(18), new Tile(19), new Tile(20),
+			new Tile(21), new Tile(22) };
 	protected final int id;
 	public static final int TILE_MAX = tiles.length;
-	
+
 	/**
 	 * initializes a tile with a specific id
+	 * 
 	 * @param id - the id of the new tile
 	 */
 	public Tile(int id) {
 		this.id = id;
+		switch (id) {
+		case 0: // Dirt floor
+			this.tileSet = Assets.dirtTile;
+			this.breakable = false;
+			break;
+		case 1: // Dirt wall
+			this.tileSet = Assets.dirtTile;
+			this.wall = true;
+			this.breakable = true;
+			this.solid = true;
+			break;
+		case 2: // anvil
+			this.tileSet = Assets.anvil;
+			this.breakable = true;
+			this.solid = true;
+			break;
+		case 3: // forge left
+			this.tileSet = Assets.forgeLeft;
+			this.wall = true;
+			this.breakable = true;
+			this.solid = true;
+			break;
+		case 4: // forge right
+			this.tileSet = Assets.forgeRight;
+			this.wall = true;
+			this.breakable = true;
+			this.solid = true;
+			break;
+		case 5: // limestone floor
+			this.tileSet = Assets.limestoneTile;
+			this.breakable = false;
+			break;
+		case 6: // limestone wall
+			this.tileSet = Assets.limestoneTile;
+			this.wall = true;
+			this.breakable = true;
+			this.solid = true;
+			break;
+		case 7: // iron vein
+			this.tileSet = Assets.ironOreTile;
+			this.wall = true;
+			this.breakable = true;
+			this.solid = true;
+			break;
+		case 8: // clay floor
+			this.tileSet = Assets.clayTile;
+			this.breakable = false;
+			break;
+		case 9: // clay wall
+			this.tileSet = Assets.clayTile;
+			this.wall = true;
+			this.breakable = true;
+			this.solid = true;
+			break;
+		case 10: // worktable
+			this.tileSet = Assets.worktableTile;
+			this.breakable = true;
+			this.solid = true;
+			break;
+		case 11: // aluminum vein
+			this.tileSet = Assets.aluminumOreTile;
+			this.wall = true;
+			this.breakable = true;
+			this.solid = true;
+			break;
+		case 12: // antimony vein
+			this.tileSet = Assets.antimonyOreTile;
+			this.wall = true;
+			this.breakable = true;
+			this.solid = true;
+			break;
+		case 13: // copper vein
+			this.tileSet = Assets.copperOreTile;
+			this.wall = true;
+			this.breakable = true;
+			this.solid = true;
+			break;
+		case 14: // galena vein
+			this.tileSet = Assets.galenaOreTile;
+			this.wall = true;
+			this.breakable = true;
+			this.solid = true;
+			break;
+		case 15: // gold vein
+			this.tileSet = Assets.goldOreTile;
+			this.wall = true;
+			this.breakable = true;
+			this.solid = true;
+			break;
+		case 16: // tin vein
+			this.tileSet = Assets.tinOreTile;
+			this.wall = true;
+			this.breakable = true;
+			this.solid = true;
+			break;
+		case 17: // zinc vein
+			this.tileSet = Assets.zincOreTile;
+			this.wall = true;
+			this.breakable = true;
+			this.solid = true;
+			break;
+		case 18: // chrome vein
+			this.tileSet = Assets.chromeOreTile;
+			this.wall = true;
+			this.breakable = true;
+			this.solid = true;
+			break;
+		case 19: // titanium vein
+			this.tileSet = Assets.titaniumOreTile;
+			this.wall = true;
+			this.breakable = true;
+			this.solid = true;
+			break;
+		case 20: // mercury vein
+			this.tileSet = Assets.mercuryOreTile;
+			this.wall = true;
+			this.breakable = true;
+			this.solid = true;
+			break;
+		case 21: // garnet vein
+			this.tileSet = Assets.garnetOreTile;
+			this.wall = true;
+			this.breakable = true;
+			this.solid = true;
+			break;
+		case 22: // quartz vein
+			this.tileSet = Assets.quartzOreTile;
+			this.wall = true;
+			this.breakable = true;
+			this.solid = true;
+			break;
+		default:
+			break;
+		}
+	}
+
+	/**
+	 * 
+	 * @param x       - x position to drop the item
+	 * @param y       - y position to drop the item
+	 * @param handler - the game handler
+	 * @returns a list of items dropped by this tile, tied to this tiles location
+	 */
+	public ArrayList<Item> tileDrop(int x, int y, Handler handler) {
+		ArrayList<Item> drop = new ArrayList<Item>();
+		switch (id) {
+		case 0: // dirt floor
+			break;
+		case 1: // dirt wall
+			drop.add(new TileBlock(x, y, handler, id));
+			if (rng.nextDouble() < 0.1)
+				drop.add(new TileBlock(x, y, handler, 9));
+			break;
+		case 2: // anvil
+			drop.add(new Anvil(x, y, handler));
+			break;
+		case 3: // forge left
+			drop.add(new Forge(x, y, handler));
+			break;
+		case 4: // forge right
+			drop.add(new Forge(x, y, handler));
+			break;
+		case 5: // limestone floor
+			break;
+		case 6: // limestone wall
+			drop.add(new TileBlock(x, y, handler, id));
+			break;
+		case 7: // iron vein
+			if (rng.nextDouble() < 0.30)
+				drop.add(new Ore(x, y, handler, 0));
+			if (rng.nextDouble() < 0.30)
+				drop.add(new TileBlock(x, y, handler, 6));
+			if (rng.nextDouble() < 0.03)
+				drop.add(new Gem(x, y, handler, 0));
+			break;
+		case 8: // clay floor
+			break;
+		case 9: // clay wall
+			drop.add(new TileBlock(x, y, handler, id));
+			break;
+		case 10: // worktable
+			drop.add(new Worktable(x, y, handler));
+			break;
+		case 11: // aluminum vein
+			if (rng.nextDouble() < 0.30)
+				drop.add(new Ore(x, y, handler, 1));
+			if (rng.nextDouble() < 0.30)
+				drop.add(new TileBlock(x, y, handler, 6));
+			if (rng.nextDouble() < 0.03)
+				drop.add(new Gem(x, y, handler, 0));
+			break;
+		case 12: // antimony vein
+			if (rng.nextDouble() < 0.30)
+				drop.add(new Ore(x, y, handler, 2));
+			if (rng.nextDouble() < 0.30)
+				drop.add(new TileBlock(x, y, handler, 6));
+			if (rng.nextDouble() < 0.03)
+				drop.add(new Gem(x, y, handler, 0));
+			break;
+		case 13: // copper vein
+			if (rng.nextDouble() < 0.30)
+				drop.add(new Ore(x, y, handler, 3));
+			if (rng.nextDouble() < 0.30)
+				drop.add(new TileBlock(x, y, handler, 6));
+			if (rng.nextDouble() < 0.03)
+				drop.add(new Gem(x, y, handler, 0));
+			break;
+		case 14: // galena vein
+			if (rng.nextDouble() < 0.30)
+				drop.add(new Ore(x, y, handler, 4));
+			if (rng.nextDouble() < 0.30)
+				drop.add(new Ore(x, y, handler, 5));
+			if (rng.nextDouble() < 0.30)
+				drop.add(new TileBlock(x, y, handler, 6));
+			if (rng.nextDouble() < 0.03)
+				drop.add(new Gem(x, y, handler, 0));
+			break;
+		case 15: // gold vein
+			if (rng.nextDouble() < 0.30)
+				drop.add(new Ore(x, y, handler, 6));
+			if (rng.nextDouble() < 0.30)
+				drop.add(new TileBlock(x, y, handler, 6));
+			if (rng.nextDouble() < 0.03)
+				drop.add(new Gem(x, y, handler, 0));
+			break;
+		case 16: // tin vein
+			if (rng.nextDouble() < 0.30)
+				drop.add(new Ore(x, y, handler, 7));
+			if (rng.nextDouble() < 0.30)
+				drop.add(new TileBlock(x, y, handler, 6));
+			if (rng.nextDouble() < 0.03)
+				drop.add(new Gem(x, y, handler, 0));
+			break;
+		case 17: // zinc vein
+			if (rng.nextDouble() < 0.30)
+				drop.add(new Ore(x, y, handler, 8));
+			if (rng.nextDouble() < 0.30)
+				drop.add(new TileBlock(x, y, handler, 6));
+			if (rng.nextDouble() < 0.03)
+				drop.add(new Gem(x, y, handler, 0));
+			break;
+		case 18: // chome vein
+			if (rng.nextDouble() < 0.30)
+				drop.add(new Ore(x, y, handler, 9));
+			if (rng.nextDouble() < 0.30)
+				drop.add(new TileBlock(x, y, handler, 6));
+			if (rng.nextDouble() < 0.03)
+				drop.add(new Gem(x, y, handler, 0));
+			break;
+		case 19: // titanium vein
+			if (rng.nextDouble() < 0.30)
+				drop.add(new Ore(x, y, handler, 10));
+			if (rng.nextDouble() < 0.30)
+				drop.add(new TileBlock(x, y, handler, 6));
+			if (rng.nextDouble() < 0.03)
+				drop.add(new Gem(x, y, handler, 0));
+			break;
+		case 20: // mercury vein
+			if (rng.nextDouble() < 0.30)
+				drop.add(new Ore(x, y, handler, 11));
+			if (rng.nextDouble() < 0.30)
+				drop.add(new TileBlock(x, y, handler, 6));
+			if (rng.nextDouble() < 0.03)
+				drop.add(new Gem(x, y, handler, 0));
+			break;
+		case 21: // garnet vein
+			if (rng.nextDouble() < 0.30)
+				drop.add(new Gem(x, y, handler, 3));
+			if (rng.nextDouble() < 0.30)
+				drop.add(new TileBlock(x, y, handler, 6));
+			if (rng.nextDouble() < 0.30)
+				drop.add(new Gem(x, y, handler, 3));
+			break;
+		case 22: // quartz vein
+			if (rng.nextDouble() < 0.30)
+				drop.add(new Gem(x, y, handler, 4));
+			if (rng.nextDouble() < 0.30)
+				drop.add(new TileBlock(x, y, handler, 6));
+			if (rng.nextDouble() < 0.30)
+				drop.add(new Gem(x, y, handler, 4));
+			break;
+		default:
+			break;
+		}
+		return drop;
 	}
 
 	/**
 	 * Draws a tile at the specified position
+	 * 
 	 * @param x - x draw position in pixels
 	 * @param y - y draw position in pixels
 	 * @param g - DrawGraphics component to draw with
@@ -58,6 +343,7 @@ public class Tile {
 
 	/**
 	 * returns the static tile associated with a specific id
+	 * 
 	 * @param id - the id of the desired tile
 	 * @return
 	 */
@@ -98,14 +384,4 @@ public class Tile {
 		return breakable;
 	}
 
-	/**
-	 * 
-	 * @param x - x position to drop the item
-	 * @param y - y position to drop the item
-	 * @param handler - the game handler
-	 * @returns a list of items dropped by this tile, tied to this tiles location
-	 */
-	public ArrayList<Item> tileDrop(int x, int y, Handler handler) {
-		return null;
-	}
 }

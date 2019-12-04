@@ -83,7 +83,7 @@ public class MapGenerator {
 							} else {
 								id = 6;
 								if (modOre > 0.5)
-									mapID = 7;
+									mapID = rng.nextInt(12) + 11;
 							}
 						} else {
 							mod = noise.fractalNoise(xf, yf, 8, 256 / (World.maxChunks), 2);
@@ -97,7 +97,7 @@ public class MapGenerator {
 								} else {
 									id = 6;
 									if (modOre > 0.5)
-										mapID = 7;
+										mapID = rng.nextInt(12) + 11;
 								}
 							} else {
 								if (noise.tesselation(xf, yf) % 2 == 0)

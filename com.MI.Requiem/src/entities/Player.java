@@ -84,7 +84,7 @@ public class Player extends Mob {
 		rHand = new ItemContainer<Item>((int) ((w / 21.8) + 40), w / 5, Assets.inventory_Empty,
 				Assets.inventory_Offhand, "hand offhand", handler); // previously 84 and 192
 
-		inventory = new Inventory((int) (w / 1.17), w / 60, 9, handler); // previously 824 and 16
+		inventory = new Inventory((int) (w / 1.17), w / 60, 12, handler); // previously 824 and 16
 		inventory.appendContainer(lHand);
 		inventory.appendContainer(rHand);
 		inventory.appendContainer(new ItemContainer<Item>((int) (w / 21.8), (int) (w / 3.25), Assets.inventory_Empty,

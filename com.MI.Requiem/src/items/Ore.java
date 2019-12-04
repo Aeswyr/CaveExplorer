@@ -38,6 +38,72 @@ public class Ore extends Item{
 			name = "Iron Ore";
 			statPackage[ITEM_WEIGHT] = 1;
 			break;
+		case 1:
+			this.sprite = Assets.ironOre;
+			this.invSprite = Assets.ironOre_inv;
+			name = "Aluminum Ore";
+			statPackage[ITEM_WEIGHT] = 1;
+			break;
+		case 2:
+			this.sprite = Assets.ironOre;
+			this.invSprite = Assets.ironOre_inv;
+			name = "Antimony Ore";
+			statPackage[ITEM_WEIGHT] = 1;
+			break;
+		case 3:
+			this.sprite = Assets.ironOre;
+			this.invSprite = Assets.ironOre_inv;
+			name = "Copper Ore";
+			statPackage[ITEM_WEIGHT] = 1;
+			break;
+		case 4:
+			this.sprite = Assets.ironOre;
+			this.invSprite = Assets.ironOre_inv;
+			name = "Silver Ore";
+			statPackage[ITEM_WEIGHT] = 1;
+			break;
+		case 5:
+			this.sprite = Assets.ironOre;
+			this.invSprite = Assets.ironOre_inv;
+			name = "Lead Ore";
+			statPackage[ITEM_WEIGHT] = 1;
+			break;
+		case 6:
+			this.sprite = Assets.ironOre;
+			this.invSprite = Assets.ironOre_inv;
+			name = "Gold Ore";
+			statPackage[ITEM_WEIGHT] = 1;
+			break;
+		case 7:
+			this.sprite = Assets.ironOre;
+			this.invSprite = Assets.ironOre_inv;
+			name = "Tin Ore";
+			statPackage[ITEM_WEIGHT] = 1;
+			break;
+		case 8:
+			this.sprite = Assets.ironOre;
+			this.invSprite = Assets.ironOre_inv;
+			name = "Zinc Ore";
+			statPackage[ITEM_WEIGHT] = 1;
+			break;
+		case 9:
+			this.sprite = Assets.ironOre;
+			this.invSprite = Assets.ironOre_inv;
+			name = "Chromium";
+			statPackage[ITEM_WEIGHT] = 1;
+			break;
+		case 10:
+			this.sprite = Assets.ironOre;
+			this.invSprite = Assets.ironOre_inv;
+			name = "Titanium Ore";
+			statPackage[ITEM_WEIGHT] = 1;
+			break;
+		case 11:
+			this.sprite = Assets.ironOre;
+			this.invSprite = Assets.ironOre_inv;
+			name = "Cinnabar";
+			statPackage[ITEM_WEIGHT] = 1;
+			break;
 		default:
 			break;
 		}

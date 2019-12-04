@@ -8,6 +8,7 @@ import world.TileSet;
 
 /**
  * stores and initializes all game assets
+ * 
  * @author Pascal
  *
  */
@@ -29,9 +30,19 @@ public class Assets {
 	public static TileSet forgeRight;
 	public static TileSet limestoneTile;
 	public static TileSet clayTile;
-	public static TileSet ironOreTile;
-	public static TileSet azuriteOreTile; // copper ore
-	public static TileSet casseriteTile; // tin ore
+	public static TileSet ironOreTile; // siderite
+	public static TileSet copperOreTile; // chalcopyrite
+	public static TileSet tinOreTile; // cassiterite
+	public static TileSet aluminumOreTile;
+	public static TileSet zincOreTile;
+	public static TileSet galenaOreTile;
+	public static TileSet goldOreTile;
+	public static TileSet antimonyOreTile;
+	public static TileSet garnetOreTile;
+	public static TileSet mercuryOreTile;
+	public static TileSet chromeOreTile;
+	public static TileSet titaniumOreTile;
+	public static TileSet quartzOreTile;
 	public static TileSet worktableTile;
 
 	private static SpriteSheet ui;
@@ -54,7 +65,7 @@ public class Assets {
 	public static Sprite sTick;
 	public static Sprite pTick;
 	public static Sprite bTick;
-	
+
 	private static SpriteSheet player;
 	public static Sprite player_idle;
 	public static Sprite player_run;
@@ -103,7 +114,7 @@ public class Assets {
 
 	public static SpriteSheet corpse_sheet;
 	public static Sprite corpse;
-	
+
 	// Sound
 
 	public static Sound pickaxe1;
@@ -124,7 +135,7 @@ public class Assets {
 		willowWisp = new SpriteSheet(ENTITY + "willowWisp.png");
 
 		font = new Font(UI + "font.png");
-		
+
 		corpse_sheet = new SpriteSheet(WORLD + "corpse.png");
 	}
 
@@ -135,8 +146,18 @@ public class Assets {
 		forgeRight = new TileSet(80, 0, tile, true);
 		limestoneTile = new TileSet(0, 32, tile);
 		ironOreTile = new TileSet(64, 32, tile);
-		azuriteOreTile = new TileSet(32, 32, tile); // copper ore
-		casseriteTile = new TileSet(96, 32, tile); // tin ore
+		copperOreTile = new TileSet(32, 32, tile);
+		tinOreTile = new TileSet(96, 32, tile);
+		aluminumOreTile = new TileSet(64, 64, tile);
+		zincOreTile = new TileSet(96, 64, tile);
+		galenaOreTile = new TileSet(64, 96, tile);
+		goldOreTile = new TileSet(96, 96, tile);
+		antimonyOreTile = new TileSet(64, 128, tile);
+		garnetOreTile = new TileSet(96, 128, tile);
+		mercuryOreTile = new TileSet(128, 32, tile);
+		chromeOreTile = new TileSet(128, 96, tile);
+		titaniumOreTile = new TileSet(128, 64, tile);
+		quartzOreTile = new TileSet(128, 128, tile);
 		clayTile = new TileSet(0, 64, tile);
 		worktableTile = new TileSet(48, 64, tile, true);
 
@@ -165,7 +186,7 @@ public class Assets {
 		sTick = new Sprite(1, 36, 1, 3, ui, Sprite.TYPE_ENTITY);
 		pTick = new Sprite(2, 36, 1, 3, ui, Sprite.TYPE_ENTITY);
 		bTick = new Sprite(3, 36, 1, 3, ui, Sprite.TYPE_ENTITY);
-		
+
 		litTorch_inv = new Sprite(0, 0, 32, item, Sprite.TYPE_INVENTORY_ITEM);
 		litTorch = new Sprite(0, 32, 32, item, Sprite.TYPE_ENTITY);
 		burntTorch_inv = new Sprite(32, 0, 32, item, Sprite.TYPE_INVENTORY_ITEM);
@@ -200,10 +221,9 @@ public class Assets {
 		worktable_inv = new Sprite(224, 64, 32, item, Sprite.TYPE_INVENTORY_ITEM);
 		crystalRod = new Sprite(0, 160, 32, item, Sprite.TYPE_ENTITY);
 		crystalRod_inv = new Sprite(0, 128, 32, item, Sprite.TYPE_INVENTORY_ITEM);
-		
+
 		corpse = new Sprite(0, 0, 32, corpse_sheet, Sprite.TYPE_ENTITY);
-		
-		
+
 	}
 
 	private static void initSound() {

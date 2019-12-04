@@ -37,7 +37,36 @@ public class Gem extends Item{
 			this.sprite = Assets.corundum;
 			this.invSprite = Assets.corundum_inv;
 			name = "Corundum";
-			
+			break;
+		case 1:
+			this.sprite = Assets.corundum;
+			this.invSprite = Assets.corundum_inv;
+			name = "Ruby";
+			break;
+		case 2:
+			this.sprite = Assets.corundum;
+			this.invSprite = Assets.corundum_inv;
+			name = "Sapphire";
+			break;
+		case 3:
+			this.sprite = Assets.corundum;
+			this.invSprite = Assets.corundum_inv;
+			name = "Garnet";
+			break;
+		case 4:
+			this.sprite = Assets.corundum;
+			this.invSprite = Assets.corundum_inv;
+			name = "Quartz";
+			break;
+		case 5:
+			this.sprite = Assets.corundum;
+			this.invSprite = Assets.corundum_inv;
+			name = "Amethyst";
+			break;
+		case 6:
+			this.sprite = Assets.corundum;
+			this.invSprite = Assets.corundum_inv;
+			name = "Citrine";
 			break;
 		default:
 			break;
