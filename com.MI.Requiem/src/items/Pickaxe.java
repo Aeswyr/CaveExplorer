@@ -3,7 +3,6 @@ package items;
 import java.util.ArrayList;
 import core.Assets;
 import entity.Mob;
-import geometry.Shape;
 import geometry.Rect;
 import gfx.Sprite;
 import item.Item;
@@ -12,6 +11,11 @@ import runtime.Handler;
 import world.Tile;
 
 public class Pickaxe extends Item {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4425233684360263139L;
 
 	public Pickaxe(Handler handler, Mob holder) {
 		super(handler, holder);
@@ -39,8 +43,6 @@ public class Pickaxe extends Item {
 
 		stackable = false;
 	}
-
-	private Shape spark = new Rect(1, 1, 0xffffff00, Sprite.TYPE_ITEM_DROP);
 
 	@Override
 	public void use() {
@@ -105,7 +107,7 @@ public class Pickaxe extends Item {
 					// end tile break
 
 					// always do
-					new Particle(spark.toSprite(), 8, holderX, holderY, holderX + 5, holderY + 5, handler,
+					new Particle(new Rect(1, 1, 0xffffff00, Sprite.TYPE_ITEM_DROP).toSprite(), 8, holderX, holderY, holderX + 5, holderY + 5, handler,
 							new Particle.Behavior() {
 								int[][] move;
 

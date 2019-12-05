@@ -4,7 +4,6 @@ import core.Assets;
 import effects.Effect;
 import entity.Hitbox;
 import entity.Mob;
-import geometry.Shape;
 import geometry.Rect;
 import gfx.Sprite;
 import item.Item;
@@ -12,6 +11,11 @@ import particle.Particle;
 import runtime.Handler;
 
 public class CrystalRod extends Item {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5542786568095131743L;
 
 	public CrystalRod(Handler handler, Mob holder) {
 		super(handler, holder);
@@ -40,8 +44,6 @@ public class CrystalRod extends Item {
 
 		stackable = false;
 	}
-
-	private Shape spark = new Rect(2, 2, 0xffAAAAff, Sprite.TYPE_ITEM_DROP);
 
 	@Override
 	public void use() {
@@ -86,7 +88,7 @@ public class CrystalRod extends Item {
 					holderY += sy;
 				}
 			}
-			new Particle(spark.toSprite(), 40, holder.getCenteredX(), holder.getY() - 8, holderX, holderY, handler,
+			new Particle(new Rect(2, 2, 0x664444ff, Sprite.TYPE_ITEM_DROP).toSprite(), 40, holder.getCenteredX(), holder.getY() - 8, holderX, holderY, handler,
 					new Particle.Behavior() {
 
 						@Override

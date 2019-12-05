@@ -7,6 +7,11 @@ import runtime.Handler;
 
 public class Mold extends Item{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 612274906360647466L;
+
 	public Mold(Handler handler, Mob holder) {
 		super(handler, holder);
 

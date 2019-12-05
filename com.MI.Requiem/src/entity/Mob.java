@@ -21,6 +21,10 @@ import runtime.Handler;
  */
 public abstract class Mob extends Entity {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3048223593461500698L;
 	protected static Random rng = new Random();
 
 	public Mob(Handler handler) {
@@ -360,6 +364,12 @@ public abstract class Mob extends Entity {
 		if (inventory.getRawHeld().size() > 0)
 			handler.getWorld().getEntities().addEntity(new Corpse(handler, deathSprite, hitbox, inventory, x, y));
 		super.die();
+	}
+	
+	@Override
+	public void load(Handler h) {
+		super.load(h);
+		if (inventory != null) inventory.load(h, this);
 	}
 
 }

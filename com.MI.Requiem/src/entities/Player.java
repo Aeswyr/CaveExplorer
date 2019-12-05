@@ -31,6 +31,11 @@ import world.World;
 
 public class Player extends Mob {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3478267228216473893L;
+
 	boolean moving = false;
 
 	int wounds;
@@ -279,7 +284,7 @@ public class Player extends Mob {
 	}
 
 	private boolean craftShowing = false;
-	private ArrayList<ContainerButton> crafts;
+	transient private ArrayList<ContainerButton> crafts;
 
 	public void showCraft() {
 		craftShowing = true;

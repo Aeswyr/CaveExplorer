@@ -10,6 +10,10 @@ public class Gem extends Item{
 	//ID
 	// 0 - Corundum
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6885793369745861688L;
 	int id;
 	
 	public Gem(Handler handler, Mob holder, int id) {

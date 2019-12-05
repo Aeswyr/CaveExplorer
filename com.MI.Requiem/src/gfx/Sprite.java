@@ -1,6 +1,8 @@
 package gfx;
 
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
+
 import runtime.Light;
 
 /**
@@ -9,8 +11,12 @@ import runtime.Light;
  * @author Pascal
  *
  */
-public class Sprite {
+public class Sprite implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2743802919702462394L;
 	public static final int TYPE_ENTITY = 0;
 	public static final int TYPE_GUI_COMPONENT = 1;
 	public static final int TYPE_INVENTORY_ITEM = 2;

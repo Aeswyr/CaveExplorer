@@ -10,6 +10,10 @@ public class Ingot extends Item{
 	//ID
 	// 0 - iron ore
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7559663476034458062L;
 	int id;
 	public Ingot(Handler handler, Mob holder, int id) {
 		super(handler, holder);

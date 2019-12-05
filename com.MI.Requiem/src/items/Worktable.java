@@ -9,6 +9,10 @@ import world.Tile;
 
 public class Worktable extends Item {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3481808040371499458L;
 	private WorktableInteractable interact;
 
 	public Worktable(int x, int y, Handler handler) {
@@ -65,5 +69,17 @@ public class Worktable extends Item {
 	public Item strip() {
 		this.interact = null;
 		return this;
+	}
+	
+	@Override
+	public void load(Handler h) {
+		super.load(h);
+		interact.load(h);
+	}
+	
+	@Override
+	public void load(Handler h, Mob m) {
+		super.load(h, m);
+		interact.load(h);
 	}
 }

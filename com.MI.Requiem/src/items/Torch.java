@@ -5,9 +5,14 @@ import entity.Mob;
 import item.Item;
 import runtime.Handler;
 import runtime.Light;
+import utility.Utility;
 
 public class Torch extends Item {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4616465095259641145L;
 	Light bright;
 	Light dim;
 	Light burnt;
@@ -19,13 +24,12 @@ public class Torch extends Item {
 	public Torch(int x, int y, Handler handler) {
 		super(x, y, handler);
 	}
-	
+
 	@Override
 	protected void setup() {
 		ID = "6";
 		tags = "hand";
 		name = "Torch";
-		
 
 		useMax = 10800;
 		use = useMax;
@@ -37,7 +41,7 @@ public class Torch extends Item {
 		dim = new Light(128, 0xffffffAA, handler);
 		burnt = new Light(90, 0xff111111, handler);
 		dim.light();
-		
+
 		stackable = false;
 	}
 
@@ -47,7 +51,7 @@ public class Torch extends Item {
 			use -= 3;
 		else
 			use -= 1;
-		if (use == 0 || use == -1) {
+		if (use >= -3 && use <= 0 && !Utility.tagOverlaps(tags, "carvable")) {
 			invSprite = Assets.burntTorch_inv;
 			sprite = Assets.burntTorch;
 			tags += " carvable";
@@ -112,11 +116,41 @@ public class Torch extends Item {
 		this.bright.snuff();
 		this.burnt.snuff();
 		this.dim.snuff();
-		
+
 		this.bright = null;
 		this.burnt = null;
 		this.dim = null;
 		return this;
 	}
-	
+
+	@Override
+	public void load(Handler h) {
+		super.load(h);
+		if (bright != null)
+			bright.load(h);
+		if (dim != null)
+			dim.load(h);
+		if (burnt != null)
+			burnt.load(h);
+		if (use > 0)
+			dim.light();
+	}
+
+	@Override
+	public void load(Handler h, Mob m) {
+		super.load(h, m);
+		if (bright != null) {
+			bright.load(h);
+			if (equipped && use > 0) bright.light();
+		}
+		if (dim != null) {
+			dim.load(h);
+			if (!equipped && use > 0) dim.light();
+		}
+		if (burnt != null) {
+			burnt.load(h);
+			if (equipped && use <= 0) burnt.light();
+		}
+	}
+
 }

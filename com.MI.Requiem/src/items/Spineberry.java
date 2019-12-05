@@ -8,6 +8,11 @@ import runtime.Handler;
 
 public class Spineberry extends Item {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2896971184836307629L;
+
 	public Spineberry(Handler handler, Mob holder) {
 		super(handler, holder);
 

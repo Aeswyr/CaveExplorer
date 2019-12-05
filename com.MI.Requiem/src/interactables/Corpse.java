@@ -10,6 +10,10 @@ import runtime.Handler;
 
 public class Corpse extends Interactable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2358187602203605936L;
 	Sprite activeSprite;
 	Inventory items;
 	
@@ -37,6 +41,7 @@ public class Corpse extends Interactable{
 
 	@Override
 	public void update() {
+		super.update();
 		if (interacting) {
 			timer++;
 			if (timer >= 300) {
@@ -63,6 +68,15 @@ public class Corpse extends Interactable{
 						(int) y - handler.getCamera().yOffset() - yOff, g);
 			}
 		}
+	}
+	
+	
+	/**
+	 * 
+	 */@Override
+	public void load(Handler h) {
+		super.load(h);
+		items.load(h, null);
 	}
 
 }

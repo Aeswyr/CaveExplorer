@@ -1,5 +1,7 @@
 package item;
 
+import java.io.Serializable;
+
 import entity.Hitbox;
 import gfx.DrawGraphics;
 import gfx.Sprite;
@@ -14,14 +16,18 @@ import utility.Utility;
  *
  * @param <T>
  */
-public class ItemContainer<T extends Storeable> {
+public class ItemContainer<T extends Storeable> implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5267788575709671134L;
 	String acceptedTags;
 	T contained;
 	Sprite container;
 	Sprite empty;
 	int x, y, amount;
-	Handler handler;
+	transient Handler handler;
 	Hitbox h;
 
 	/**
@@ -239,5 +245,14 @@ public class ItemContainer<T extends Storeable> {
 	 */
 	public boolean isEmpty() {
 		return (contained == null);
+	}
+	
+	/**
+	 * initializes the handler for this item
+	 * @param h - the new handler
+	 */
+	public void load(Handler h) {
+		this.handler = h;
+		this.h.setHandler(h);
 	}
 }

@@ -10,6 +10,11 @@ import world.Tile;
 
 public class WorktableInteractable extends Interactable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9148779825600429102L;
+
 	public WorktableInteractable(Handler handler) {
 		super(handler);
 		hitbox = new Hitbox(0, 0, Tile.tileSize + 2, Tile.tileSize * 2, this, handler);
@@ -39,7 +44,7 @@ public class WorktableInteractable extends Interactable {
 
 	@Override
 	public void update() {
-		hitbox.updatePos(getX(), getY());
+		super.update();
 		if (interacted) {
 			if (!this.hitbox.collidingAll().contains(p)) {
 				interacted = false;
@@ -49,13 +54,15 @@ public class WorktableInteractable extends Interactable {
 			}
 		}
 
-		if (handler.getWorld().getOverlayID(getX(), getY()) != 10)
+		int t = handler.getWorld().getOverlayID(getX(), getY());
+		if (t != 10 && t != -2) {
 			this.die();
+		}
 	}
 
 	@Override
 	public void render(DrawGraphics g) {
-		//hitbox.render(g);
+		// hitbox.render(g);
 
 	}
 

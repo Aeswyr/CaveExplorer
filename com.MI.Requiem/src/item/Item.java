@@ -35,6 +35,10 @@ import utility.Storeable;
  */
 public abstract class Item extends Interactable implements Storeable, Cloneable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5707511923118175296L;
 	/*
 	 * Tag list head - an item that can be used in the head slot body - an item that
 	 * can be used in the body slot trinket - an item that can be used in any
@@ -44,7 +48,7 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 	 */
 	protected String tags, ID;
 	protected Sprite invSprite, sprite;
-	protected Mob holder;
+	transient protected Mob holder;
 	protected boolean equipped = false;
 	protected boolean consumed = false;
 	protected int useTime = 0;
@@ -177,6 +181,7 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 
 	/**
 	 * sets which mob is holding this item
+	 * 
 	 * @param m - the mob who will hold the item
 	 */
 	public void setHolder(Mob m) {
@@ -377,5 +382,15 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 	 */
 	public Item strip() {
 		return this;
+	}
+
+	/**
+	 * initializes this item if it is held
+	 * 
+	 * @param m - the new holder of this item
+	 */
+	public void load(Handler h, Mob m) {
+		this.handler = h;
+		this.setHolder(m);
 	}
 }

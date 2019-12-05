@@ -9,7 +9,9 @@ import java.util.StringTokenizer;
 
 import core.Driver;
 import entities.Ooze;
+import entities.Player;
 import entities.WillowWisp;
+import entity.Entity;
 import entity.EntityManager;
 import gfx.DrawGraphics;
 import runtime.Handler;
@@ -41,7 +43,6 @@ public class World {
 		this.handler = handler;
 		maxChunks = 64;
 		entities = new EntityManager();
-		entities.addEntity(handler.getPlayer());
 
 		Chunk.handler = this.handler;
 		chunkLoader = new ChunkLoader();
@@ -58,24 +59,38 @@ public class World {
 	public void init(String name) {
 		File dir = new File(Driver.saveDir + "saves/" + name + "/");
 		loadedWorld = name;
+		boolean d = dir.mkdir();
 		try {
-			if (dir.mkdir())
+			if (d)
 				MapGenerator.generateMap(handler, name);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		chunkLoader.start();
-
 		BufferedReader info = Loader.loadTextFromFile(Driver.saveDir + "saves/" + name + "/data.dat");
-		try {
-			String[] playerCoord = info.readLine().split(" ");
-			handler.getPlayer().setX(Integer.parseInt(playerCoord[0]) * Tile.tileSize);
-			handler.getPlayer().setY(Integer.parseInt(playerCoord[1]) * Tile.tileSize);
-			info.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (d)
+			try {
+				entities.addEntity(handler.getPlayer());
+				String[] playerCoord = info.readLine().split(" ");
+				handler.getPlayer().setX(Integer.parseInt(playerCoord[0]) * Tile.tileSize);
+				handler.getPlayer().setY(Integer.parseInt(playerCoord[1]) * Tile.tileSize);
+				info.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		else {
+			entities.loadAllEntities(Driver.saveDir + "saves/" + name + "/data.dat", handler);
+			ArrayList<Entity> list = entities.getEntities();
+			for (Entity e : list) {
+				if (e instanceof Player) {
+					handler.setPlayer((Player)e);
+					handler.getCamera().centerOnEntity(handler.getPlayer());
+					System.out.println("player found");
+					break;
+				}
+			}
 		}
 	}
 
@@ -316,15 +331,15 @@ public class World {
 	 * @param y - the y coordinate of the tile (pixel position)
 	 */
 	public int getOverlayID(int x, int y) {
-		int id = -1;
+		int id = -2;
 		for (int i = 0; i < chunks.size(); i++) {
 			if (chunks.get(i) != null) {
 				int pos = chunks.get(i).overlayAt(x / Tile.tileSize, y / Tile.tileSize);
-				if (pos != -1)
+				if (pos != -2)
 					id = pos;
 			}
 		}
-		return id;
+		return -2;
 	}
 
 	/**
@@ -354,6 +369,13 @@ public class World {
 			if (chunks.get(i).loaded)
 				chunks.get(i).unload();
 		}
+	}
+
+	/**
+	 * saves all entities within the world
+	 */
+	public void save() {
+		entities.saveAllEntities(Driver.saveDir + "saves/" + loadedWorld + "/data.dat");
 	}
 
 	/**

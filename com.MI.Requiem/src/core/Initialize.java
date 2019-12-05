@@ -4,6 +4,7 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import core.Driver;
 import sfx.Sound;
+import world.Tile;
 
 /**
  * starts the game and sets up any necessary filepaths
@@ -17,6 +18,7 @@ public class Initialize {
 	public static void main(String[] args) {
 		Assets.init();
 		Sound.initSound();
+		Tile.initTile();
 		Driver game = new Driver();
 		Driver.saveDir = new JFileChooser().getFileSystemView().getDefaultDirectory().toString() + "/" + GAMENAME + "/";
 		Driver.saveDir = Driver.saveDir.replace('\\', '/');

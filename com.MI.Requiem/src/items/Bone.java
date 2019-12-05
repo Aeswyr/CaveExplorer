@@ -7,6 +7,11 @@ import runtime.Handler;
 
 public class Bone extends Item{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2900728830259426097L;
+
 	public Bone(Handler handler, Mob holder) {
 		super(handler, holder);
 

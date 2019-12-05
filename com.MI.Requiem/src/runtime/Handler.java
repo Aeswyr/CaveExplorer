@@ -216,4 +216,12 @@ public class Handler {
 	public void setState(State state) {
 		this.activeState = state;
 	}
+	
+	/**
+	 * sets the main player
+	 * @param player - player to set as
+	 */
+	public void setPlayer(Player player) {
+		this.player = player;
+	}
 }

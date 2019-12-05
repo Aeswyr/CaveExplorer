@@ -9,6 +9,10 @@ import runtime.Light;
 
 public class WillowWisp extends Mob {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2178124091912891623L;
 	Light l;
 
 	public WillowWisp(Handler handler) {
@@ -97,6 +101,13 @@ public class WillowWisp extends Mob {
 	public void die() {
 		super.die();
 		l.snuff();
+	}
+	
+	@Override
+	public void load(Handler h) {
+		super.load(h);
+		l.load(h);
+		l.light();
 	}
 
 }

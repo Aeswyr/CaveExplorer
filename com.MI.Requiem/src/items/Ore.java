@@ -10,6 +10,11 @@ public class Ore extends Item{
 	//ID
 	// 0 - iron ore
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3980248478264884341L;
+	
 	int id;
 	public Ore(Handler handler, Mob holder, int id) {
 		super(handler, holder);

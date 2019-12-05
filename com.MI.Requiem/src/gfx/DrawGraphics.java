@@ -242,9 +242,9 @@ public class DrawGraphics {
 			raster[y * width + x] = value;
 		else {
 			int pixel = raster[y * width + x];
-			int r = ((pixel >> 16) & 0xff) - (int) ((((pixel >> 16) & 0xff) - ((value >> 16) & 0xff)) * alpha / 255f);
-			int g = ((pixel >> 8) & 0xff) - (int) ((((pixel >> 8) & 0xff) - ((value >> 8) & 0xff)) * alpha / 255f);
-			int b = (pixel & 0xff) - (int) (((pixel & 0xff) - (value) & 0xff) * alpha / 255f);
+			int r = ((pixel >> 16) & 0xff) - (int) ((((pixel >> 16) & 0xff) - ((value >> 16) & 0xff)) * (alpha / 255f));
+			int g = ((pixel >> 8) & 0xff) - (int) ((((pixel >> 8) & 0xff) - ((value >> 8) & 0xff)) * (alpha / 255f));
+			int b = (pixel & 0xff) - (int) (((pixel & 0xff) - (value & 0xff)) * (alpha / 255f));
 			raster[y * width + x] = r << 16 | g << 8 | b;
 		}
 	}

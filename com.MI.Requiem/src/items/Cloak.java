@@ -7,6 +7,11 @@ import runtime.Handler;
 
 public class Cloak extends Item {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4076010768148886682L;
+
 	public Cloak(Handler handler, Mob holder) {
 		super(handler, holder);
 

@@ -10,6 +10,11 @@ import world.Tile;
 
 public class AnvilInteractable extends Interactable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -576823628239523475L;
+
 	public AnvilInteractable(Handler handler) {
 		super(handler);
 		hitbox = new Hitbox(0, 0, Tile.tileSize + 2, Tile.tileSize * 2, this, handler);
@@ -39,7 +44,7 @@ public class AnvilInteractable extends Interactable {
 
 	@Override
 	public void update() {
-		hitbox.updatePos(getX(), getY());
+		super.update();
 		if (interacted) {
 			if (!this.hitbox.collidingAll().contains(p)) {
 				interacted = false;
@@ -49,8 +54,10 @@ public class AnvilInteractable extends Interactable {
 			}
 		}
 
-		if (handler.getWorld().getOverlayID(getX(), getY()) != 2)
+		int t = handler.getWorld().getOverlayID(getX(), getY());
+		if (t != 2 && t != -2) {
 			this.die();
+		}
 	}
 
 	@Override

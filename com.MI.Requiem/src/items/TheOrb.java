@@ -9,6 +9,10 @@ import runtime.Light;
 
 public class TheOrb extends Item {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4791488089979754632L;
 	Light light;
 	int stage = 0;
 	boolean pendingStage;
@@ -96,4 +100,15 @@ public class TheOrb extends Item {
 		return this;
 	}
 	
+	@Override
+	public void load(Handler h) {
+		super.load(h);
+		if (light != null) light.load(h);
+	}
+	
+	@Override
+	public void load(Handler h, Mob m) {
+		super.load(h, m);
+		if (light != null) light.load(h);
+	}
 }

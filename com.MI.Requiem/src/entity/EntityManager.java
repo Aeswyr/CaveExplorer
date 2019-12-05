@@ -2,9 +2,18 @@ package entity;
 
 import utility.CoordKey;
 import utility.HashTable;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import gfx.DrawGraphics;
+import runtime.Handler;
 
 public class EntityManager {
 
@@ -65,7 +74,7 @@ public class EntityManager {
 		for (int i = mobs.size() - 1; i >= 0; i--)
 			mobs.get(i).renderUI(g);
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -179,6 +188,70 @@ public class EntityManager {
 	 */
 	public int totalMobs() {
 		return mobs.size();
+	}
+
+	/**
+	 * saves all entities to a specified world file
+	 * 
+	 * @param path - the path to the specified world file
+	 */
+	public void saveAllEntities(String path) {
+
+		try {
+			File f = new File(path);
+			f.delete();
+			f.createNewFile();
+			FileOutputStream fo = new FileOutputStream(f);
+			ObjectOutputStream stream = new ObjectOutputStream(fo);
+			stream.writeObject(entities);
+			stream.close();
+			fo.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	/**
+	 * Loads all entities into the world from the specified path
+	 * 
+	 * @param path - string path to the world data file
+	 */
+	@SuppressWarnings("unchecked")
+	public void loadAllEntities(String path, Handler h) {
+		try {
+			File f = new File(path);
+			FileInputStream fo = new FileInputStream(f);
+			ObjectInputStream stream = new ObjectInputStream(fo);
+			entities = (ArrayList<Entity>) stream.readObject();
+			stream.close();
+			fo.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		for (Entity e : entities) {
+			e.load(h);
+			if (e instanceof Mob) mobs.add((Mob)e);
+		}
+	}
+	
+	/**
+	 * @returns a list of all active entities
+	 */
+	public ArrayList<Entity> getEntities() {
+		return entities;
 	}
 
 }

@@ -10,6 +10,11 @@ import world.Tile;
 
 public class ForgeInteractable extends Interactable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6933996831059830447L;
+
 	public ForgeInteractable(Handler handler) {
 		super(handler);
 		hitbox = new Hitbox(0, 0, Tile.tileSize * 2, this, handler);
@@ -39,7 +44,7 @@ public class ForgeInteractable extends Interactable {
 
 	@Override
 	public void update() {
-		hitbox.updatePos(getX(), getY());
+		super.update();
 		if (interacted) {
 			if (!this.hitbox.collidingAll().contains(p)) {
 				interacted = false;
@@ -48,9 +53,10 @@ public class ForgeInteractable extends Interactable {
 				p = null;
 			}
 		}
-		if (handler.getWorld().getOverlayID(getX(), getY()) != 3)
+		int t = handler.getWorld().getOverlayID(getX(), getY());
+		if (t != 3 && t != -2) {
 			this.die();
-
+		}
 	}
 
 	@Override

@@ -9,6 +9,10 @@ import world.Tile;
 
 public class Forge extends Item {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8095652832011942557L;
 	private ForgeInteractable interact;
 
 	public Forge(int x, int y, Handler handler) {
@@ -74,4 +78,16 @@ public class Forge extends Item {
 		return this;
 	}
 
+	@Override
+	public void load(Handler h) {
+		super.load(h);
+		interact.load(h);
+	}
+	
+	@Override
+	public void load(Handler h, Mob m) {
+		super.load(h, m);
+		interact.load(h);
+	}
+	
 }

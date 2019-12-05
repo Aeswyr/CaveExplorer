@@ -9,6 +9,11 @@ import runtime.Handler;
 
 public class Ooze extends Mob {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8641622786017092105L;
+
 	public Ooze(Handler handler) {
 		super(handler);
 		this.activeSprite = Assets.ooze_idle;

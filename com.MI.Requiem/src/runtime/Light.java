@@ -1,15 +1,23 @@
 package runtime;
 
+import java.io.Serializable;
+
 import gfx.DrawGraphics;
 import gfx.LightRequest;
 
 /**
  * Represents a single source of light
+ * 
  * @author Pascal
  *
  */
-public class Light {
+public class Light implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8020722636961239307L;
+	
 	/**
 	 * Light interaction type: pixel interacts with light normally
 	 */
@@ -20,8 +28,8 @@ public class Light {
 	 */
 	public static final int FULL = 1;
 	/**
-	 * Light interaction type: pixel ignores any changes made by light and
-	 * is drawn in full light at all times
+	 * Light interaction type: pixel ignores any changes made by light and is drawn
+	 * in full light at all times
 	 */
 	public static final int IGNORE = 2;
 	/**
@@ -31,7 +39,7 @@ public class Light {
 	 */
 	public static final int DIM = 3;
 
-	Handler handler;
+	transient Handler handler;
 
 	int x, y;
 
@@ -133,7 +141,15 @@ public class Light {
 	 */
 	public void render(DrawGraphics g) {
 		g.submitRequest(new LightRequest(this, x - handler.getCamera().xOffset(), y - handler.getCamera().yOffset()));
+	}
 
+	/**
+	 * initializes this object with a new handler
+	 * 
+	 * @param h - the new handler
+	 */
+	public void load(Handler h) {
+		this.handler = h;
 	}
 
 }

@@ -9,6 +9,10 @@ import world.Tile;
 
 public class Anvil extends Item {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 140997561230695818L;
 	private AnvilInteractable interact;
 	
 	public Anvil(int x, int y, Handler handler) {
@@ -68,6 +72,18 @@ public class Anvil extends Item {
 	public Item strip() {
 		this.interact = null;
 		return this;
+	}
+	
+	@Override
+	public void load(Handler h) {
+		super.load(h);
+		interact.load(h);
+	}
+	
+	@Override
+	public void load(Handler h, Mob m) {
+		super.load(h, m);
+		interact.load(h);
 	}
 	
 }

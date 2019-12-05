@@ -1,9 +1,10 @@
 package item;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-
 import core.Assets;
 import crafting.Tag;
+import entity.Mob;
 import gfx.DrawGraphics;
 import runtime.Handler;
 import utility.Utility;
@@ -14,11 +15,15 @@ import utility.Utility;
  * @author Pascal
  *
  */
-public class Inventory {
+public class Inventory implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 491127628628667496L;
 	private ArrayList<ItemContainer<Item>> storage;
 	private ArrayList<ItemContainer<Item>> extra;
-	private Handler handler;
+	transient private Handler handler;
 	private int x, y, size;
 
 	/**
@@ -39,8 +44,8 @@ public class Inventory {
 		this.x = x;
 		this.y = y;
 		for (int i = 0; i < size; i++) {
-			storage.add(
-					new ItemContainer<Item>((i % 3) * 40 + x, (i / 3) * 40 + y, Assets.inventory_Empty, Assets.inventory_Empty, handler));
+			storage.add(new ItemContainer<Item>((i % 3) * 40 + x, (i / 3) * 40 + y, Assets.inventory_Empty,
+					Assets.inventory_Empty, handler));
 		}
 	}
 
@@ -171,6 +176,7 @@ public class Inventory {
 
 	/**
 	 * equips an item
+	 * 
 	 * @param item - the item to equip
 	 * @returns true if the item is successfully eqipt, false otherwise
 	 */
@@ -206,7 +212,8 @@ public class Inventory {
 	}
 
 	/**
-	 * @returns an array containing the count of each general resource in the main inventory
+	 * @returns an array containing the count of each general resource in the main
+	 *          inventory
 	 */
 	public int[] getResourceHeld() {
 		int[] res = new int[Tag.RESOURCE_MAX_ARRAY];
@@ -239,6 +246,7 @@ public class Inventory {
 
 	/**
 	 * removes an item from the inventory based on an inputed item id
+	 * 
 	 * @param id - id of the item to remove
 	 * @returns the item which was removed
 	 */
@@ -256,6 +264,7 @@ public class Inventory {
 
 	/**
 	 * removes an item from the inventory based on an inputed item tag
+	 * 
 	 * @param tag - tag of the item to remove
 	 * @returns the item which was removed
 	 */
@@ -283,6 +292,25 @@ public class Inventory {
 		for (int i = 0; i < extra.size(); i++) {
 			while (extra.get(i).getContained() != null)
 				extra.get(i).drop();
+		}
+	}
+
+	/**
+	 * initializes the handler through every part of the inventory
+	 * 
+	 * @param h - the new handler
+	 */
+	public void load(Handler h, Mob m) {
+		for (ItemContainer<Item> i : storage) {
+			i.load(h);
+			if (!i.isEmpty())
+				i.getContained().load(h, m);
+		}
+
+		for (ItemContainer<Item> i : extra) {
+			i.load(h);
+			if (!i.isEmpty())
+				i.getContained().load(h, m);
 		}
 	}
 

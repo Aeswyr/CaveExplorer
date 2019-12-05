@@ -1,5 +1,6 @@
 package entity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import entity.Entity;
 import entity.EntityManager;
@@ -16,12 +17,16 @@ import runtime.Handler;
  * @author Pascal
  *
  */
-public class Hitbox {
+public class Hitbox implements Serializable {
 
-	private Entity e;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8268649890127915848L;
+	transient private Entity e;
 	private int xoff, yoff;
 	private int x, y, width, height;
-	private Handler handler;
+	transient private Handler handler;
 
 	/**
 	 * initializes a hitbox for an entity
@@ -256,19 +261,39 @@ public class Hitbox {
 
 	/**
 	 * draws this hitbox to the screen adjusted for the camera
+	 * 
 	 * @param g - the DrawGraphics component associated with the renderer
 	 */
 	public void render(DrawGraphics g) {
-		Shape s = new Rect(width, height, 0xff0000ff, Sprite.TYPE_GUI_BACKGROUND_SHAPE, true);
-		s.render(x - handler.getCamera().xOffset() + xoff, y - handler.getCamera().yOffset() + yoff, g);
+		g.drawRect(x - handler.getCamera().xOffset() + xoff, y - handler.getCamera().yOffset() + yoff, width, height,
+				0x44ff00ff);
 	}
 
 	/**
 	 * draws this hitbox to the screen based on raw screen coordinate
+	 * 
 	 * @param g - the DrawGraphics component associated with the renderer
 	 */
 	public void renderStill(DrawGraphics g) {
 		if (handler.devMode)
-			g.drawRect(x + xoff, y + yoff, width, height, 0xff0000ff);
+			g.drawRect(x + xoff, y + yoff, width, height, 0x44ff00ff);
+	}
+
+	/**
+	 * sets this object's handler
+	 * 
+	 * @param h - the new handler
+	 */
+	public void setHandler(Handler h) {
+		this.handler = h;
+	}
+
+	/**
+	 * sets the entity who this hitbox belongs to
+	 * 
+	 * @param e - new entity
+	 */
+	public void setEntity(Entity e) {
+		this.e = e;
 	}
 }

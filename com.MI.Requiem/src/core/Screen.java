@@ -122,6 +122,8 @@ public class Screen extends Canvas {
 		{
 			public void windowClosing(WindowEvent we) {
 				d.stop();
+				if (h.getPlayer().getCraftingShown()) h.getPlayer().closeCraft();
+				h.getWorld().save();
 				r.stop();
 				try {
 					Sound.shutdown();
@@ -129,6 +131,7 @@ public class Screen extends Canvas {
 					e.printStackTrace();
 				}
 				h.getWorld().unloadWorld();
+				
 				System.out.println("Game Closed");
 			}
 		});
