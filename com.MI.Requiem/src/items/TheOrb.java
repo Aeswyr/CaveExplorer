@@ -99,16 +99,4 @@ public class TheOrb extends Item {
 		this.light = null;
 		return this;
 	}
-	
-	@Override
-	public void load(Handler h) {
-		super.load(h);
-		if (light != null) light.load(h);
-	}
-	
-	@Override
-	public void load(Handler h, Mob m) {
-		super.load(h, m);
-		if (light != null) light.load(h);
-	}
 }

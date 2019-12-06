@@ -72,7 +72,7 @@ public class Pickaxe extends Item {
 
 					// on tile break
 					ArrayList<Item> drops = null;
-					if (handler.getWorld().getOverlayID(holderX, holderY) != -1
+					if (handler.getWorld().getOverlayID(holderX, holderY) >= 0
 							&& handler.getWorld().getOverlay(holderX, holderY).isBreakable())
 						drops = handler.getWorld().getOverlay(holderX, holderY).tileDrop(holderX - 16, holderY - 18,
 								handler);
@@ -94,7 +94,7 @@ public class Pickaxe extends Item {
 					} else if (handler.getWorld().getOverlayID(holderX, holderY) == 2) { // When tile is anvil
 						handler.getWorld().setOverlay(holderX, holderY, -1);
 
-					} else if (handler.getWorld().getOverlayID(holderX, holderY) != -1
+					} else if (handler.getWorld().getOverlayID(holderX, holderY) >= 0
 							&& handler.getWorld().getOverlay(holderX, holderY).isBreakable()) {
 						handler.getWorld().setOverlay(holderX, holderY, -1);
 					} else

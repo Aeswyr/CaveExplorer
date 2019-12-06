@@ -30,9 +30,10 @@ public class Assets {
 	public static TileSet forgeRight;
 	public static TileSet limestoneTile;
 	public static TileSet clayTile;
-	public static TileSet ironOreTile; // siderite
-	public static TileSet copperOreTile; // chalcopyrite
-	public static TileSet tinOreTile; // cassiterite
+	public static TileSet waterTile;
+	public static TileSet ironOreTile;
+	public static TileSet copperOreTile;
+	public static TileSet tinOreTile;
 	public static TileSet aluminumOreTile;
 	public static TileSet zincOreTile;
 	public static TileSet galenaOreTile;
@@ -145,6 +146,7 @@ public class Assets {
 		forgeLeft = new TileSet(48, 0, tile, true);
 		forgeRight = new TileSet(80, 0, tile, true);
 		limestoneTile = new TileSet(0, 32, tile);
+		waterTile = new TileSet(0, 128, tile);
 		ironOreTile = new TileSet(64, 32, tile);
 		copperOreTile = new TileSet(32, 32, tile);
 		tinOreTile = new TileSet(96, 32, tile);

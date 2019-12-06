@@ -2,6 +2,7 @@ package world;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.StringTokenizer;
 import core.Driver;
 import gfx.DrawGraphics;
@@ -116,11 +117,12 @@ public class Chunk {
 	public void load() {
 		String line = null;
 		String mapLine = null;
+
 		try {
 			BufferedReader read = Loader
-					.loadTextFromFile(Driver.saveDir + "saves/" + handler.getWorld().loadedWorld + "/world.dat");
+					.loadTextFromFile(Driver.saveDir + "saves/" + handler.getWorld().loadedWorld + "/world.dat", StandardCharsets.UTF_8);
 			BufferedReader readMap = Loader
-					.loadTextFromFile(Driver.saveDir + "saves/" + handler.getWorld().loadedWorld + "/map.dat");
+					.loadTextFromFile(Driver.saveDir + "saves/" + handler.getWorld().loadedWorld + "/map.dat", StandardCharsets.UTF_8);
 			int find = y * World.maxChunks + x;
 			for (int i = 0; i < find; i++) {
 				read.readLine();
@@ -139,10 +141,32 @@ public class Chunk {
 
 		StringTokenizer data = new StringTokenizer(line);
 		StringTokenizer mapData = new StringTokenizer(mapLine);
+
+		int id0 = 0;
+		int c0 = 0;
+		int id1 = 0;
+		int c1 = 0;
+		
+		String a0;
+		String a1;
+		
+		
 		for (int y = 0; y < chunkDim; y++) {
 			for (int x = 0; x < chunkDim; x++) {
-				chunk[x][y] = Integer.parseInt(data.nextToken());
-				map[x][y] = Integer.parseInt(mapData.nextToken());
+				if (c0 == 0) {
+					a0 = data.nextToken();
+					id0 = a0.charAt(0) - MapGenerator.OFFSET;
+					c0 = a0.charAt(1) - MapGenerator.OFFSET;
+				}
+				if (c1 == 0) {
+					a1 = mapData.nextToken();
+					id1 = a1.charAt(0) - MapGenerator.OFFSET;
+					c1 = a1.charAt(1) - MapGenerator.OFFSET;
+				}
+				chunk[x][y] = id0;
+				c0--;
+				map[x][y] = id1;
+				c1--;
 			}
 		}
 		loaded = true;
@@ -152,17 +176,45 @@ public class Chunk {
 	 * unloads a chunk's data from memory and saves all changes to the world file
 	 */
 	public void unload() {
-		String c = "";
-		String m = "";
+		StringBuilder c = new StringBuilder();
+		StringBuilder m = new StringBuilder();
+
+		int id0 = chunk[0][0];
+		int c0 = 0;
+		int id1 = map[0][0];
+		int c1 = 0;
+
 		for (int y = 0; y < chunkDim; y++) {
 			for (int x = 0; x < chunkDim; x++) {
-				c += chunk[x][y] + " ";
-				m += map[x][y] + " ";
+				if (chunk[x][y] == id0)
+					c0++;
+				else {
+					c.append((char) (id0 + MapGenerator.OFFSET));
+					c.append((char) (c0 + MapGenerator.OFFSET));
+					c.append(' ');
+					c0 = 1;
+					id0 = chunk[x][y];
+				}
+				if (map[x][y] == id1)
+					c1++;
+				else {
+					m.append((char) (id1 + MapGenerator.OFFSET));
+					m.append((char) (c1 + MapGenerator.OFFSET));
+					m.append(' ');
+					c1 = 1;
+					id1 = map[x][y];
+				}
 			}
 		}
+
+		c.append((char) (id0 + MapGenerator.OFFSET));
+		c.append((char) (c0 + MapGenerator.OFFSET));
+		m.append((char) (id1 + MapGenerator.OFFSET));
+		m.append((char) (c1 + MapGenerator.OFFSET));
+
 		int find = y * World.maxChunks + x;
-		Utility.editText(c, find, Driver.saveDir + "saves/" + handler.getWorld().loadedWorld + "/world.dat");
-		Utility.editText(m, find, Driver.saveDir + "saves/" + handler.getWorld().loadedWorld + "/map.dat");
+		Utility.editText(c.toString(), find, Driver.saveDir + "saves/" + handler.getWorld().loadedWorld + "/world.dat");
+		Utility.editText(m.toString(), find, Driver.saveDir + "saves/" + handler.getWorld().loadedWorld + "/map.dat");
 
 		chunk = null;
 		map = null;
@@ -213,11 +265,11 @@ public class Chunk {
 	 */
 	public int overlayAt(int x, int y) {
 		if (!loaded)
-			return -1;
+			return -2;
 		x -= this.x * chunkDim;
 		y -= this.y * chunkDim;
 		if (x >= chunkDim || x < 0 || y >= chunkDim || y < 0)
-			return -1;
+			return -2;
 		return map[x][y];
 	}
 

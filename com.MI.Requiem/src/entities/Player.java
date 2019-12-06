@@ -14,6 +14,7 @@ import gfx.DrawGraphics;
 import gfx.Sprite;
 import gui.ClickListener;
 import gui.ContainerButton;
+import gui.Frame;
 import gui.UIObject;
 import interactables.AnvilInteractable;
 import interactables.ForgeInteractable;
@@ -186,7 +187,7 @@ public class Player extends Mob {
 				if (craftShowing)
 					closeCraft();
 				else
-					showCraft();
+					showCraft(inventory);
 			}
 		} else if (handler.getKeys().f) {
 			ArrayList<Entity> col = hitbox.collidingAll();
@@ -285,46 +286,60 @@ public class Player extends Mob {
 
 	private boolean craftShowing = false;
 	transient private ArrayList<ContainerButton> crafts;
+	private static Frame frame = new Frame(192, 130, 576, 300, 0xffaaaaaa, 0xffffffff, Sprite.TYPE_GUI_BACKGROUND_SHAPE);
+	private static Frame center = new Frame(336, 130, 288, 300, 0xff777777, 0xffffffff, Sprite.TYPE_GUI_BACKGROUND_SHAPE);
 
-	public void showCraft() {
+	public void showCraft(Inventory n) {
 		craftShowing = true;
 		crafts = new ArrayList<ContainerButton>();
-		ArrayList<Recipe> recipes = Craft.getRecipes(this);
+		ArrayList<Recipe> recipes = Craft.getRecipes(this, n);
 
+		handler.getUI().addObject(frame);
+		handler.getUI().addObject(center);
 		for (int i = 0; i < recipes.size(); i++) {
-			ContainerButton b = new ContainerButton(setAction(recipes.get(i)), 120 + i * 48, 64, 32, 32,
+			ContainerButton b = new ContainerButton(setAction(recipes.get(i), n), 196 + i % 4 * 40, 134 + i / 4 * 48, 32, 32,
 					recipes.get(i).getResult(this, handler).strip(), handler);
 			handler.getUI().addObject(b);
 			crafts.add(b);
 		}
 		lock();
-		if (recipes.size() == 0) {
-			craftShowing = false;
-			unlock();
-		}
-
 	}
 
 	public void closeCraft() {
 		craftShowing = false;
 		unlock();
+		handler.getUI().removeObject(frame);
+		handler.getUI().removeObject(center);
 		for (int i = 0; i < crafts.size(); i++) {
 			handler.getUI().removeObject(crafts.get(i));
 		}
 	}
+	
+	public void refreshCraft(Inventory n) {
+		for (int i = 0; i < crafts.size(); i++) {
+			handler.getUI().removeObject(crafts.get(i));
+		}
+		crafts = new ArrayList<ContainerButton>();
+		ArrayList<Recipe> recipes = Craft.getRecipes(this, n);
+		for (int i = 0; i < recipes.size(); i++) {
+			ContainerButton b = new ContainerButton(setAction(recipes.get(i), n), 196 + i % 4 * 40, 134 + i / 4 * 48, 32, 32,
+					recipes.get(i).getResult(this, handler).strip(), handler);
+			handler.getUI().addObject(b);
+			crafts.add(b);
+		}
+	}
 
-	private ClickListener setAction(Recipe r) {
+	private ClickListener setAction(Recipe r, Inventory n) {
 		Player p = this;
 		return new ClickListener() {
 
 			@Override
 			public void onClick(UIObject source) {
-				if (r.qualify(p)) {
-					Item item = r.craft(p, handler);
+				if (r.qualify(p, n)) {
+					Item item = r.craft(p, n, handler);
 					if (!p.pickup(item))
 						item.drop();
-					closeCraft();
-					showCraft();
+					refreshCraft(n);
 				}
 
 			}

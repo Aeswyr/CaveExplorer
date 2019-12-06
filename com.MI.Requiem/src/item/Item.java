@@ -2,6 +2,7 @@ package item;
 
 import java.util.Random;
 
+import effects.Effect;
 import entities.Player;
 import entity.Hitbox;
 import entity.Interactable;
@@ -392,5 +393,11 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 	public void load(Handler h, Mob m) {
 		this.handler = h;
 		this.setHolder(m);
+		this.setup();
+		if (equipped) {
+			removeStats();
+			this.onEquip();
+			m.heal(statPackage[ITEM_HEALTH], Effect.DAMAGE_TYPE_ENERGY);
+		}
 	}
 }

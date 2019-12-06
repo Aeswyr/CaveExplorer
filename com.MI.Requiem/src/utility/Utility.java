@@ -3,6 +3,8 @@ package utility;
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Contains a variety of useful methods
@@ -59,7 +61,7 @@ public class Utility {
 	public static boolean editText(String input, int lineNum, String path) {
 		try {
 			// input the (modified) file content to the StringBuffer "input"
-			BufferedReader file = new BufferedReader(new FileReader(path));
+			BufferedReader file = Loader.loadTextFromFile(path, StandardCharsets.UTF_8);
 			StringBuffer inputBuffer = new StringBuffer();
 			String line;
 
@@ -74,8 +76,8 @@ public class Utility {
 			file.close();
 
 			// write the new string with the replaced line OVER the same file
-			FileOutputStream fileOut = new FileOutputStream(path);
-			fileOut.write(inputBuffer.toString().getBytes());
+			OutputStreamWriter fileOut = new OutputStreamWriter(new FileOutputStream(path), StandardCharsets.UTF_8);
+			fileOut.write(inputBuffer.toString());
 			fileOut.close();
 
 		} catch (Exception e) {

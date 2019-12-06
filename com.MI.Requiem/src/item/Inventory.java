@@ -50,6 +50,30 @@ public class Inventory implements Serializable {
 	}
 
 	/**
+	 * initializes an inventory with specified size, width, and position
+	 * 
+	 * @param x       - x position for the top leftmost box of the inventory to
+	 *                render
+	 * @param y       - y position for the top leftmost box of the inventory to
+	 *                render
+	 * @param size    - number of base storage spots in the inventory
+	 * @param width   - the number of slots per row of the inventory
+	 * @param handler
+	 */
+	public Inventory(int x, int y, int size, int width, Handler handler) {
+		storage = new ArrayList<ItemContainer<Item>>();
+		extra = new ArrayList<ItemContainer<Item>>();
+		this.size = size;
+		this.handler = handler;
+		this.x = x;
+		this.y = y;
+		for (int i = 0; i < size; i++) {
+			storage.add(new ItemContainer<Item>((i % width) * 40 + x, (i / width) * 40 + y, Assets.inventory_Empty,
+					Assets.inventory_Empty, handler));
+		}
+	}
+
+	/**
 	 * initializes a basic inventory with a size of 12
 	 * 
 	 * @param handler

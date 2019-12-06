@@ -194,14 +194,14 @@ public abstract class Mob extends Entity {
 
 			@Override
 			public void initial(int x, int y, int x0, int y0, int[][] data) {
-				data[1][0] = x;
-				data[1][1] = y;
-				data[1][2] = 30;
+				data[0][0] = x;
+				data[0][1] = y;
+				data[0][2] = 30;
 			}
 
 			@Override
 			public void update(int x, int y, int x0, int y0, int[] data, int index) {
-				data[1] -= 1;
+				data[0] -= 1;
 			}
 
 		};

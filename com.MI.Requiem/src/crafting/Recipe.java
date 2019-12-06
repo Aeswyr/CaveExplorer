@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import effects.Effect;
 import entities.Player;
 import item.IdCountPair;
+import item.Inventory;
 import item.Item;
 import runtime.Handler;
 
@@ -89,9 +90,10 @@ public class Recipe {
 	 * resources and flags active to craft the item
 	 * 
 	 * @param p - the player to scan
+	 * @param n - the inventory to scan
 	 * @returns true if the recipe is craftable, false otherwise
 	 */
-	public boolean qualify(Player p) { // TODO finish, should return if the player can actually craft the recipe
+	public boolean qualify(Player p, Inventory n) { // TODO finish, should return if the player can actually craft the recipe
 
 		boolean[] prFlag = p.getResearchFlags();
 		boolean[] psFlag = p.getStationFlags();
@@ -108,8 +110,8 @@ public class Recipe {
 					return false;
 		}
 
-		ArrayList<IdCountPair> pair = p.getInventory().getRawHeld();
-		int[] res = p.getInventory().getResourceHeld();
+		ArrayList<IdCountPair> pair = n.getRawHeld();
+		int[] res = n.getResourceHeld();
 
 		for (int i = 0; i < idReq.length; i++) {
 			if (idReq[i] != null) {
@@ -144,11 +146,12 @@ public class Recipe {
 	 * @NOTE - this method does not check if the player can craft the item and should
 	 * always be preceded by a call to the qualify method
 	 * 
-	 * @param p - the player to consume items from
+	 * @param p - the player to consume stats from
+	 * @param n - the inventory to consume items from
 	 * @param h - the game handler
 	 * @returns the finished item product
 	 */
-	public Item craft(Player p, Handler h) { // TODO FINISH, should consume resources then return the result item
+	public Item craft(Player p, Inventory n, Handler h) { // TODO FINISH, should consume resources then return the result item
 		if (hpCost > 0)
 			p.harm(hpCost, Effect.DAMAGE_TYPE_ENERGY);
 		if (spCost > 0)
@@ -159,7 +162,7 @@ public class Recipe {
 		for (int i = 0; i < idReq.length; i++) {
 			if (idReq[i] != null) {
 				for (int j = 0; j < idCount[i]; j++)
-					prod.editStatPackage(p.getInventory().removeItemID(idReq[i]).getStatPackage());
+					prod.editStatPackage(n.removeItemID(idReq[i]).getStatPackage());
 			}
 		}
 		for (int i = 0; i < Tag.RESOURCE_MAX_ARRAY; i++) {
@@ -196,7 +199,7 @@ public class Recipe {
 
 			if (resourceReq[i] > 0) {
 				for (int j = 0; j < resourceReq[i]; j++) {
-					prod.editStatPackage(p.getInventory().removeItemTag(tag).getStatPackage());
+					prod.editStatPackage(n.removeItemTag(tag).getStatPackage());
 				}
 			}
 		}

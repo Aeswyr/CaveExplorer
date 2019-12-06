@@ -2,6 +2,7 @@ package entity;
 
 import utility.CoordKey;
 import utility.HashTable;
+import utility.LoadingScreen;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -196,7 +197,8 @@ public class EntityManager {
 	 * @param path - the path to the specified world file
 	 */
 	public void saveAllEntities(String path) {
-
+		LoadingScreen ls = new LoadingScreen(1);
+		ls.displayText("Saving...");
 		try {
 			File f = new File(path);
 			f.delete();
@@ -213,6 +215,8 @@ public class EntityManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		ls.increment(1);
+		ls.close();
 
 	}
 
@@ -223,6 +227,8 @@ public class EntityManager {
 	 */
 	@SuppressWarnings("unchecked")
 	public void loadAllEntities(String path, Handler h) {
+		LoadingScreen ls = new LoadingScreen(2);
+		ls.displayText("Loading...");
 		try {
 			File f = new File(path);
 			FileInputStream fo = new FileInputStream(f);
@@ -240,11 +246,14 @@ public class EntityManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		ls.increment(1);
 
 		for (Entity e : entities) {
 			e.load(h);
 			if (e instanceof Mob) mobs.add((Mob)e);
 		}
+		ls.increment(1);
+		ls.close();
 	}
 	
 	/**

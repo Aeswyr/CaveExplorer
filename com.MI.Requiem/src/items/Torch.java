@@ -85,7 +85,7 @@ public class Torch extends Item {
 
 	@Override
 	public void onEquip() {
-		equipped = true;
+		super.onEquip();
 		if (use > 0) {
 			bright.light();
 			dim.snuff();
@@ -99,7 +99,7 @@ public class Torch extends Item {
 
 	@Override
 	public void onDequip() {
-		equipped = false;
+		super.onDequip();
 		if (use > 0) {
 			dim.light();
 			bright.snuff();
@@ -121,36 +121,6 @@ public class Torch extends Item {
 		this.burnt = null;
 		this.dim = null;
 		return this;
-	}
-
-	@Override
-	public void load(Handler h) {
-		super.load(h);
-		if (bright != null)
-			bright.load(h);
-		if (dim != null)
-			dim.load(h);
-		if (burnt != null)
-			burnt.load(h);
-		if (use > 0)
-			dim.light();
-	}
-
-	@Override
-	public void load(Handler h, Mob m) {
-		super.load(h, m);
-		if (bright != null) {
-			bright.load(h);
-			if (equipped && use > 0) bright.light();
-		}
-		if (dim != null) {
-			dim.load(h);
-			if (!equipped && use > 0) dim.light();
-		}
-		if (burnt != null) {
-			burnt.load(h);
-			if (equipped && use <= 0) burnt.light();
-		}
 	}
 
 }

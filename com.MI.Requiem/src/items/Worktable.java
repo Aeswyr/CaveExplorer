@@ -70,16 +70,4 @@ public class Worktable extends Item {
 		this.interact = null;
 		return this;
 	}
-	
-	@Override
-	public void load(Handler h) {
-		super.load(h);
-		interact.load(h);
-	}
-	
-	@Override
-	public void load(Handler h, Mob m) {
-		super.load(h, m);
-		interact.load(h);
-	}
 }

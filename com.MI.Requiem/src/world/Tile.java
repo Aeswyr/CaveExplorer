@@ -38,7 +38,7 @@ public class Tile {
 	}
 
 	protected final int id;
-	public static final int TILE_MAX = 23;
+	public static final int TILE_MAX = 24;
 
 	/**
 	 * initializes a tile with a specific id
@@ -85,10 +85,8 @@ public class Tile {
 			this.breakable = true;
 			this.solid = true;
 			break;
-		case 7: // iron vein
-			this.tileSet = Assets.ironOreTile;
-			this.wall = true;
-			this.breakable = true;
+		case 7: // water
+			this.tileSet = Assets.waterTile;
 			this.solid = true;
 			break;
 		case 8: // clay floor
@@ -178,6 +176,12 @@ public class Tile {
 			this.breakable = true;
 			this.solid = true;
 			break;
+		case 23: // iron vein
+			this.tileSet = Assets.ironOreTile;
+			this.wall = true;
+			this.breakable = true;
+			this.solid = true;
+			break;
 		default:
 			break;
 		}
@@ -214,13 +218,7 @@ public class Tile {
 		case 6: // limestone wall
 			drop.add(new TileBlock(x, y, handler, id));
 			break;
-		case 7: // iron vein
-			if (rng.nextDouble() < 0.30)
-				drop.add(new Ore(x, y, handler, 0));
-			if (rng.nextDouble() < 0.30)
-				drop.add(new TileBlock(x, y, handler, 6));
-			if (rng.nextDouble() < 0.03)
-				drop.add(new Gem(x, y, handler, 0));
+		case 7: // water
 			break;
 		case 8: // clay floor
 			break;
@@ -231,7 +229,7 @@ public class Tile {
 			drop.add(new Worktable(x, y, handler));
 			break;
 		case 11: // aluminum vein
-			if (rng.nextDouble() < 0.30)
+			if (rng.nextDouble() < 0.50)
 				drop.add(new Ore(x, y, handler, 1));
 			if (rng.nextDouble() < 0.30)
 				drop.add(new TileBlock(x, y, handler, 6));
@@ -239,7 +237,7 @@ public class Tile {
 				drop.add(new Gem(x, y, handler, 0));
 			break;
 		case 12: // antimony vein
-			if (rng.nextDouble() < 0.30)
+			if (rng.nextDouble() < 0.50)
 				drop.add(new Ore(x, y, handler, 2));
 			if (rng.nextDouble() < 0.30)
 				drop.add(new TileBlock(x, y, handler, 6));
@@ -247,7 +245,7 @@ public class Tile {
 				drop.add(new Gem(x, y, handler, 0));
 			break;
 		case 13: // copper vein
-			if (rng.nextDouble() < 0.30)
+			if (rng.nextDouble() < 0.50)
 				drop.add(new Ore(x, y, handler, 3));
 			if (rng.nextDouble() < 0.30)
 				drop.add(new TileBlock(x, y, handler, 6));
@@ -265,7 +263,7 @@ public class Tile {
 				drop.add(new Gem(x, y, handler, 0));
 			break;
 		case 15: // gold vein
-			if (rng.nextDouble() < 0.30)
+			if (rng.nextDouble() < 0.50)
 				drop.add(new Ore(x, y, handler, 6));
 			if (rng.nextDouble() < 0.30)
 				drop.add(new TileBlock(x, y, handler, 6));
@@ -273,7 +271,7 @@ public class Tile {
 				drop.add(new Gem(x, y, handler, 0));
 			break;
 		case 16: // tin vein
-			if (rng.nextDouble() < 0.30)
+			if (rng.nextDouble() < 0.50)
 				drop.add(new Ore(x, y, handler, 7));
 			if (rng.nextDouble() < 0.30)
 				drop.add(new TileBlock(x, y, handler, 6));
@@ -281,7 +279,7 @@ public class Tile {
 				drop.add(new Gem(x, y, handler, 0));
 			break;
 		case 17: // zinc vein
-			if (rng.nextDouble() < 0.30)
+			if (rng.nextDouble() < 0.50)
 				drop.add(new Ore(x, y, handler, 8));
 			if (rng.nextDouble() < 0.30)
 				drop.add(new TileBlock(x, y, handler, 6));
@@ -289,7 +287,7 @@ public class Tile {
 				drop.add(new Gem(x, y, handler, 0));
 			break;
 		case 18: // chome vein
-			if (rng.nextDouble() < 0.30)
+			if (rng.nextDouble() < 0.50)
 				drop.add(new Ore(x, y, handler, 9));
 			if (rng.nextDouble() < 0.30)
 				drop.add(new TileBlock(x, y, handler, 6));
@@ -327,6 +325,14 @@ public class Tile {
 				drop.add(new TileBlock(x, y, handler, 6));
 			if (rng.nextDouble() < 0.30)
 				drop.add(new Gem(x, y, handler, 4));
+			break;
+		case 23: // iron vein
+			if (rng.nextDouble() < 0.50)
+				drop.add(new Ore(x, y, handler, 0));
+			if (rng.nextDouble() < 0.30)
+				drop.add(new TileBlock(x, y, handler, 6));
+			if (rng.nextDouble() < 0.03)
+				drop.add(new Gem(x, y, handler, 0));
 			break;
 		default:
 			break;

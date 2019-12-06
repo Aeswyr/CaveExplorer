@@ -3,6 +3,7 @@ package world;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.StringTokenizer;
@@ -85,7 +86,7 @@ public class World {
 			ArrayList<Entity> list = entities.getEntities();
 			for (Entity e : list) {
 				if (e instanceof Player) {
-					handler.setPlayer((Player)e);
+					handler.setPlayer((Player) e);
 					handler.getCamera().centerOnEntity(handler.getPlayer());
 					System.out.println("player found");
 					break;
@@ -272,7 +273,7 @@ public class World {
 		int chunkx = x / Chunk.chunkDim;
 		int chunky = y / Chunk.chunkDim;
 		String line = null;
-		BufferedReader read = Loader.loadTextFromFile(Driver.saveDir + "saves/" + loadedWorld + "/world.dat");
+		BufferedReader read = Loader.loadTextFromFile(Driver.saveDir + "saves/" + loadedWorld + "/world.dat", StandardCharsets.UTF_8);
 		int find = chunky * World.maxChunks + chunkx;
 
 		try {
@@ -284,12 +285,16 @@ public class World {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 		StringTokenizer data = new StringTokenizer(line);
-		for (int i = 0; i < (y % Chunk.chunkDim) * Chunk.chunkDim + x % Chunk.chunkDim; i++) {
-			data.nextToken();
+		int c = (y % Chunk.chunkDim) * Chunk.chunkDim + x % Chunk.chunkDim;
+		String a;
+		while (c >= 0) {
+			a = data.nextToken();
+			id = a.charAt(0);
+			c -= a.charAt(1) - MapGenerator.OFFSET;
 		}
-		id = Integer.parseInt(data.nextToken());
-		return id;
+		return id - MapGenerator.OFFSET;
 	}
 
 	/**
@@ -315,11 +320,13 @@ public class World {
 		for (int i = 0; i < chunks.size(); i++) {
 			if (chunks.get(i) != null) {
 				int pos = chunks.get(i).overlayAt(x / Tile.tileSize, y / Tile.tileSize);
-				if (pos != -1)
+				if (pos >= 0)
 					id = pos;
+				if (pos != -2)
+					break;
 			}
 		}
-		if (id == -1)
+		if (id == -1 || id == -2)
 			return null;
 		return Tile.toTile(id);
 	}
@@ -335,11 +342,12 @@ public class World {
 		for (int i = 0; i < chunks.size(); i++) {
 			if (chunks.get(i) != null) {
 				int pos = chunks.get(i).overlayAt(x / Tile.tileSize, y / Tile.tileSize);
-				if (pos != -2)
+				if (pos > -2) {
 					id = pos;
+				}
 			}
 		}
-		return -2;
+		return id;
 	}
 
 	/**
@@ -385,6 +393,7 @@ public class World {
 		return biome;
 	}
 
+	public static final int MAX_BIOME = 2;
 	/**
 	 * @param biome - id of the desired biome name
 	 * @returns the name of the biome associated with the numerical id

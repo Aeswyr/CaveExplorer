@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import entities.Player;
+import item.Inventory;
 import utility.Loader;
 
 /**
@@ -17,12 +18,13 @@ public class Craft {
 	/**
 	 * gets a list of recipes the player could craft at the current moment
 	 * @param p - the player whos inventory to scan
+	 * @param n - the inventory to scan
 	 * @returns a list of all recipies the player could make
 	 */
-	public static ArrayList<Recipe> getRecipes(Player p) {
+	public static ArrayList<Recipe> getRecipes(Player p, Inventory n) {
 		ArrayList<Recipe> recipes = getAllRecipe();
 		for (int i = 0; i < recipes.size(); i++) {
-			if (!recipes.get(i).qualify(p))  {
+			if (!recipes.get(i).qualify(p, n))  {
 				recipes.remove(i);
 				i--;
 			}

@@ -27,7 +27,7 @@ public class Menustate extends State {
 
 		Gamestate game = new Gamestate(handler);
 
-		Frame background = new Frame(0, 0, handler.getWidth(), handler.getHeight(), 0xffff0000, false);
+		Frame background = new Frame(0, 0, handler.getWidth(), handler.getHeight(), 0xffff0000, 0xffff0000);
 		handler.getUI().addObject(background);
 
 		Button world = new Button("Worlds", new ClickListener() {
