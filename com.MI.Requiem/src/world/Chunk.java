@@ -119,10 +119,10 @@ public class Chunk {
 		String mapLine = null;
 
 		try {
-			BufferedReader read = Loader
-					.loadTextFromFile(Driver.saveDir + "saves/" + handler.getWorld().loadedWorld + "/world.dat", StandardCharsets.UTF_8);
-			BufferedReader readMap = Loader
-					.loadTextFromFile(Driver.saveDir + "saves/" + handler.getWorld().loadedWorld + "/map.dat", StandardCharsets.UTF_8);
+			BufferedReader read = Loader.loadTextFromFile(
+					Driver.saveDir + "saves/" + handler.getWorld().loadedWorld + "/world.dat", StandardCharsets.UTF_8);
+			BufferedReader readMap = Loader.loadTextFromFile(
+					Driver.saveDir + "saves/" + handler.getWorld().loadedWorld + "/map.dat", StandardCharsets.UTF_8);
 			int find = y * World.maxChunks + x;
 			for (int i = 0; i < find; i++) {
 				read.readLine();
@@ -146,11 +146,10 @@ public class Chunk {
 		int c0 = 0;
 		int id1 = 0;
 		int c1 = 0;
-		
+
 		String a0;
 		String a1;
-		
-		
+
 		for (int y = 0; y < chunkDim; y++) {
 			for (int x = 0; x < chunkDim; x++) {
 				if (c0 == 0) {

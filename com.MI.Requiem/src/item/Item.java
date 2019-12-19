@@ -4,6 +4,7 @@ import java.util.Random;
 
 import effects.Effect;
 import entities.Player;
+import entity.Entity;
 import entity.Hitbox;
 import entity.Interactable;
 import entity.Mob;
@@ -13,6 +14,7 @@ import gfx.Sprite;
 import items.Anvil;
 import items.Bone;
 import items.Cloak;
+import items.Crate;
 import items.CrystalRod;
 import items.Forge;
 import items.Gem;
@@ -49,7 +51,7 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 	 */
 	protected String tags, ID;
 	protected Sprite invSprite, sprite;
-	transient protected Mob holder;
+	transient protected Entity holder;
 	protected boolean equipped = false;
 	protected boolean consumed = false;
 	protected int useTime = 0;
@@ -185,8 +187,8 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 	 * 
 	 * @param m - the mob who will hold the item
 	 */
-	public void setHolder(Mob m) {
-		this.holder = m;
+	public void setHolder(Entity e) {
+		this.holder = e;
 		this.hitbox = null;
 	}
 
@@ -195,7 +197,8 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 	 */
 	public void onEquip() {
 		this.equipped = true;
-		applyStats();
+		if (holder != null)
+			applyStats();
 
 	}
 
@@ -204,7 +207,8 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 	 */
 	public void onDequip() {
 		this.equipped = false;
-		removeStats();
+		if (holder != null)
+			removeStats();
 	}
 
 	@Override
@@ -264,7 +268,7 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 	 * converts an id to an item
 	 * 
 	 * @param id      - the id of the desired item
-	 * @param holder  - the mob whos inventory will contain the new item
+	 * @param holder  - the mob who's inventory will contain the new item
 	 * @param handler
 	 * 
 	 * @returns the new item based on the input id
@@ -280,6 +284,8 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 				return new Forge(handler, holder);
 			case 10:
 				return new Worktable(handler, holder);
+			case 24:
+				return new Crate(handler, holder);
 			default:
 				return new TileBlock(handler, holder, Integer.parseInt(sec[1]));
 			}
@@ -346,24 +352,30 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 	 * applies stat adjustments from the item to the carrying mob
 	 */
 	protected void applyStats() {
-		holder.adjArmor((int) statPackage[ITEM_ARMOR]);
-		holder.adjInv((int) statPackage[ITEM_CAPACITY]);
-		holder.adjMaxhp((int) statPackage[ITEM_HEALTH]);
-		holder.adjMaxsp((int) statPackage[ITEM_SPIRIT]);
-		holder.adjSpeed((int) statPackage[ITEM_SPEED] / 4.0);
-		holder.adjLuck((int) statPackage[ITEM_LUCK]);
+		if (this.holder instanceof Mob) {
+			Mob holder = (Mob) this.holder;
+			holder.adjArmor((int) statPackage[ITEM_ARMOR]);
+			holder.adjInv((int) statPackage[ITEM_CAPACITY]);
+			holder.adjMaxhp((int) statPackage[ITEM_HEALTH]);
+			holder.adjMaxsp((int) statPackage[ITEM_SPIRIT]);
+			holder.adjSpeed((int) statPackage[ITEM_SPEED] / 4.0);
+			holder.adjLuck((int) statPackage[ITEM_LUCK]);
+		}
 	}
 
 	/**
 	 * removes stat adjustments of the item from the carrying mob
 	 */
 	protected void removeStats() {
-		holder.adjArmor(-(int) statPackage[ITEM_ARMOR]);
-		holder.adjInv(-(int) statPackage[ITEM_CAPACITY]);
-		holder.adjMaxhp(-(int) statPackage[ITEM_HEALTH]);
-		holder.adjMaxsp(-(int) statPackage[ITEM_SPIRIT]);
-		holder.adjSpeed(-(int) statPackage[ITEM_SPEED] / 4.0);
-		holder.adjLuck(-(int) statPackage[ITEM_LUCK]);
+		if (this.holder instanceof Mob) {
+			Mob holder = (Mob) this.holder;
+			holder.adjArmor(-(int) statPackage[ITEM_ARMOR]);
+			holder.adjInv(-(int) statPackage[ITEM_CAPACITY]);
+			holder.adjMaxhp(-(int) statPackage[ITEM_HEALTH]);
+			holder.adjMaxsp(-(int) statPackage[ITEM_SPIRIT]);
+			holder.adjSpeed(-(int) statPackage[ITEM_SPEED] / 4.0);
+			holder.adjLuck(-(int) statPackage[ITEM_LUCK]);
+		}
 	}
 
 	/**
@@ -390,14 +402,14 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 	 * 
 	 * @param m - the new holder of this item
 	 */
-	public void load(Handler h, Mob m) {
+	public void load(Handler h, Entity e) {
 		this.handler = h;
-		this.setHolder(m);
+		this.setHolder(e);
 		this.setup();
-		if (equipped) {
+		if (equipped && e instanceof Mob) {
 			removeStats();
 			this.onEquip();
-			m.heal(statPackage[ITEM_HEALTH], Effect.DAMAGE_TYPE_ENERGY);
+			((Mob)e).heal(statPackage[ITEM_HEALTH], Effect.DAMAGE_TYPE_ENERGY);
 		}
 	}
 }

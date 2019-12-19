@@ -5,10 +5,12 @@ import core.Assets;
 import crafting.Craft;
 import crafting.Recipe;
 import crafting.Tag;
+import effects.Effect;
 import entity.Entity;
 import entity.Hitbox;
 import entity.Interactable;
 import entity.Mob;
+import entity.Vector;
 import geometry.Rect;
 import gfx.DrawGraphics;
 import gfx.Sprite;
@@ -17,12 +19,14 @@ import gui.ContainerButton;
 import gui.Frame;
 import gui.UIObject;
 import interactables.AnvilInteractable;
+import interactables.Corpse;
 import interactables.ForgeInteractable;
 import interactables.WorktableInteractable;
 import item.Inventory;
 import item.Item;
 import item.ItemContainer;
 import items.Bone;
+import items.Crate;
 import items.CrystalRod;
 import items.Pickaxe;
 import items.Torch;
@@ -51,13 +55,10 @@ public class Player extends Mob {
 	boolean[] researchFlags;
 	boolean[] stationFlags;
 
+	// Effects
+
 	public Player(Handler handler) {
 		super(handler);
-		this.x = 10 * Tile.tileSize;
-		this.y = 10 * Tile.tileSize;
-		this.xOff = 32;
-		this.yOff = 32;
-		this.hitbox = new Hitbox(-22, -16, 10, 10, this, handler);
 		activeSprite = Assets.player_idle;
 
 		researchFlags = new boolean[Tag.RESEARCH_MAX_ARRAY];
@@ -90,7 +91,7 @@ public class Player extends Mob {
 		rHand = new ItemContainer<Item>((int) ((w / 21.8) + 40), w / 5, Assets.inventory_Empty,
 				Assets.inventory_Offhand, "hand offhand", handler); // previously 84 and 192
 
-		inventory = new Inventory((int) (w / 1.17), w / 60, 12, handler); // previously 824 and 16
+		inventory = new Inventory((int) (w / 1.17), w / 60, 12, handler, this); // previously 824 and 16
 		inventory.appendContainer(lHand);
 		inventory.appendContainer(rHand);
 		inventory.appendContainer(new ItemContainer<Item>((int) (w / 21.8), (int) (w / 3.25), Assets.inventory_Empty,
@@ -112,7 +113,17 @@ public class Player extends Mob {
 		inventory.add(new Bone(handler, this));
 		inventory.add(new Bone(handler, this));
 		inventory.add(new Bone(handler, this));
+		inventory.add(new Crate(handler, this));
 		inventory.add(new CrystalRod(handler, this));
+	}
+	
+	@Override
+	protected void setup() {
+		this.w = 32;
+		this.h = 32;
+		this.hitbox = new Hitbox(10, 17, 10, 11, this, handler);
+		this.hurtbox = new Hitbox(8, 10, 16, 20, this, handler);
+		this.vector = new Vector(this, 50);
 	}
 
 	@Override
@@ -136,26 +147,27 @@ public class Player extends Mob {
 
 	@Override
 	public void move() {
+		int speed = (int) (this.speed * 3);
 		moving = false;
 		if (!locked) {
 			if (handler.getKeys().w || handler.getKeys().up) {
-				if (!hitbox.tileYCollide(-speed))
-					y -= speed;
+				if (!hitbox.tileYCollide(-speed) && Math.abs(vector.Vy()) <= speed)
+					vector.setVelocityY(-speed);
 				moving = true;
 			}
 			if (handler.getKeys().s || handler.getKeys().down) {
-				if (!hitbox.tileYCollide(speed))
-					y += speed;
+				if (!hitbox.tileYCollide(speed) && Math.abs(vector.Vy()) <= speed)
+					vector.setVelocityY(speed);
 				moving = true;
 			}
 			if (handler.getKeys().a || handler.getKeys().left) {
-				if (!hitbox.tileXCollide(-speed))
-					x -= speed;
+				if (!hitbox.tileXCollide(-speed) && Math.abs(vector.Vx()) <= speed)
+					vector.setVelocityX(-speed);
 				moving = true;
 			}
 			if (handler.getKeys().d || handler.getKeys().right) {
-				if (!hitbox.tileXCollide(speed))
-					x += speed;
+				if (!hitbox.tileXCollide(speed) && Math.abs(vector.Vx()) <= speed)
+					vector.setVelocityX(speed);
 				moving = true;
 			}
 			if (moving) {
@@ -194,7 +206,12 @@ public class Player extends Mob {
 			for (int i = 0; i < col.size(); i++) {
 				if (col.get(i) instanceof Interactable && !(col.get(i) instanceof AnvilInteractable
 						|| col.get(i) instanceof ForgeInteractable || col.get(i) instanceof WorktableInteractable)) {
-					((Interactable) col.get(i)).interact(this);
+
+					if (col.get(i) instanceof Item || col.get(i) instanceof Corpse)
+						((Interactable) col.get(i)).interact(this);
+					else if (handler.getKeys().getFTyped())
+						((Interactable) col.get(i)).interact(this);
+
 				}
 			}
 
@@ -251,12 +268,14 @@ public class Player extends Mob {
 
 		inventory.render(g);
 		g.write(World.biomeToString(handler.getWorld().getCurrentBiome()), 4, handler.getHeight() - 20);
+
+		for (int i = 0; i < activeEffects.size(); i++) {
+			activeEffects.get(i).render(200 + (i % 5) * 42, 10, g);
+		}
 	}
 
 	@Override
 	public void die() {
-		if (spirit <= 0)
-			super.die();
 		if (health <= 0) {
 			wounds++;
 			if (wounds > woundMax) {
@@ -286,20 +305,22 @@ public class Player extends Mob {
 
 	private boolean craftShowing = false;
 	transient private ArrayList<ContainerButton> crafts;
-	private static Frame frame = new Frame(192, 130, 576, 300, 0xffaaaaaa, 0xffffffff, Sprite.TYPE_GUI_BACKGROUND_SHAPE);
-	private static Frame center = new Frame(336, 130, 288, 300, 0xff777777, 0xffffffff, Sprite.TYPE_GUI_BACKGROUND_SHAPE);
+	private static Frame frame = new Frame(192, 130, 576, 300, 0xffaaaaaa, 0xffffffff,
+			Sprite.TYPE_GUI_BACKGROUND_SHAPE);
+	private static Frame center = new Frame(336, 130, 288, 300, 0xff777777, 0xffffffff,
+			Sprite.TYPE_GUI_BACKGROUND_SHAPE);
 
 	public void showCraft(Inventory n) {
 		craftShowing = true;
 		crafts = new ArrayList<ContainerButton>();
 		ArrayList<Recipe> recipes = Craft.getRecipes(this, n);
 
-		handler.getUI().addObject(frame);
-		handler.getUI().addObject(center);
+		frame.display();
+		center.display();
 		for (int i = 0; i < recipes.size(); i++) {
-			ContainerButton b = new ContainerButton(setAction(recipes.get(i), n), 196 + i % 4 * 40, 134 + i / 4 * 48, 32, 32,
-					recipes.get(i).getResult(this, handler).strip(), handler);
-			handler.getUI().addObject(b);
+			ContainerButton b = new ContainerButton(setAction(recipes.get(i), n), 196 + i % 4 * 40, 134 + i / 4 * 48,
+					32, 32, recipes.get(i).getResult(this, handler).strip());
+			b.display();
 			crafts.add(b);
 		}
 		lock();
@@ -308,23 +329,26 @@ public class Player extends Mob {
 	public void closeCraft() {
 		craftShowing = false;
 		unlock();
-		handler.getUI().removeObject(frame);
-		handler.getUI().removeObject(center);
+		frame.close();
+		;
+		center.close();
+		;
 		for (int i = 0; i < crafts.size(); i++) {
-			handler.getUI().removeObject(crafts.get(i));
+			crafts.get(i).close();
+			;
 		}
 	}
-	
+
 	public void refreshCraft(Inventory n) {
 		for (int i = 0; i < crafts.size(); i++) {
-			handler.getUI().removeObject(crafts.get(i));
+			crafts.get(i).close();
 		}
 		crafts = new ArrayList<ContainerButton>();
 		ArrayList<Recipe> recipes = Craft.getRecipes(this, n);
 		for (int i = 0; i < recipes.size(); i++) {
-			ContainerButton b = new ContainerButton(setAction(recipes.get(i), n), 196 + i % 4 * 40, 134 + i / 4 * 48, 32, 32,
-					recipes.get(i).getResult(this, handler).strip(), handler);
-			handler.getUI().addObject(b);
+			ContainerButton b = new ContainerButton(setAction(recipes.get(i), n), 196 + i % 4 * 40, 134 + i / 4 * 48,
+					32, 32, recipes.get(i).getResult(this, handler).strip());
+			b.display();
 			crafts.add(b);
 		}
 	}
@@ -370,4 +394,5 @@ public class Player extends Mob {
 	public boolean getCraftingShown() {
 		return craftShowing;
 	}
+
 }

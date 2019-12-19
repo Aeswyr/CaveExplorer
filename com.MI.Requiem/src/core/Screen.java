@@ -76,8 +76,8 @@ public class Screen extends Canvas {
 			this.setMinimumSize(d);
 		}
 
-		frame.setTitle("Unto the Abyss");
-		frame.setName("Unto the Abyss");
+		frame.setTitle("Into Darkness");
+		frame.setName("Into Darkness");
 
 		frame.add(this);
 		frame.pack();

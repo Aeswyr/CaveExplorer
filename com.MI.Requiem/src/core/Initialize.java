@@ -13,7 +13,7 @@ import world.Tile;
  */
 public class Initialize {
 
-	private static final String GAMENAME = "UntoTheAbyss";
+	private static final String GAMENAME = "IntoDarkness";
 
 	public static void main(String[] args) {
 		Assets.init();

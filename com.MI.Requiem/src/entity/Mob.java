@@ -1,5 +1,6 @@
 package entity;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import core.Assets;
@@ -27,11 +28,22 @@ public abstract class Mob extends Entity {
 	private static final long serialVersionUID = -3048223593461500698L;
 	protected static Random rng = new Random();
 
+	protected ArrayList<Effect> activeEffects;
+	protected Vector vector;
+	protected Hitbox hurtbox;
+
 	public Mob(Handler handler) {
 		super(handler);
-		inventory = new Inventory(handler);
+		inventory = new Inventory(handler, this);
 		this.deathSprite = Assets.corpse;
+		activeEffects = new ArrayList<Effect>();
+		setup();
 	}
+	
+	/**
+	 * a collection of tasks to preform when the mob is created or loaded from a save
+	 */
+	protected abstract void setup();
 
 	/**
 	 * sets up ui for non-player mobs
@@ -76,14 +88,22 @@ public abstract class Mob extends Entity {
 
 	@Override
 	public void render(DrawGraphics g) {
-		activeSprite.render((int) x - handler.getCamera().xOffset() - xOff,
-				(int) y - handler.getCamera().yOffset() - yOff, g);
+		activeSprite.render((int) x - handler.getCamera().xOffset(), (int) y - handler.getCamera().yOffset(), g);
 	}
 
 	@Override
 	public void update() {
 		hitbox.update();
+		if (hurtbox != null) hurtbox.update();
+		vector.update();
 		move();
+
+		for (int i = 0; i < activeEffects.size(); i++) {
+			Effect e = activeEffects.get(i);
+			e.update();
+			if (e.expired())
+				i--;
+		}
 	}
 
 	int divH, divS;
@@ -159,8 +179,10 @@ public abstract class Mob extends Entity {
 			if (spirit - amount < 0)
 				val = spirit;
 			spirit -= val;
-			if (spirit <= 0)
-				this.die();
+			if (spirit <= 0) {
+				spirit = spiritMax;
+				new Effect(120 * healthMax, 120, this, 0);
+			}
 			new Particle("" + val, 0xff9999FF, 1, getCenteredX(), getCenteredY() - 16, getCenteredX(),
 					getCenteredY() + 32, handler, b).start();
 			return val;
@@ -240,12 +262,14 @@ public abstract class Mob extends Entity {
 
 	/**
 	 * handles equipping items
+	 * 
 	 * @param i - the item to equip
 	 */
 	public abstract void equip(Item i);
 
 	/**
 	 * handles item pickups
+	 * 
 	 * @param i - the item to pickup
 	 * @returns true if the pickup was successful, false otherwise
 	 */
@@ -253,6 +277,7 @@ public abstract class Mob extends Entity {
 
 	/**
 	 * gets this mob's inventory
+	 * 
 	 * @returns this mob's inventory
 	 */
 	public Inventory getInventory() {
@@ -261,6 +286,7 @@ public abstract class Mob extends Entity {
 
 	/**
 	 * performs an adjustment to the speed stat, without letting move be less than 1
+	 * 
 	 * @param adj - the value to adjust by
 	 */
 	public void adjSpeed(double adj) {
@@ -273,6 +299,7 @@ public abstract class Mob extends Entity {
 
 	/**
 	 * readjusts the maximum inventory capacity
+	 * 
 	 * @param adj - the value to adjust by
 	 */
 	public void adjInv(int adj) {
@@ -281,6 +308,7 @@ public abstract class Mob extends Entity {
 
 	/**
 	 * adjusts the armor value
+	 * 
 	 * @param adj - the value to adjust by
 	 */
 	public void adjArmor(int adj) {
@@ -289,6 +317,7 @@ public abstract class Mob extends Entity {
 
 	/**
 	 * adjusts max hp
+	 * 
 	 * @param adj - the value to adjust by
 	 */
 	public void adjMaxhp(int adj) {
@@ -299,6 +328,7 @@ public abstract class Mob extends Entity {
 
 	/**
 	 * adjusts max sp
+	 * 
 	 * @param adj - the value to adjust by
 	 */
 	public void adjMaxsp(int adj) {
@@ -309,6 +339,7 @@ public abstract class Mob extends Entity {
 
 	/**
 	 * adjusts the luck stat
+	 * 
 	 * @param adj - the value to adjust by
 	 */
 	public void adjLuck(int adj) {
@@ -343,33 +374,35 @@ public abstract class Mob extends Entity {
 		this.locked = false;
 	}
 
-	/**
-	 * gets the coordinate to render lights from on this mob
-	 * @returns the x position for the center of lights emitting from this mob
-	 */
-	public int getLightX() {
-		return (int) (x - xOff / 2);
-	}
-
-	/**
-	 * gets the coordinate to render lights from on this mob
-	 * @returns the y position for the center of lights emitting from this mob
-	 */
-	public int getLightY() {
-		return (int) (y - (2 * yOff / 3));
-	}
-
 	@Override
 	public void die() {
 		if (inventory.getRawHeld().size() > 0)
 			handler.getWorld().getEntities().addEntity(new Corpse(handler, deathSprite, hitbox, inventory, x, y));
 		super.die();
 	}
-	
+
+	public void addEffect(Effect e) {
+		activeEffects.add(e);
+	}
+
+	public void removeEffect(Effect e) {
+		activeEffects.remove(e);
+	}
+
+	public Vector getVector() {
+		return vector;
+	}
+
+	public Hitbox getHurtbox() {
+		return hurtbox;
+	}
+
 	@Override
 	public void load(Handler h) {
 		super.load(h);
-		if (inventory != null) inventory.load(h, this);
+		setup();
+		if (inventory != null)
+			inventory.load(h, this);
 	}
 
 }

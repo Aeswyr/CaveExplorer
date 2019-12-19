@@ -45,6 +45,7 @@ public class Assets {
 	public static TileSet titaniumOreTile;
 	public static TileSet quartzOreTile;
 	public static TileSet worktableTile;
+	public static TileSet crateTile;
 
 	private static SpriteSheet ui;
 	public static Sprite uiTop;
@@ -112,13 +113,19 @@ public class Assets {
 	public static Sprite worktable_inv;
 	public static Sprite crystalRod;
 	public static Sprite crystalRod_inv;
+	public static Sprite crate;
+	public static Sprite crate_inv;
 
 	public static SpriteSheet corpse_sheet;
 	public static Sprite corpse;
 
+	public static Sprite GUI_MainSplash;
+
 	// Sound
 
 	public static Sound pickaxe1;
+	
+	public static Sound MUSIC_IntoDarkness;
 
 	public static void init() {
 		initSheet();
@@ -162,6 +169,7 @@ public class Assets {
 		quartzOreTile = new TileSet(128, 128, tile);
 		clayTile = new TileSet(0, 64, tile);
 		worktableTile = new TileSet(48, 64, tile, true);
+		crateTile = new TileSet(64, 64, tile, true);
 
 		player_idle = new Sprite(0, 0, 32, player, Sprite.TYPE_ENTITY);
 		player_run = new Sprite(32, 0, 32, 32, 8, 10, player, Sprite.TYPE_ENTITY);
@@ -188,6 +196,9 @@ public class Assets {
 		sTick = new Sprite(1, 36, 1, 3, ui, Sprite.TYPE_ENTITY);
 		pTick = new Sprite(2, 36, 1, 3, ui, Sprite.TYPE_ENTITY);
 		bTick = new Sprite(3, 36, 1, 3, ui, Sprite.TYPE_ENTITY);
+
+		GUI_MainSplash = new Sprite(0, 0, 960, 540, new SpriteSheet(UI + "splash.png"),
+				Sprite.TYPE_GUI_BACKGROUND_SHAPE);
 
 		litTorch_inv = new Sprite(0, 0, 32, item, Sprite.TYPE_INVENTORY_ITEM);
 		litTorch = new Sprite(0, 32, 32, item, Sprite.TYPE_ENTITY);
@@ -223,6 +234,8 @@ public class Assets {
 		worktable_inv = new Sprite(224, 64, 32, item, Sprite.TYPE_INVENTORY_ITEM);
 		crystalRod = new Sprite(0, 160, 32, item, Sprite.TYPE_ENTITY);
 		crystalRod_inv = new Sprite(0, 128, 32, item, Sprite.TYPE_INVENTORY_ITEM);
+		crate = new Sprite(224, 96, 32, item, Sprite.TYPE_ENTITY);
+		crate_inv = new Sprite(224, 96, 32, item, Sprite.TYPE_INVENTORY_ITEM);
 
 		corpse = new Sprite(0, 0, 32, corpse_sheet, Sprite.TYPE_ENTITY);
 
@@ -230,5 +243,6 @@ public class Assets {
 
 	private static void initSound() {
 		pickaxe1 = new Sound(SOUND + "pickaxe1.wav");
+		MUSIC_IntoDarkness = new Sound(SOUND + "IntoDarknessOST - Track 01 (Into Darkness).wav");
 	}
 }

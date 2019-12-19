@@ -41,7 +41,7 @@ public class WorktableInteractable extends Interactable {
 				p = null;
 			} else {
 				p = (Player) interactor;
-				i = new Inventory(336, 434, 3, 3, handler);
+				i = new Inventory(336, 434, 3, 3, handler, this);
 				interacted = true;
 				if (p.getCraftingShown())
 					p.closeCraft();

@@ -49,7 +49,7 @@ public class Pickaxe extends Item {
 		if (equipped && timer >= useTime) {
 
 			int holderX = holder.getCenteredX();
-			int holderY = holder.getY() - 8;
+			int holderY = holder.getCenteredY();
 
 			int mouseX = handler.getCamera().xOffsetAdj() + handler.getMouse().getAdjX() - handler.getWidth() / 2;
 			int mouseY = handler.getCamera().yOffsetAdj() + handler.getMouse().getAdjY() - handler.getHeight() / 2;

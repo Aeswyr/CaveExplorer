@@ -43,13 +43,13 @@ public class MapGenerator {
 
 		Random rng = new Random();
 
-		File f1 = new File(Driver.saveDir + "saves/" + name + "/world.dat");
+		File f1 = new File(Driver.saveDir + "saves/" + name + "/temp0.dat");
 		f1.delete();
 		f1.createNewFile();
 		FileOutputStream file1 = new FileOutputStream(f1);
 		OutputStreamWriter write = new OutputStreamWriter(file1, StandardCharsets.UTF_8);
 
-		File f2 = new File(Driver.saveDir + "saves/" + name + "/map.dat");
+		File f2 = new File(Driver.saveDir + "saves/" + name + "/temp1.dat");
 		f2.delete();
 		f2.createNewFile();
 		FileOutputStream file2 = new FileOutputStream(f2);
@@ -112,14 +112,26 @@ public class MapGenerator {
 
 		load.displayText("Seeding Ore");
 		
+		File f4 = new File(Driver.saveDir + "saves/" + name + "/world.dat");
+		f4.delete();
+		f4.createNewFile();
+		FileOutputStream file4 = new FileOutputStream(f4);
+		write = new OutputStreamWriter(file4, StandardCharsets.UTF_8);
+		
+		File f5 = new File(Driver.saveDir + "saves/" + name + "/map.dat");
+		f5.delete();
+		f5.createNewFile();
+		FileOutputStream file5 = new FileOutputStream(f5);
+		writeMap = new OutputStreamWriter(file5, StandardCharsets.UTF_8);
+		
 		int[][] dat;
 		int[][] map;
 		int pos;
 		for (int j = 0; j < World.maxChunks; j++) {
 			for (int i = 0; i < World.maxChunks; i++) {
 				pos = j * World.maxChunks + i;
-				dat = load(pos, Driver.saveDir + "saves/" + name + "/world.dat");
-				map = load(pos, Driver.saveDir + "saves/" + name + "/map.dat");
+				dat = load(pos, Driver.saveDir + "saves/" + name + "/temp0.dat");
+				map = load(pos, Driver.saveDir + "saves/" + name + "/temp1.dat");
 
 				int o = (int) ((1 - rng.nextGaussian()) * 8);
 				int oreID = 23;
@@ -164,8 +176,8 @@ public class MapGenerator {
 
 				}
 
-				save(dat, pos, Driver.saveDir + "saves/" + name + "/world.dat");
-				save(map, pos, Driver.saveDir + "saves/" + name + "/map.dat");
+				save(dat, write);
+				save(map, writeMap);
 				
 				load.increment(1);
 
@@ -173,6 +185,11 @@ public class MapGenerator {
 
 		}
 
+		write.close();
+		writeMap.close();
+		f1.delete();
+		f2.delete();
+		
 		load.displayText("Placing Player");
 
 		boolean spawnFound = false;
@@ -299,6 +316,46 @@ public class MapGenerator {
 		c.append((char) (c0 + MapGenerator.OFFSET));
 
 		Utility.editText(c.toString(), pos, path);
+	}
+	
+	/**
+	 * saves a chunk using a specified filewriter
+	 * 
+	 * @param chunk - array data of the chunk
+	 * @param write - the filewriter to save with
+	 */
+	private static void save(int[][] chunk, OutputStreamWriter write) {
+
+		StringBuilder c = new StringBuilder();
+
+		int id0 = chunk[0][0];
+		int c0 = 0;
+
+		for (int y = 0; y < Chunk.chunkDim; y++) {
+			for (int x = 0; x < Chunk.chunkDim; x++) {
+				if (chunk[x][y] == id0)
+					c0++;
+				else {
+					c.append((char) (id0 + MapGenerator.OFFSET));
+					c.append((char) (c0 + MapGenerator.OFFSET));
+					c.append(' ');
+					c0 = 1;
+					id0 = chunk[x][y];
+				}
+			}
+		}
+
+		c.append((char) (id0 + MapGenerator.OFFSET));
+		c.append((char) (c0 + MapGenerator.OFFSET));
+
+		try {
+			write.write(c.toString());
+			write.write('\n');
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 	/**

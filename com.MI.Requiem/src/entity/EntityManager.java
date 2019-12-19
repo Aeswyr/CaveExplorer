@@ -80,8 +80,18 @@ public class EntityManager {
 	 * 
 	 */
 	public void renderDevMode(DrawGraphics g) {
+		Entity e;
+		Mob m;
 		for (int i = entities.size() - 1; i >= 0; i--) {
-			entities.get(i).getHitbox().render(g);
+			e = entities.get(i);
+			if (e.getHitbox() != null)
+				e.getHitbox().render(g);
+			if (e instanceof Mob) {
+				m = (Mob) e;
+				m.getVector().render(g);
+				if (m.getHurtbox() != null)
+					m.getHurtbox().render(g);
+			}
 		}
 	}
 
@@ -250,17 +260,25 @@ public class EntityManager {
 
 		for (Entity e : entities) {
 			e.load(h);
-			if (e instanceof Mob) mobs.add((Mob)e);
+			if (e instanceof Mob)
+				mobs.add((Mob) e);
 		}
 		ls.increment(1);
 		ls.close();
 	}
-	
+
 	/**
 	 * @returns a list of all active entities
 	 */
 	public ArrayList<Entity> getEntities() {
 		return entities;
+	}
+
+	/**
+	 * @returns a list of all active mobs
+	 */
+	public ArrayList<Mob> getMobs() {
+		return mobs;
 	}
 
 }

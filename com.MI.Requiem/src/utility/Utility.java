@@ -2,12 +2,12 @@ package utility;
 
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 
 /**
  * Contains a variety of useful methods
+ * 
  * @author Pascal
  *
  */
@@ -53,9 +53,10 @@ public class Utility {
 
 	/**
 	 * replaces a specified line within a text document
-	 * @param input - new value of the line
+	 * 
+	 * @param input   - new value of the line
 	 * @param lineNum - line number to replace
-	 * @param path - path to the text file which is edited
+	 * @param path    - path to the text file which is edited
 	 * @returns true if the change is successful, false otherwise
 	 */
 	public static boolean editText(String input, int lineNum, String path) {
@@ -86,5 +87,42 @@ public class Utility {
 		}
 
 		return true;
+	}
+
+	/**
+	 * checks the sign of the input value
+	 * 
+	 * @param a - value to check
+	 * @returns sign of the input value, 1 for positive, -1 for negative and 0 for
+	 *          0;
+	 */
+	public static int getSign(double a) {
+		if (a == 0)
+			return 0;
+		return (int) (a / Math.abs(a));
+	}
+
+	/**
+	 * returns the radian theta associated with the sine between the width and
+	 * height of a right triangle
+	 * 
+	 * @param w - width of the triangle
+	 * @param h - height of the triangle
+	 * @returns the radian theta associated with the triangle
+	 */
+	public static double sin(double w, double h) {
+		return h * h / (w * w + h * h);
+	}
+
+	/**
+	 * returns the radian theta associated with the cosine between the width and
+	 * height of a right triangle
+	 * 
+	 * @param w - width of the triangle
+	 * @param h - height of the triangle
+	 * @returns the radian theta associated with the triangle
+	 */
+	public static double cos(double w, double h) {
+		return w * w / (w * w + h * h);
 	}
 }

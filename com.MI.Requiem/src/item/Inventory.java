@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import core.Assets;
 import crafting.Tag;
+import entity.Entity;
 import entity.Mob;
 import gfx.DrawGraphics;
 import runtime.Handler;
@@ -24,6 +25,7 @@ public class Inventory implements Serializable {
 	private ArrayList<ItemContainer<Item>> storage;
 	private ArrayList<ItemContainer<Item>> extra;
 	transient private Handler handler;
+	transient private Entity owner;
 	private int x, y, size;
 
 	/**
@@ -35,10 +37,12 @@ public class Inventory implements Serializable {
 	 *                render
 	 * @param size    - number of base storage spots in the inventory
 	 * @param handler
+	 * @param e       - the entity who this inventory belongs to
 	 */
-	public Inventory(int x, int y, int size, Handler handler) {
+	public Inventory(int x, int y, int size, Handler handler, Entity e) {
 		storage = new ArrayList<ItemContainer<Item>>();
 		extra = new ArrayList<ItemContainer<Item>>();
+		this.owner = e;
 		this.size = size;
 		this.handler = handler;
 		this.x = x;
@@ -59,10 +63,12 @@ public class Inventory implements Serializable {
 	 * @param size    - number of base storage spots in the inventory
 	 * @param width   - the number of slots per row of the inventory
 	 * @param handler
+	 * @param e       - the entity who this inventory belongs to
 	 */
-	public Inventory(int x, int y, int size, int width, Handler handler) {
+	public Inventory(int x, int y, int size, int width, Handler handler, Entity e) {
 		storage = new ArrayList<ItemContainer<Item>>();
 		extra = new ArrayList<ItemContainer<Item>>();
+		this.owner = e;
 		this.size = size;
 		this.handler = handler;
 		this.x = x;
@@ -77,9 +83,10 @@ public class Inventory implements Serializable {
 	 * initializes a basic inventory with a size of 12
 	 * 
 	 * @param handler
+	 * @param e       - the entity who this inventory belongs to
 	 */
-	public Inventory(Handler handler) {
-		this(0, 0, 12, handler);
+	public Inventory(Handler handler, Entity e) {
+		this(0, 0, 12, handler, e);
 	}
 
 	/**
@@ -105,6 +112,8 @@ public class Inventory implements Serializable {
 			storage.get(i).update();
 			item = storage.get(i).getContained();
 			if (item != null) {
+				if (item.holder != this.owner)
+					item.setHolder(owner);
 				if (item.equipped())
 					item.onDequip();
 				item.update();
@@ -118,6 +127,8 @@ public class Inventory implements Serializable {
 			extra.get(i).update();
 			item = extra.get(i).getContained();
 			if (item != null) {
+				if (item.holder != this.owner)
+					item.setHolder(owner);
 				if (!item.equipped())
 					item.onEquip();
 				item.update();
@@ -324,17 +335,37 @@ public class Inventory implements Serializable {
 	 * 
 	 * @param h - the new handler
 	 */
-	public void load(Handler h, Mob m) {
+	public void load(Handler h, Entity e) {
+		this.owner = e;
 		for (ItemContainer<Item> i : storage) {
 			i.load(h);
 			if (!i.isEmpty())
-				i.getContained().load(h, m);
+				i.getContained().load(h, e);
 		}
 
 		for (ItemContainer<Item> i : extra) {
 			i.load(h);
 			if (!i.isEmpty())
-				i.getContained().load(h, m);
+				i.getContained().load(h, e);
+		}
+	}
+
+	/**
+	 * initializes the handler through every part of the inventory
+	 * 
+	 * @param h - the new handler
+	 */
+	public void load(Handler h) {
+		for (ItemContainer<Item> i : storage) {
+			i.load(h);
+			if (!i.isEmpty())
+				i.getContained().load(h);
+		}
+
+		for (ItemContainer<Item> i : extra) {
+			i.load(h);
+			if (!i.isEmpty())
+				i.getContained().load(h);
 		}
 	}
 

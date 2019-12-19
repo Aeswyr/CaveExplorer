@@ -1,6 +1,7 @@
 package gui;
 
 import gfx.DrawGraphics;
+import runtime.Handler;
 
 /**
  * base class for all GUI componenets
@@ -10,6 +11,8 @@ import gfx.DrawGraphics;
  */
 public abstract class UIObject {
 
+	public static Handler handler;
+	
 	protected int x, y;
 
 	/**
@@ -23,5 +26,13 @@ public abstract class UIObject {
 	 * Updates this UI component
 	 */
 	public abstract void update();
+	
+	public void display() {
+		handler.getUI().addObject(this);
+	}
+	
+	public void close() {
+		handler.getUI().removeObject(this);
+	}
 
 }

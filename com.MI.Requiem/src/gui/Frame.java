@@ -11,7 +11,7 @@ import gfx.Sprite;
  *
  */
 public class Frame extends UIObject {
-	private Rect frame;
+	private Sprite frame;
 
 	/**
 	 * Initializes a frame
@@ -28,9 +28,9 @@ public class Frame extends UIObject {
 		this.y = y;
 
 		if (color != border)
-			frame = new Rect(width, height, color, border, Sprite.TYPE_GUI_BACKGROUND_SHAPE);
+			frame = new Rect(width, height, color, border, Sprite.TYPE_GUI_BACKGROUND_SHAPE).toSprite();
 		else
-			frame = new Rect(width, height, color, Sprite.TYPE_GUI_BACKGROUND_SHAPE);
+			frame = new Rect(width, height, color, Sprite.TYPE_GUI_BACKGROUND_SHAPE).toSprite();
 	}
 
 	/**
@@ -49,9 +49,26 @@ public class Frame extends UIObject {
 		this.y = y;
 
 		if (color != border)
-			frame = new Rect(width, height, color, border, type);
+			frame = new Rect(width, height, color, border, type).toSprite();
 		else
-			frame = new Rect(width, height, color, type);
+			frame = new Rect(width, height, color, type).toSprite();
+	}
+
+	/**
+	 * Initializes a frame
+	 * 
+	 * @param x      - x position of the frame
+	 * @param y      - y position of the frame
+	 * @param width  - width of the frame
+	 * @param height - height of the frame
+	 * @param s      - sprite to display
+	 */
+	public Frame(int x, int y, int width, int height, Sprite s) {
+		this.x = x;
+		this.y = y;
+
+		frame = s;
+
 	}
 
 	@Override

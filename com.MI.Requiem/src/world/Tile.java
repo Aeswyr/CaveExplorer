@@ -7,6 +7,7 @@ import core.Assets;
 import gfx.DrawGraphics;
 import item.Item;
 import items.Anvil;
+import items.Crate;
 import items.Forge;
 import items.Gem;
 import items.Ore;
@@ -38,7 +39,7 @@ public class Tile {
 	}
 
 	protected final int id;
-	public static final int TILE_MAX = 24;
+	public static final int TILE_MAX = 25;
 
 	/**
 	 * initializes a tile with a specific id
@@ -179,6 +180,11 @@ public class Tile {
 		case 23: // iron vein
 			this.tileSet = Assets.ironOreTile;
 			this.wall = true;
+			this.breakable = true;
+			this.solid = true;
+			break;
+		case 24: // crate
+			this.tileSet = Assets.crateTile;
 			this.breakable = true;
 			this.solid = true;
 			break;
@@ -333,6 +339,9 @@ public class Tile {
 				drop.add(new TileBlock(x, y, handler, 6));
 			if (rng.nextDouble() < 0.03)
 				drop.add(new Gem(x, y, handler, 0));
+			break;
+		case 24: // crate
+			drop.add(new Crate(x, y, handler));
 			break;
 		default:
 			break;

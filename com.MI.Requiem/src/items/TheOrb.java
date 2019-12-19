@@ -46,6 +46,7 @@ public class TheOrb extends Item {
 
 	@Override
 	public void use() {
+		Mob holder = (Mob)this.holder;
 		if (timer >= useTime) {
 			switch (stage) {
 			case 0:

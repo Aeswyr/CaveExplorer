@@ -3,8 +3,10 @@ package runtime;
 import core.Driver;
 import core.Screen;
 import entities.Player;
+import entity.Vector;
 import gfx.DrawGraphics;
 import gui.InterfaceManager;
+import gui.UIObject;
 import input.KeyManager;
 import input.MouseManager;
 import particle.ParticleManager;
@@ -48,6 +50,8 @@ public class Handler {
 		driver = d;
 		TileSet.handler = this;
 		LoadingScreen.handler = this;
+		UIObject.handler = this;
+		Vector.handler = this;
 
 		lightManager = new LightManager(this);
 		particles = new ParticleManager();

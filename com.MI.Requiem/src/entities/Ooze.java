@@ -3,6 +3,7 @@ package entities;
 import core.Assets;
 import entity.Hitbox;
 import entity.Mob;
+import entity.Vector;
 import item.Item;
 import items.Bone;
 import runtime.Handler;
@@ -17,24 +18,35 @@ public class Ooze extends Mob {
 	public Ooze(Handler handler) {
 		super(handler);
 		this.activeSprite = Assets.ooze_idle;
-		this.hitbox = new Hitbox(-32, -32, 32, 32, this, handler);
 
 		this.xOff = 32;
 		this.yOff = 32;
 
 		this.healthMax = 10;
 		this.health = healthMax;
-		
+
 		this.spiritMax = 2;
 		this.spirit = spiritMax;
-		
-		this.speed = 1;
-		
-		if (rng.nextDouble() < 0.3) inventory.add(new Bone(handler, this));
-		if (rng.nextDouble() < 0.3) inventory.add(new Bone(handler, this));
-		if (rng.nextDouble() < 0.3) inventory.add(new Bone(handler, this));
-		
+
+		this.speed = 2;
+
+		if (rng.nextDouble() < 0.3)
+			inventory.add(new Bone(handler, this));
+		if (rng.nextDouble() < 0.3)
+			inventory.add(new Bone(handler, this));
+		if (rng.nextDouble() < 0.3)
+			inventory.add(new Bone(handler, this));
+
 		uiSetup();
+	}
+
+	@Override
+	protected void setup() {
+		this.w = 32;
+		this.h = 32;
+		this.hitbox = new Hitbox(0, 0, 32, 32, this, handler);
+		this.hurtbox = new Hitbox(0, 0, 32, 32, this, handler);
+		this.vector = new Vector(this, 50);
 	}
 
 	public Ooze(Handler handler, int x, int y) {
@@ -45,20 +57,21 @@ public class Ooze extends Mob {
 
 	@Override
 	public void move() {
+		int speed = (int) (this.speed * 2);
 		int xDest = handler.getPlayer().getCenteredX();
 		int yDest = handler.getPlayer().getCenteredY();
 		int xCent = this.getCenteredX();
 		int yCent = this.getCenteredY();
 
 		if (xDest > xCent && !hitbox.tileXCollide(speed))
-			x += speed;
+			vector.setVelocityX(speed);
 		else if (xDest < xCent && !hitbox.tileXCollide(-speed))
-			x -= speed;
+			vector.setVelocityX(-speed);
 
 		if (yDest > yCent && !hitbox.tileYCollide(speed))
-			y += speed;
+			vector.setVelocityY(speed);
 		else if (yDest < yCent && !hitbox.tileYCollide(-speed))
-			y -= speed;
+			vector.setVelocityY(-speed);
 
 	}
 

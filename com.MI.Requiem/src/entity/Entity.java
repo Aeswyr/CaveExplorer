@@ -20,7 +20,7 @@ public abstract class Entity implements Serializable {
 	private static final long serialVersionUID = 5462530084929665736L;
 	public int id;
 	protected double x, y;
-	protected int xOff, yOff;
+	protected int xOff, yOff, w , h;
 	protected Hitbox hitbox;
 	transient protected Handler handler;
 
@@ -122,28 +122,28 @@ public abstract class Entity implements Serializable {
 	 * @returns this entity's x position (adjusted for the top of the entity)
 	 */
 	public int getAdjX() {
-		return (int) (x) / Tile.tileSize;
+		return (int) (x + w / 2) / Tile.tileSize;
 	}
 
 	/**
 	 * @returns this entity's y position (adjusted for the top of the entity)
 	 */
 	public int getAdjY() {
-		return (int) (y - yOff / 2) / Tile.tileSize;
+		return (int) (y) / Tile.tileSize;
 	}
 
 	/**
 	 * @returns this entity's x position (adjusted for the center of the entity)
 	 */
 	public int getCenteredX() {
-		return (int) (x - xOff / 2);
+		return (int) (x + w / 2);
 	}
 
 	/**
 	 * @returns this entity's y position (adjusted for the center of the entity)
 	 */
 	public int getCenteredY() {
-		return (int) (y - yOff / 2);
+		return (int) (y + h / 2);
 	}
 
 	/**
@@ -157,6 +157,24 @@ public abstract class Entity implements Serializable {
 			this.hitbox.setHandler(h);
 			this.hitbox.setEntity(this);
 		}
+	}
+
+	/**
+	 * gets the coordinate to render lights from on this entity
+	 * 
+	 * @returns the x position for the center of lights emitting from this entity
+	 */
+	public int getLightX() {
+		return (int) (x + w / 2);
+	}
+
+	/**
+	 * gets the coordinate to render lights from on this entity
+	 * 
+	 * @returns the y position for the center of lights emitting from this entity
+	 */
+	public int getLightY() {
+		return (int) (y + h / 3);
 	}
 
 }

@@ -39,6 +39,7 @@ public class Spineberry extends Item {
 
 	@Override
 	public void use() {
+		Mob holder = (Mob)this.holder;
 		if (!consumed && timer >= useTime) {
 			holder.heal(5, Effect.DAMAGE_TYPE_MENTAL);
 			this.consumed = true;

@@ -5,10 +5,7 @@ import java.util.ArrayList;
 import entity.Entity;
 import entity.EntityManager;
 import entity.Mob;
-import geometry.Shape;
-import geometry.Rect;
 import gfx.DrawGraphics;
-import gfx.Sprite;
 import runtime.Handler;
 
 /**
@@ -137,6 +134,13 @@ public class Hitbox implements Serializable {
 		return false;
 	}
 
+	/**
+	 * checks if this hitbox will collide with a tile if it were to move in the y
+	 * direction
+	 * 
+	 * @param yMove - the amount to move in the y direction
+	 * @returns true if there would be a collision, false otherwise
+	 */
 	public boolean tileYCollide(double yMove) {
 		int[] bound = this.getBounds();
 		if (handler.getWorld().getTile(bound[0], (int) (bound[2] + yMove)).isSolid()
@@ -169,8 +173,7 @@ public class Hitbox implements Serializable {
 	public Entity collidingWith() {
 		EntityManager em = handler.getWorld().getEntities();
 		for (int i = 0; i < em.totalEntities(); i++) {
-			if (em.getEntity(i).getHitbox() != null && (this.contains(em.getEntity(i).getHitbox()))
-					|| em.getEntity(i).getHitbox().contains(this))
+			if (em.getEntity(i).getHitbox() != null && this.contains(em.getEntity(i).getHitbox()))
 				return em.getEntity(i);
 		}
 		return null;
@@ -183,11 +186,11 @@ public class Hitbox implements Serializable {
 	 * @returns the first mob which collides with this hitbox
 	 */
 	public Mob collidingWithMob() {
-		EntityManager em = handler.getWorld().getEntities();
-		for (int i = 0; i < em.totalEntities(); i++) {
-			if (em.getEntity(i).getHitbox() != null && this.contains(em.getEntity(i).getHitbox())
-					&& em.getEntity(i) instanceof Mob && em.getEntity(i) != this.e)
-				return ((Mob) em.getEntity(i));
+		ArrayList<Mob> mobs = handler.getWorld().getEntities().getMobs();
+		for (int i = 0; i < mobs.size(); i++) {
+			if (mobs.get(i).getHurtbox() != null && this.contains(mobs.get(i).getHurtbox())
+					 && mobs.get(i) != this.e)
+				return mobs.get(i);
 		}
 		return null;
 	}
@@ -204,6 +207,21 @@ public class Hitbox implements Serializable {
 			Entity e = em.getEntity(i);
 			if (e.getHitbox() != null && this != e.getHitbox() && this.contains(e.getHitbox()))
 				found.add(e);
+		}
+		return found;
+	}
+	
+	/**
+	 * gets all entities which are colliding with this hitbox
+	 * 
+	 * @returns a list of all entities colliding with this hitbox
+	 */
+	public ArrayList<Mob> collidingAllMob() {
+		ArrayList<Mob> mobs = handler.getWorld().getEntities().getMobs();
+		ArrayList<Mob> found = new ArrayList<Mob>();
+		for (int i = 0; i < mobs.size(); i++) {
+			if (mobs.get(i).getHurtbox() != null && this.contains(mobs.get(i).getHurtbox()))
+				found.add(mobs.get(i));
 		}
 		return found;
 	}

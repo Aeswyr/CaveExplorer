@@ -1,7 +1,6 @@
 package gui;
 
 import gfx.DrawGraphics;
-import runtime.Handler;
 import utility.Storeable;
 
 /**
@@ -25,8 +24,8 @@ public class ContainerButton extends Button {
 	 * @param s       - storeable to display in the button
 	 * @param handler
 	 */
-	public ContainerButton(ClickListener action, int x, int y, int width, int height, Storeable s, Handler handler) {
-		super(action, x, y, width, height, handler);
+	public ContainerButton(ClickListener action, int x, int y, int width, int height, Storeable s) {
+		super(action, x, y, width, height);
 		stored = s;
 	}
 

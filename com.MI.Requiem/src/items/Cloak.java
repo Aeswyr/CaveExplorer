@@ -54,18 +54,4 @@ public class Cloak extends Item {
 
 	}
 
-	@Override
-	public void onEquip() {
-		this.equipped = true;
-		holder.adjSpeed(0.25);
-
-	}
-
-	@Override
-	public void onDequip() {
-		this.equipped = false;
-		holder.adjSpeed(-0.25);
-
-	}
-
 }

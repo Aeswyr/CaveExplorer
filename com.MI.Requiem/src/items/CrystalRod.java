@@ -47,10 +47,11 @@ public class CrystalRod extends Item {
 
 	@Override
 	public void use() {
+		Mob holder = (Mob)this.holder;
 		if (equipped && timer >= useTime && holder.getSpirit() >= 1) {
 			holder.harm(1, Effect.DAMAGE_TYPE_MENTAL);
 			int holderX = holder.getCenteredX();
-			int holderY = holder.getY() - 8;
+			int holderY = holder.getCenteredY();
 
 			int mouseX = handler.getCamera().xOffsetAdj() + handler.getMouse().getAdjX() - handler.getWidth() / 2;
 			int mouseY = handler.getCamera().yOffsetAdj() + handler.getMouse().getAdjY() - handler.getHeight() / 2;
