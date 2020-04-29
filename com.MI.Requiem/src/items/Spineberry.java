@@ -4,7 +4,6 @@ import core.Assets;
 import effects.Effect;
 import entity.Mob;
 import item.Item;
-import runtime.Handler;
 
 public class Spineberry extends Item {
 
@@ -13,13 +12,13 @@ public class Spineberry extends Item {
 	 */
 	private static final long serialVersionUID = -2896971184836307629L;
 
-	public Spineberry(Handler handler, Mob holder) {
-		super(handler, holder);
+	public Spineberry( Mob holder) {
+		super(holder);
 
 	}
 
-	public Spineberry(int x, int y, Handler handler) {
-		super(x, y, handler);
+	public Spineberry(int x, int y) {
+		super(x, y);
 
 	}
 

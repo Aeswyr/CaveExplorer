@@ -7,7 +7,7 @@ import gfx.DrawGraphics;
 import gfx.Sprite;
 import runtime.Handler;
 import utility.Storeable;
-import utility.Utility;
+import utility.Utils;
 
 /**
  * container which can store and display storeables
@@ -27,7 +27,6 @@ public class ItemContainer<T extends Storeable> implements Serializable {
 	Sprite container;
 	Sprite empty;
 	int x, y, amount;
-	transient Handler handler;
 	Hitbox h;
 
 	/**
@@ -37,11 +36,10 @@ public class ItemContainer<T extends Storeable> implements Serializable {
 	 * @param y       - y pos of the item box
 	 * @param handler
 	 */
-	public ItemContainer(int x, int y, Handler handler) {
+	public ItemContainer(int x, int y) {
 		this.x = x;
 		this.y = y;
-		this.handler = handler;
-		h = new Hitbox(x, y, 32, 32, handler);
+		h = new Hitbox(x, y, 32, 32);
 	}
 
 	/**
@@ -54,8 +52,8 @@ public class ItemContainer<T extends Storeable> implements Serializable {
 	 * @param e       - sprite to display when the box is empty
 	 * @param handler
 	 */
-	public ItemContainer(int x, int y, Sprite s, Sprite e, Handler handler) {
-		this(x, y, handler);
+	public ItemContainer(int x, int y, Sprite s, Sprite e) {
+		this(x, y);
 		container = s;
 		empty = e;
 	}
@@ -71,8 +69,8 @@ public class ItemContainer<T extends Storeable> implements Serializable {
 	 * @param acceptedTags - string of accepted tags, separated by spaces
 	 * @param handler
 	 */
-	public ItemContainer(int x, int y, Sprite s, Sprite e, String acceptedTags, Handler handler) {
-		this(x, y, s, e, handler);
+	public ItemContainer(int x, int y, Sprite s, Sprite e, String acceptedTags) {
+		this(x, y, s, e);
 		this.acceptedTags = acceptedTags;
 	}
 
@@ -85,14 +83,11 @@ public class ItemContainer<T extends Storeable> implements Serializable {
 		if (contained != null) {
 			if (container != null)
 				container.render(x, y, g);
-			if (this.equals(handler.getMouse().getStartHovered()))
-				contained.renderInventory(handler.getMouse().getAdjX(), handler.getMouse().getAdjY(), g);
-			else {
-				contained.renderInventory(x, y, g);
-				if (amount > 1)
-					g.write("" + amount, x + 20, y + 18);
-				if (this.h.containsMouse())
-					contained.renderTextBox(x, y, g);
+			contained.renderInventory(x, y, g);
+			if (amount > 1)
+				g.write("" + amount, x + 20, y + 18);
+			if (this.h.containsMouse()) {
+				contained.renderTextBox(x, y, g);
 			}
 		} else {
 			if (empty != null)
@@ -101,21 +96,10 @@ public class ItemContainer<T extends Storeable> implements Serializable {
 	}
 
 	/**
-	 * updates and manages dragging items (specifically items, no other storeables)
-	 * between containers
+	 * updates functions related to item containers
 	 */
-	@SuppressWarnings("unchecked")
 	public void update() {
-		if (this instanceof ItemContainer<?>) {
-			if ((handler.getMouse().getLeft() || handler.getMouse().getRight() || handler.getMouse().getMiddle())
-					&& h.containsMouse()) {
-				if (handler.getMouse().getStartHovered() == null)
-					handler.getMouse().setStartHovered((ItemContainer<Item>) this);
-				else {
-					handler.getMouse().setEndHovered((ItemContainer<Item>) this);
-				}
-			}
-		}
+
 	}
 
 	/**
@@ -142,7 +126,7 @@ public class ItemContainer<T extends Storeable> implements Serializable {
 	 */
 	public boolean store(T item) {
 		if ((contained != null && !contained.canStack(item))
-				|| (acceptedTags != null && !Utility.tagOverlaps(acceptedTags, item.getTags())))
+				|| (acceptedTags != null && !Utils.tagOverlaps(acceptedTags, item.getTags())))
 			return false;
 		if (contained == null)
 			contained = item;
@@ -159,7 +143,7 @@ public class ItemContainer<T extends Storeable> implements Serializable {
 	 */
 	public boolean store(T item, int amount) {
 		if ((contained != null && !contained.canStack(item))
-				|| (acceptedTags != null && !Utility.tagOverlaps(acceptedTags, item.getTags())))
+				|| (acceptedTags != null && !Utils.tagOverlaps(acceptedTags, item.getTags())))
 			return false;
 		if (contained == null)
 			contained = item;
@@ -232,7 +216,17 @@ public class ItemContainer<T extends Storeable> implements Serializable {
 
 		}
 	}
-
+	
+	/**
+	 * destroys all contained objects in this container
+	 */
+	public void flush() {
+		amount = 0;
+		if (contained instanceof Item)
+			((Item) contained).strip();
+		contained = null;
+	}
+	
 	/**
 	 * @returns true if the mouse is within this obejct's hitbox, false otherwise
 	 */
@@ -245,14 +239,5 @@ public class ItemContainer<T extends Storeable> implements Serializable {
 	 */
 	public boolean isEmpty() {
 		return (contained == null);
-	}
-	
-	/**
-	 * initializes the handler for this item
-	 * @param h - the new handler
-	 */
-	public void load(Handler h) {
-		this.handler = h;
-		this.h.setHandler(h);
 	}
 }

@@ -3,39 +3,39 @@ package items;
 import core.Assets;
 import entity.Mob;
 import item.Item;
-import runtime.Handler;
 
-public class Ore extends Item{
+public class Ore extends Item {
 
-	//ID
+	// ID
 	// 0 - iron ore
-	
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -3980248478264884341L;
-	
+
 	int id;
-	public Ore(Handler handler, Mob holder, int id) {
-		super(handler, holder);
+
+	public Ore(Mob holder, int id) {
+		super(holder);
 		this.id = id;
 		setup();
 	}
 
-	public Ore(int x, int y, Handler handler, int id) {
-		super(x, y, handler);
+	public Ore(int x, int y, int id) {
+		super(x, y);
 		this.id = id;
 		setup();
 	}
-	
+
 	@Override
 	protected void setup() {
 		tags = "mineral";
 		this.ID = "1:" + id;
-		
+
 		useTime = 30;
 		timer = useTime;
-		
+
 		switch (id) {
 		case 0:
 			this.sprite = Assets.ironOre;
@@ -112,15 +112,13 @@ public class Ore extends Item{
 		default:
 			break;
 		}
-		
+
 	}
 
 	@Override
 	public void use() {
 		// TODO Auto-generated method stub
-		
+
 	}
-
-
 
 }

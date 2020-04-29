@@ -2,10 +2,12 @@ package items;
 
 import core.Assets;
 import entity.Mob;
+import input.Controller;
 import interactables.ForgeInteractable;
 import item.Item;
 import runtime.Handler;
 import world.Tile;
+import world.World;
 
 public class Forge extends Item {
 
@@ -15,13 +17,13 @@ public class Forge extends Item {
 	private static final long serialVersionUID = 8095652832011942557L;
 	private ForgeInteractable interact;
 
-	public Forge(int x, int y, Handler handler) {
-		super(x, y, handler);
+	public Forge(int x, int y) {
+		super(x, y);
 
 	}
 
-	public Forge(Handler handler, Mob holder) {
-		super(handler, holder);
+	public Forge(Mob holder) {
+		super(holder);
 
 	}
 
@@ -39,7 +41,7 @@ public class Forge extends Item {
 		this.sprite = Assets.forge_inv;
 		this.invSprite = Assets.forge_inv;
 
-		interact = new ForgeInteractable(handler);
+		interact = new ForgeInteractable();
 		
 		stackable = false;
 	}
@@ -52,19 +54,19 @@ public class Forge extends Item {
 			int holderX = holder.getCenteredX();
 			int holderY = holder.getY() - 8;
 
-			int mouseX = handler.getCamera().xOffsetAdj() + handler.getMouse().getAdjX() - handler.getWidth() / 2;
-			int mouseY = handler.getCamera().yOffsetAdj() + handler.getMouse().getAdjY() - handler.getHeight() / 2;
+			int mouseX = Handler.getCamera().xOffsetAdj() + Controller.getAdjX() - Handler.getWidth() / 2;
+			int mouseY = Handler.getCamera().yOffsetAdj() + Controller.getAdjY() - Handler.getHeight() / 2;
 
 			int dx = mouseX - holderX;
 			int dy = mouseY - holderY;
 
-			if (dx * dx + dy * dy < 4096 && !handler.getWorld().getTile(mouseX, mouseY).isSolid()
-					&& !handler.getWorld().getTile(mouseX + Tile.tileSize, mouseY).isSolid()) {
-				handler.getWorld().setOverlay(mouseX, mouseY, 3);
-				handler.getWorld().setOverlay(mouseX + Tile.tileSize, mouseY, 4);
-				interact.setX((mouseX / Tile.tileSize) * Tile.tileSize);
-				interact.setY((mouseY / Tile.tileSize) * Tile.tileSize);
-				handler.getWorld().getEntities().addEntity(interact);
+			if (dx * dx + dy * dy < 4096 && !Handler.getLoadedWorld().getTile(mouseX, mouseY, World.MAP_BASE).getCollidable()
+					&& !Handler.getLoadedWorld().getTile(mouseX + Tile.TILE_SIZE, mouseY, World.MAP_BASE).getCollidable()) {
+				((World) Handler.getLoadedWorld()).setTile(mouseX, mouseY, 3, World.MAP_OVERLAY);
+				((World) Handler.getLoadedWorld()).setTile(mouseX + Tile.TILE_SIZE, mouseY, 4, World.MAP_OVERLAY);
+				interact.setX((mouseX / Tile.TILE_SIZE) * Tile.TILE_SIZE);
+				interact.setY((mouseY / Tile.TILE_SIZE) * Tile.TILE_SIZE);
+				Handler.getEntityManager().addEntity(interact);
 				timer = 0;
 				consumed = true;
 			}

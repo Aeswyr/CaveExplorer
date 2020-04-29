@@ -3,7 +3,6 @@ package items;
 import core.Assets;
 import entity.Mob;
 import item.Item;
-import runtime.Handler;
 
 public class Gem extends Item{
 
@@ -16,14 +15,14 @@ public class Gem extends Item{
 	private static final long serialVersionUID = -6885793369745861688L;
 	int id;
 	
-	public Gem(Handler handler, Mob holder, int id) {
-		super(handler, holder);
+	public Gem(Mob holder, int id) {
+		super(holder);
 		this.id = id;
 		setup();
 	}
 	
-	public Gem(int x, int y, Handler handler, int id) {
-		super(x, y, handler);
+	public Gem(int x, int y, int id) {
+		super(x, y);
 		this.id = id;
 		setup();
 	}

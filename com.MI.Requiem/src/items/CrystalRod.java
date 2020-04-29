@@ -5,7 +5,8 @@ import effects.Effect;
 import entity.Hitbox;
 import entity.Mob;
 import geometry.Rect;
-import gfx.Sprite;
+import gfx.SpriteData;
+import input.Controller;
 import item.Item;
 import particle.Particle;
 import runtime.Handler;
@@ -17,12 +18,12 @@ public class CrystalRod extends Item {
 	 */
 	private static final long serialVersionUID = -5542786568095131743L;
 
-	public CrystalRod(Handler handler, Mob holder) {
-		super(handler, holder);
+	public CrystalRod( Mob holder) {
+		super( holder);
 	}
 
-	public CrystalRod(int x, int y, Handler handler) {
-		super(x, y, handler);
+	public CrystalRod(int x, int y) {
+		super(x, y);
 	}
 
 	@Override
@@ -47,14 +48,15 @@ public class CrystalRod extends Item {
 
 	@Override
 	public void use() {
-		Mob holder = (Mob)this.holder;
-		if (equipped && timer >= useTime && holder.getSpirit() >= 1) {
-			holder.harm(1, Effect.DAMAGE_TYPE_MENTAL);
+		if (timer == useTime) {
+			Mob holder = (Mob) this.holder;
+
+			holder.heal(1, Effect.DAMAGE_TYPE_MENTAL);
 			int holderX = holder.getCenteredX();
 			int holderY = holder.getCenteredY();
 
-			int mouseX = handler.getCamera().xOffsetAdj() + handler.getMouse().getAdjX() - handler.getWidth() / 2;
-			int mouseY = handler.getCamera().yOffsetAdj() + handler.getMouse().getAdjY() - handler.getHeight() / 2;
+			int mouseX = Handler.getCamera().xOffsetAdj() + Controller.getAdjX() - Handler.getWidth() / 2;
+			int mouseY = Handler.getCamera().yOffsetAdj() + Controller.getAdjY() - Handler.getHeight() / 2;
 
 			int dx = Math.abs(mouseX - holderX);
 			int dy = Math.abs(mouseY - holderY);
@@ -65,7 +67,7 @@ public class CrystalRod extends Item {
 			int err = dx - dy;
 			int e2;
 
-			Hitbox h = new Hitbox(holderX, holderY, 3, 3, handler);
+			Hitbox h = new Hitbox(holderX, holderY, 3, 3);
 
 			while (((holderX - holder.getCenteredX()) * (holderX - holder.getCenteredX())
 					+ (holderY - holder.getCenteredY()) * (holderY - holder.getCenteredY())) < 16384) {
@@ -89,8 +91,8 @@ public class CrystalRod extends Item {
 					holderY += sy;
 				}
 			}
-			new Particle(new Rect(2, 2, 0x664444ff, Sprite.TYPE_ITEM_DROP).toSprite(), 40, holder.getCenteredX(), holder.getY() - 8, holderX, holderY, handler,
-					new Particle.Behavior() {
+			new Particle(new Rect(2, 2, 0xAA4444ff, SpriteData.TYPE_ITEM_DROP).toSprite(), 40, holder.getCenteredX(),
+					holder.getCenteredY(), holderX, holderY, new Particle.Behavior() {
 
 						@Override
 						public void update(int x, int y, int x0, int y0, int[] data, int index) {

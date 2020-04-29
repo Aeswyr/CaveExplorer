@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import core.Assets;
 import entity.Mob;
 import geometry.Rect;
-import gfx.Sprite;
+import gfx.SpriteData;
+import input.Controller;
 import item.Item;
 import particle.Particle;
 import runtime.Handler;
 import world.Tile;
+import world.World;
 
 public class Pickaxe extends Item {
 
@@ -17,12 +19,12 @@ public class Pickaxe extends Item {
 	 */
 	private static final long serialVersionUID = 4425233684360263139L;
 
-	public Pickaxe(Handler handler, Mob holder) {
-		super(handler, holder);
+	public Pickaxe(Mob holder) {
+		super(holder);
 	}
 
-	public Pickaxe(int x, int y, Handler handler) {
-		super(x, y, handler);
+	public Pickaxe(int x, int y) {
+		super(x, y);
 	}
 
 	@Override
@@ -51,8 +53,8 @@ public class Pickaxe extends Item {
 			int holderX = holder.getCenteredX();
 			int holderY = holder.getCenteredY();
 
-			int mouseX = handler.getCamera().xOffsetAdj() + handler.getMouse().getAdjX() - handler.getWidth() / 2;
-			int mouseY = handler.getCamera().yOffsetAdj() + handler.getMouse().getAdjY() - handler.getHeight() / 2;
+			int mouseX = Handler.getCamera().xOffsetAdj() + Controller.getAdjX() - Handler.getWidth() / 2;
+			int mouseY = Handler.getCamera().yOffsetAdj() + Controller.getAdjY() - Handler.getHeight() / 2;
 
 			int dx = Math.abs(mouseX - holderX);
 			int dy = Math.abs(mouseY - holderY);
@@ -66,49 +68,50 @@ public class Pickaxe extends Item {
 			while (((holderX - holder.getCenteredX()) * (holderX - holder.getCenteredX())
 					+ (holderY - holder.getCenteredY()) * (holderY - holder.getCenteredY())) < 4096) {
 
-				if (handler.getWorld().getTile(holderX, holderY).isBreakable()
-						|| (handler.getWorld().getOverlay(holderX, holderY) != null
-								&& handler.getWorld().getOverlay(holderX, holderY).isBreakable())) {
+				World w = (World) Handler.getLoadedWorld();
+
+				if (w.getTile(holderX, holderY, World.MAP_BASE).isBreakable()
+						|| (w.getTile(holderX, holderY, World.MAP_OVERLAY) != null
+								&& w.getTile(holderX, holderY, World.MAP_OVERLAY).isBreakable())) {
 
 					// on tile break
 					ArrayList<Item> drops = null;
-					if (handler.getWorld().getOverlayID(holderX, holderY) >= 0
-							&& handler.getWorld().getOverlay(holderX, holderY).isBreakable())
-						drops = handler.getWorld().getOverlay(holderX, holderY).tileDrop(holderX - 16, holderY - 18,
-								handler);
-					else if (handler.getWorld().getTile(holderX, holderY).isBreakable())
-						drops = handler.getWorld().getTile(holderX, holderY).tileDrop(holderX - 16, holderY - 18,
-								handler);
-					if (handler.getWorld().getOverlayID(holderX, holderY) == 3
-							|| handler.getWorld().getOverlayID(holderX, holderY) == 4) { // When tile is forge
-						if (handler.getWorld().getOverlayID(holderX, holderY) == 3) {
-							handler.getWorld().setOverlay(holderX, holderY, -1);
-							handler.getWorld().setOverlay(holderX + Tile.tileSize, holderY, -1);
+					if (w.getTileID(holderX, holderY, World.MAP_OVERLAY) >= 0
+							&& w.getTile(holderX, holderY, World.MAP_OVERLAY).isBreakable())
+						drops = w.getTile(holderX, holderY, World.MAP_OVERLAY).tileDrop(holderX - 16, holderY - 18);
+					else if (w.getTile(holderX, holderY, World.MAP_BASE).isBreakable())
+						drops = w.getTile(holderX, holderY, World.MAP_BASE).tileDrop(holderX - 16, holderY - 18);
+					if (w.getTileID(holderX, holderY, World.MAP_OVERLAY) == 3
+							|| w.getTileID(holderX, holderY, World.MAP_OVERLAY) == 4) { // When tile
+						// is forge
+						if (w.getTileID(holderX, holderY, World.MAP_OVERLAY) == 3) {
+							w.setTile(holderX, holderY, -1, World.MAP_OVERLAY);
+							w.setTile(holderX + Tile.TILE_SIZE, holderY, -1, World.MAP_OVERLAY);
 
 						} else {
-							handler.getWorld().setOverlay(holderX, holderY, -1);
-							handler.getWorld().setOverlay(holderX - Tile.tileSize, holderY, -1);
+							w.setTile(holderX, holderY, -1, World.MAP_OVERLAY);
+							w.setTile(holderX - Tile.TILE_SIZE, holderY, -1, World.MAP_OVERLAY);
 
 						}
 
-					} else if (handler.getWorld().getOverlayID(holderX, holderY) == 2) { // When tile is anvil
-						handler.getWorld().setOverlay(holderX, holderY, -1);
+					} else if (w.getTileID(holderX, holderY, World.MAP_OVERLAY) == 2) { // When tile is anvil
+						w.setTile(holderX, holderY, -1, World.MAP_OVERLAY);
 
-					} else if (handler.getWorld().getOverlayID(holderX, holderY) >= 0
-							&& handler.getWorld().getOverlay(holderX, holderY).isBreakable()) {
-						handler.getWorld().setOverlay(holderX, holderY, -1);
+					} else if (w.getTileID(holderX, holderY, World.MAP_OVERLAY) >= 0
+							&& w.getTile(holderX, holderY, World.MAP_OVERLAY).isBreakable()) {
+						w.setTile(holderX, holderY, -1, World.MAP_OVERLAY);
 					} else
-						handler.getWorld().setTile(holderX, holderY,
-								Tile.tileToFloor(handler.getWorld().getTileID(holderX, holderY)));
+						w.setTile(holderX, holderY, Tile.tileToFloor(w.getTileID(holderX, holderY, World.MAP_BASE)),
+								World.MAP_BASE);
 
 					for (int i = 0; i < drops.size(); i++) {
-						handler.getWorld().getEntities().addEntity(drops.get(i));
+						Handler.getEntityManager().addEntity(drops.get(i));
 					}
 					// end tile break
 
 					// always do
-					new Particle(new Rect(1, 1, 0xffffff00, Sprite.TYPE_ITEM_DROP).toSprite(), 8, holderX, holderY, holderX + 5, holderY + 5, handler,
-							new Particle.Behavior() {
+					new Particle(new Rect(1, 1, 0xffffff00, SpriteData.TYPE_ITEM_DROP).toSprite(), 8, holderX, holderY,
+							holderX + 5, holderY + 5, new Particle.Behavior() {
 								int[][] move;
 
 								@Override

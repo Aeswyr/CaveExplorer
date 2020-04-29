@@ -1,15 +1,17 @@
 package interactables;
 
+import core.Assets;
 import crafting.Tag;
 import entities.Player;
 import entity.Hitbox;
 import entity.Interactable;
 import gfx.DrawGraphics;
-import gfx.Sprite;
+import gfx.SpriteData;
 import gui.Frame;
 import item.Inventory;
 import runtime.Handler;
 import world.Tile;
+import world.World;
 
 public class WorktableInteractable extends Interactable {
 
@@ -18,15 +20,15 @@ public class WorktableInteractable extends Interactable {
 	 */
 	private static final long serialVersionUID = -9148779825600429102L;
 
-	public WorktableInteractable(Handler handler) {
-		super(handler);
-		hitbox = new Hitbox(0, 0, Tile.tileSize + 2, Tile.tileSize * 2, this, handler);
+	public WorktableInteractable() {
+		super();
+		hitbox = new Hitbox(0, 0, Tile.TILE_SIZE + 2, Tile.TILE_SIZE * 2, this);
 	}
 
 	transient Player p;
 	transient boolean interacted = false;
 	transient static Inventory i;
-	static Frame frame = new Frame(192, 430, 576, 64, 0xff888888, 0xffffffff, Sprite.TYPE_GUI_BACKGROUND_SHAPE);
+	static Frame frame = new Frame(192, 430, 576, 64, Assets.ns_grey, SpriteData.TYPE_GUI_BACKGROUND_SHAPE);
 	
 	@Override
 	public void interact(Object interactor) {
@@ -37,28 +39,27 @@ public class WorktableInteractable extends Interactable {
 				i = null;
 				p.setStationFlag(Tag.STATION_WORKTABLE, false);
 				p.closeCraft();
-				handler.getUI().removeObject(frame);
+				Handler.getUI().removeObject(frame);
 				p = null;
 			} else {
 				p = (Player) interactor;
-				i = new Inventory(336, 434, 3, 3, handler, this);
+				i = new Inventory(336, 434, 3, 3, this);
 				interacted = true;
 				if (p.getCraftingShown())
 					p.closeCraft();
 				p.setStationFlag(Tag.STATION_WORKTABLE, true);
 				p.showCraft(i);
-				handler.getUI().addObject(frame);
+				Handler.getUI().addObject(frame);
 			}
 		}
 	}
 
 	@Override
 	public void update() {
-		super.update();
 		if (interacted) {
 			i.update();
 			p.refreshCraft(i);
-			if (!this.hitbox.collidingAll().contains(p)) {
+			if (!((Hitbox) this.hitbox).collidingAll().contains(p)) {
 				interacted = false;
 				p.setStationFlag(Tag.STATION_WORKTABLE, false);
 				p.closeCraft();
@@ -66,7 +67,7 @@ public class WorktableInteractable extends Interactable {
 			}
 		}
 
-		int t = handler.getWorld().getOverlayID(getX(), getY());
+		int t = ((World) Handler.getLoadedWorld()).getTileID(getX(), getY(), World.MAP_OVERLAY);
 		if (t != 10 && t != -2) {
 			this.die();
 		}

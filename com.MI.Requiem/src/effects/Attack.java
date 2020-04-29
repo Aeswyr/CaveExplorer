@@ -39,8 +39,8 @@ public class Attack extends Entity {
 	 * @param type    - type determining what style of attack to make
 	 * @param onHit   - affect to apply when contacting a valid target
 	 */
-	public Attack(Entity source, Mob target, Handler handler, int type, OnHit onHit) {
-		super(handler);
+	public Attack(Entity source, Mob target, int type, OnHit onHit) {
+		super();
 
 		this.source = source;
 		this.onHit = onHit;
@@ -66,7 +66,7 @@ public class Attack extends Entity {
 			int err = dx - dy;
 			int e2;
 
-			Hitbox h = new Hitbox(holderX, holderY, 1, 1, handler);
+			Hitbox h = new Hitbox(holderX, holderY, 1, 1);
 
 			while (((holderX - x) * (holderX - x) + (holderY - y) * (holderY - y)) < 262144) {
 				h.updatePos(holderX, holderY);
@@ -97,7 +97,7 @@ public class Attack extends Entity {
 		case TYPE_PROJ_PREDICT:
 			break;
 		}
-		handler.getWorld().getEntities().addEntity(this);
+		Handler.getEntityManager().addEntity(this);
 	}
 
 	/**
@@ -139,7 +139,7 @@ public class Attack extends Entity {
 				int err = dx - dy;
 				int e2;
 
-				Hitbox h = new Hitbox(holderX, holderY, 1, 1, handler);
+				Hitbox h = new Hitbox(holderX, holderY, 1, 1);
 
 				while (((holderX - x) * (holderX - x) + (holderY - y) * (holderY - y)) < 262144) {
 					h.updatePos(holderX, holderY);
@@ -179,7 +179,7 @@ public class Attack extends Entity {
 			break;
 		}
 		if (timer <= 0)
-			handler.getWorld().getEntities().removeEntity(this);
+			Handler.getEntityManager().removeEntity(this);
 	}
 
 	@Override
@@ -188,20 +188,20 @@ public class Attack extends Entity {
 		case TYPE_HITSCAN:
 			timer--;
 			if (timer <= 3)
-				g.drawLine((int) x - handler.getCamera().xOffset(), (int) y - handler.getCamera().yOffset(),
-						x0 - handler.getCamera().xOffset(), y0 - handler.getCamera().yOffset(), 0xFFFFFFFF);
+				g.drawLine((int) x - Handler.getCamera().xOffset(), (int) y - Handler.getCamera().yOffset(),
+						x0 - Handler.getCamera().xOffset(), y0 - Handler.getCamera().yOffset(), 0xFFFFFFFF);
 			else
-				g.drawLine((int) x - handler.getCamera().xOffset(), (int) y - handler.getCamera().yOffset(),
-						x0 - handler.getCamera().xOffset(), y0 - handler.getCamera().yOffset(), 0x44CCAA22);
+				g.drawLine((int) x - Handler.getCamera().xOffset(), (int) y - Handler.getCamera().yOffset(),
+						x0 - Handler.getCamera().xOffset(), y0 - Handler.getCamera().yOffset(), 0x44CCAA22);
 			break;
 		case TYPE_HITSCAN_PREDICT:
 			timer--;
 			if (timer <= 3)
-				g.drawLine((int) x - handler.getCamera().xOffset(), (int) y - handler.getCamera().yOffset(),
-						x0 - handler.getCamera().xOffset(), y0 - handler.getCamera().yOffset(), 0xFFFFFFFF);
+				g.drawLine((int) x - Handler.getCamera().xOffset(), (int) y - Handler.getCamera().yOffset(),
+						x0 - Handler.getCamera().xOffset(), y0 - Handler.getCamera().yOffset(), 0xFFFFFFFF);
 			else
-				g.drawLine((int) x - handler.getCamera().xOffset(), (int) y - handler.getCamera().yOffset(),
-						x0 - handler.getCamera().xOffset(), y0 - handler.getCamera().yOffset(), 0x44CCAA22);
+				g.drawLine((int) x - Handler.getCamera().xOffset(), (int) y - Handler.getCamera().yOffset(),
+						x0 - Handler.getCamera().xOffset(), y0 - Handler.getCamera().yOffset(), 0x44CCAA22);
 			break;
 		case TYPE_PROJ:
 			break;

@@ -3,7 +3,6 @@ package items;
 import core.Assets;
 import entity.Mob;
 import item.Item;
-import runtime.Handler;
 
 public class Bone extends Item{
 
@@ -12,13 +11,13 @@ public class Bone extends Item{
 	 */
 	private static final long serialVersionUID = -2900728830259426097L;
 
-	public Bone(Handler handler, Mob holder) {
-		super(handler, holder);
+	public Bone( Mob holder) {
+		super(holder);
 
 	}
 
-	public Bone(int x, int y, Handler handler) {
-		super(x, y, handler);
+	public Bone(int x, int y) {
+		super(x, y);
 
 	}
 

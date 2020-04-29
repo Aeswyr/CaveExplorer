@@ -1,14 +1,14 @@
 package item;
 
 import java.io.Serializable;
+
 import java.util.ArrayList;
 import core.Assets;
 import crafting.Tag;
 import entity.Entity;
-import entity.Mob;
 import gfx.DrawGraphics;
-import runtime.Handler;
-import utility.Utility;
+import input.Controller;
+import utility.Utils;
 
 /**
  * Object for storing large amounts of items and drawing them to the screen
@@ -24,9 +24,11 @@ public class Inventory implements Serializable {
 	private static final long serialVersionUID = 491127628628667496L;
 	private ArrayList<ItemContainer<Item>> storage;
 	private ArrayList<ItemContainer<Item>> extra;
-	transient private Handler handler;
 	transient private Entity owner;
 	private int x, y, size;
+
+	private static Item mitem = null;
+	private static int mcnt = 0;
 
 	/**
 	 * initializes an inventory with specified size and position
@@ -39,17 +41,16 @@ public class Inventory implements Serializable {
 	 * @param handler
 	 * @param e       - the entity who this inventory belongs to
 	 */
-	public Inventory(int x, int y, int size, Handler handler, Entity e) {
+	public Inventory(int x, int y, int size, Entity e) {
 		storage = new ArrayList<ItemContainer<Item>>();
 		extra = new ArrayList<ItemContainer<Item>>();
 		this.owner = e;
 		this.size = size;
-		this.handler = handler;
 		this.x = x;
 		this.y = y;
 		for (int i = 0; i < size; i++) {
 			storage.add(new ItemContainer<Item>((i % 3) * 40 + x, (i / 3) * 40 + y, Assets.inventory_Empty,
-					Assets.inventory_Empty, handler));
+					Assets.inventory_Empty));
 		}
 	}
 
@@ -65,17 +66,16 @@ public class Inventory implements Serializable {
 	 * @param handler
 	 * @param e       - the entity who this inventory belongs to
 	 */
-	public Inventory(int x, int y, int size, int width, Handler handler, Entity e) {
+	public Inventory(int x, int y, int size, int width, Entity e) {
 		storage = new ArrayList<ItemContainer<Item>>();
 		extra = new ArrayList<ItemContainer<Item>>();
 		this.owner = e;
 		this.size = size;
-		this.handler = handler;
 		this.x = x;
 		this.y = y;
 		for (int i = 0; i < size; i++) {
 			storage.add(new ItemContainer<Item>((i % width) * 40 + x, (i / width) * 40 + y, Assets.inventory_Empty,
-					Assets.inventory_Empty, handler));
+					Assets.inventory_Empty));
 		}
 	}
 
@@ -85,8 +85,8 @@ public class Inventory implements Serializable {
 	 * @param handler
 	 * @param e       - the entity who this inventory belongs to
 	 */
-	public Inventory(Handler handler, Entity e) {
-		this(0, 0, 12, handler, e);
+	public Inventory(Entity e) {
+		this(0, 0, 12, e);
 	}
 
 	/**
@@ -100,6 +100,11 @@ public class Inventory implements Serializable {
 		}
 		for (int i = 0; i < extra.size(); i++) {
 			extra.get(i).render(g);
+		}
+
+		if (mitem != null) {
+			mitem.renderInventory(Controller.getAdjX(), Controller.getAdjY(), g);
+			g.write("" + mcnt, Controller.getAdjX() + 20, Controller.getAdjY() + 18);
 		}
 	}
 
@@ -141,6 +146,72 @@ public class Inventory implements Serializable {
 				}
 			}
 		}
+
+		// item dragging
+		if (Controller.getMouseTyped(Controller.MOUSELEFT)) {
+			try {
+				boolean didOp = false;
+				for (int i = 0; i < size; i++) {
+					if (!didOp)
+						didOp = doMouseContainerInteraction(storage.get(i));
+				}
+				for (int i = 0; i < extra.size(); i++) {
+					if (!didOp)
+						didOp = doMouseContainerInteraction(extra.get(i));
+				}
+				if (!didOp && mitem != null) {
+					for (int i = 0; i < mcnt; i++) {
+						Item u = (Item) mitem.clone();
+						u.drop();
+					}
+					mitem.strip();
+					mitem = null;
+					mcnt = 0;
+				}
+			} catch (CloneNotSupportedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+	private boolean doMouseContainerInteraction(ItemContainer<Item> container) throws CloneNotSupportedException {
+		if (container.containsMouse()) {
+			if (mitem == null && !container.isEmpty()) {
+				if (Controller.getKeyPressed(Controller.SHIFT)) {
+					mitem = (Item) container.getContained().clone();
+					mcnt = 1;
+					container.remove();
+					return true;
+
+				} else if (Controller.getKeyPressed(Controller.CTRL)) {
+					mitem = (Item) container.getContained().clone();
+					mcnt = container.remove((container.getAmount() + 1) / 2);
+					return true;
+
+				} else {
+					mitem = (Item) container.getContained().clone();
+					mcnt = container.getAmount();
+					container.flush();
+					return true;
+				}
+			} else if (mitem != null && container.isEmpty()) {
+				container.store(mitem, mcnt);
+				mitem = null;
+				mcnt = 0;
+				return true;
+			} else if (mitem != null && !container.isEmpty()) {
+				Item s = (Item) container.getContained().clone();
+				int c = container.getAmount();
+				container.flush();
+				container.store(mitem, mcnt);
+				mitem = s;
+				mcnt = c;
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -153,8 +224,7 @@ public class Inventory implements Serializable {
 		if (size > this.size) {
 
 			for (int i = this.size; i < size; i++) {
-				storage.add(new ItemContainer<Item>((i % 3) * 40 + x, (i / 3) * 40 + y, Assets.inventory_Empty, null,
-						handler));
+				storage.add(new ItemContainer<Item>((i % 3) * 40 + x, (i / 3) * 40 + y, Assets.inventory_Empty, null));
 			}
 
 		} else if (size < this.size) {
@@ -196,6 +266,7 @@ public class Inventory implements Serializable {
 				return true;
 			}
 		}
+
 		return false;
 	}
 
@@ -256,23 +327,23 @@ public class Inventory implements Serializable {
 			ItemContainer<Item> c = storage.get(i);
 			if (!c.isEmpty()) {
 				Item t = c.getContained();
-				if (Utility.tagOverlaps(t.getTags(), "carvable"))
+				if (Utils.tagOverlaps(t.getTags(), "carvable"))
 					res[Tag.RESOURCE_CARVABLE] += c.amount;
-				if (Utility.tagOverlaps(t.getTags(), "cloth"))
+				if (Utils.tagOverlaps(t.getTags(), "cloth"))
 					res[Tag.RESOURCE_CLOTH] += c.amount;
-				if (Utility.tagOverlaps(t.getTags(), "cord"))
+				if (Utils.tagOverlaps(t.getTags(), "cord"))
 					res[Tag.RESOURCE_CORD] += c.amount;
-				if (Utility.tagOverlaps(t.getTags(), "gem"))
+				if (Utils.tagOverlaps(t.getTags(), "gem"))
 					res[Tag.RESOURCE_GEM] += c.amount;
-				if (Utility.tagOverlaps(t.getTags(), "metal"))
+				if (Utils.tagOverlaps(t.getTags(), "metal"))
 					res[Tag.RESOURCE_METAL] += c.amount;
-				if (Utility.tagOverlaps(t.getTags(), "mineral"))
+				if (Utils.tagOverlaps(t.getTags(), "mineral"))
 					res[Tag.RESOURCE_MINERAL] += c.amount;
-				if (Utility.tagOverlaps(t.getTags(), "phantasm"))
+				if (Utils.tagOverlaps(t.getTags(), "phantasm"))
 					res[Tag.RESOURCE_PHANTASM] += c.amount;
-				if (Utility.tagOverlaps(t.getTags(), "soil"))
+				if (Utils.tagOverlaps(t.getTags(), "soil"))
 					res[Tag.RESOURCE_SOIL] += c.amount;
-				if (Utility.tagOverlaps(t.getTags(), "tissue"))
+				if (Utils.tagOverlaps(t.getTags(), "tissue"))
 					res[Tag.RESOURCE_TISSUE] += c.amount;
 			}
 		}
@@ -306,7 +377,7 @@ public class Inventory implements Serializable {
 	public Item removeItemTag(String tag) {
 		Item it = null;
 		for (int i = 0; i < storage.size(); i++) {
-			if (!storage.get(i).isEmpty() && Utility.tagOverlaps(storage.get(i).getContained().getTags(), tag)) {
+			if (!storage.get(i).isEmpty() && Utils.tagOverlaps(storage.get(i).getContained().getTags(), tag)) {
 				it = storage.get(i).getContained();
 				storage.get(i).destroy();
 				break;
@@ -335,18 +406,16 @@ public class Inventory implements Serializable {
 	 * 
 	 * @param h - the new handler
 	 */
-	public void load(Handler h, Entity e) {
+	public void load(Entity e) {
 		this.owner = e;
 		for (ItemContainer<Item> i : storage) {
-			i.load(h);
 			if (!i.isEmpty())
-				i.getContained().load(h, e);
+				i.getContained().load(e);
 		}
 
 		for (ItemContainer<Item> i : extra) {
-			i.load(h);
 			if (!i.isEmpty())
-				i.getContained().load(h, e);
+				i.getContained().load(e);
 		}
 	}
 
@@ -355,18 +424,20 @@ public class Inventory implements Serializable {
 	 * 
 	 * @param h - the new handler
 	 */
-	public void load(Handler h) {
+	public void load() {
 		for (ItemContainer<Item> i : storage) {
-			i.load(h);
 			if (!i.isEmpty())
-				i.getContained().load(h);
+				i.getContained().load();
 		}
 
 		for (ItemContainer<Item> i : extra) {
-			i.load(h);
 			if (!i.isEmpty())
-				i.getContained().load(h);
+				i.getContained().load();
 		}
+	}
+	
+	public boolean carrying() {
+		return mitem != null;
 	}
 
 }

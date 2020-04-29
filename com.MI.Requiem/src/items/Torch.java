@@ -3,9 +3,8 @@ package items;
 import core.Assets;
 import entity.Mob;
 import item.Item;
-import runtime.Handler;
 import runtime.Light;
-import utility.Utility;
+import utility.Utils;
 
 public class Torch extends Item {
 
@@ -17,12 +16,12 @@ public class Torch extends Item {
 	Light dim;
 	Light burnt;
 
-	public Torch(Handler handler, Mob holder) {
-		super(handler, holder);
+	public Torch(Mob holder) {
+		super(holder);
 	}
 
-	public Torch(int x, int y, Handler handler) {
-		super(x, y, handler);
+	public Torch(int x, int y) {
+		super(x, y);
 	}
 
 	@Override
@@ -37,9 +36,9 @@ public class Torch extends Item {
 		this.sprite = Assets.litTorch;
 		this.invSprite = Assets.litTorch_inv;
 
-		bright = new Light(256, 0xffffffAA, handler);
-		dim = new Light(128, 0xffffffAA, handler);
-		burnt = new Light(90, 0xff111111, handler);
+		bright = new Light(256, 0xffffffAA);
+		dim = new Light(128, 0xffffffAA);
+		burnt = new Light(90, 0xff111111);
 		dim.light();
 
 		stackable = false;
@@ -51,7 +50,7 @@ public class Torch extends Item {
 			use -= 3;
 		else
 			use -= 1;
-		if (use >= -3 && use <= 0 && !Utility.tagOverlaps(tags, "carvable")) {
+		if (use >= -3 && use <= 0 && !Utils.tagOverlaps(tags, "carvable")) {
 			invSprite = Assets.burntTorch_inv;
 			sprite = Assets.burntTorch;
 			tags += " carvable";

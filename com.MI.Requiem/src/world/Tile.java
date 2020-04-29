@@ -1,7 +1,6 @@
 package world;
 
 import java.util.ArrayList;
-
 import java.util.Random;
 import core.Assets;
 import gfx.DrawGraphics;
@@ -13,7 +12,7 @@ import items.Gem;
 import items.Ore;
 import items.TileBlock;
 import items.Worktable;
-import runtime.Handler;
+import map.BaseTile_KS;
 
 /**
  * represents a single 16x16 section of the world
@@ -21,25 +20,25 @@ import runtime.Handler;
  * @author Pascal
  *
  */
-public class Tile {
+public class Tile extends BaseTile_KS {
 
 	protected boolean wall;
 	protected boolean breakable;
 	protected boolean solid;
-	protected TileSet tileSet;
+	protected TileMap tileSet;
 	static final protected Random rng = new Random();
-	public static int tileSize = 16;
 
 	private static Tile[] tiles;
 
 	public static void initTile() {
+		Tile.TILE_SIZE = 16;
 		tiles = new Tile[TILE_MAX];
 		for (int i = 0; i < tiles.length; i++)
 			tiles[i] = new Tile(i);
 	}
 
 	protected final int id;
-	public static final int TILE_MAX = 25;
+	public static final int TILE_MAX = 29;
 
 	/**
 	 * initializes a tile with a specific id
@@ -188,6 +187,26 @@ public class Tile {
 			this.breakable = true;
 			this.solid = true;
 			break;
+		case 25: // rock floor
+			this.tileSet = Assets.rockTile;
+			this.breakable = false;
+			break;
+		case 26: // rock wall
+			this.tileSet = Assets.rockTile;
+			this.wall = true;
+			this.breakable = true;
+			this.solid = true;
+			break;
+		case 27: // rock floor
+			this.tileSet = Assets.sandTile;
+			this.breakable = false;
+			break;
+		case 28: // rock wall
+			this.tileSet = Assets.sandTile;
+			this.wall = true;
+			this.breakable = true;
+			this.solid = true;
+			break;
 		default:
 			break;
 		}
@@ -200,148 +219,156 @@ public class Tile {
 	 * @param handler - the game handler
 	 * @returns a list of items dropped by this tile, tied to this tiles location
 	 */
-	public ArrayList<Item> tileDrop(int x, int y, Handler handler) {
+	public ArrayList<Item> tileDrop(int x, int y) {
 		ArrayList<Item> drop = new ArrayList<Item>();
 		switch (id) {
 		case 0: // dirt floor
 			break;
 		case 1: // dirt wall
-			drop.add(new TileBlock(x, y, handler, id));
+			drop.add(new TileBlock(x, y, id));
 			if (rng.nextDouble() < 0.1)
-				drop.add(new TileBlock(x, y, handler, 9));
+				drop.add(new TileBlock(x, y, 9));
 			break;
 		case 2: // anvil
-			drop.add(new Anvil(x, y, handler));
+			drop.add(new Anvil(x, y));
 			break;
 		case 3: // forge left
-			drop.add(new Forge(x, y, handler));
+			drop.add(new Forge(x, y));
 			break;
 		case 4: // forge right
-			drop.add(new Forge(x, y, handler));
+			drop.add(new Forge(x, y));
 			break;
 		case 5: // limestone floor
 			break;
 		case 6: // limestone wall
-			drop.add(new TileBlock(x, y, handler, id));
+			drop.add(new TileBlock(x, y, id));
 			break;
 		case 7: // water
 			break;
 		case 8: // clay floor
 			break;
 		case 9: // clay wall
-			drop.add(new TileBlock(x, y, handler, id));
+			drop.add(new TileBlock(x, y, id));
 			break;
 		case 10: // worktable
-			drop.add(new Worktable(x, y, handler));
+			drop.add(new Worktable(x, y));
 			break;
 		case 11: // aluminum vein
 			if (rng.nextDouble() < 0.50)
-				drop.add(new Ore(x, y, handler, 1));
+				drop.add(new Ore(x, y, 1));
 			if (rng.nextDouble() < 0.30)
-				drop.add(new TileBlock(x, y, handler, 6));
+				drop.add(new TileBlock(x, y, 6));
 			if (rng.nextDouble() < 0.03)
-				drop.add(new Gem(x, y, handler, 0));
+				drop.add(new Gem(x, y, 0));
 			break;
 		case 12: // antimony vein
 			if (rng.nextDouble() < 0.50)
-				drop.add(new Ore(x, y, handler, 2));
+				drop.add(new Ore(x, y, 2));
 			if (rng.nextDouble() < 0.30)
-				drop.add(new TileBlock(x, y, handler, 6));
+				drop.add(new TileBlock(x, y, 6));
 			if (rng.nextDouble() < 0.03)
-				drop.add(new Gem(x, y, handler, 0));
+				drop.add(new Gem(x, y, 0));
 			break;
 		case 13: // copper vein
 			if (rng.nextDouble() < 0.50)
-				drop.add(new Ore(x, y, handler, 3));
+				drop.add(new Ore(x, y, 3));
 			if (rng.nextDouble() < 0.30)
-				drop.add(new TileBlock(x, y, handler, 6));
+				drop.add(new TileBlock(x, y, 6));
 			if (rng.nextDouble() < 0.03)
-				drop.add(new Gem(x, y, handler, 0));
+				drop.add(new Gem(x, y, 0));
 			break;
 		case 14: // galena vein
 			if (rng.nextDouble() < 0.30)
-				drop.add(new Ore(x, y, handler, 4));
+				drop.add(new Ore(x, y, 4));
 			if (rng.nextDouble() < 0.30)
-				drop.add(new Ore(x, y, handler, 5));
+				drop.add(new Ore(x, y, 5));
 			if (rng.nextDouble() < 0.30)
-				drop.add(new TileBlock(x, y, handler, 6));
+				drop.add(new TileBlock(x, y, 6));
 			if (rng.nextDouble() < 0.03)
-				drop.add(new Gem(x, y, handler, 0));
+				drop.add(new Gem(x, y, 0));
 			break;
 		case 15: // gold vein
 			if (rng.nextDouble() < 0.50)
-				drop.add(new Ore(x, y, handler, 6));
+				drop.add(new Ore(x, y, 6));
 			if (rng.nextDouble() < 0.30)
-				drop.add(new TileBlock(x, y, handler, 6));
+				drop.add(new TileBlock(x, y, 6));
 			if (rng.nextDouble() < 0.03)
-				drop.add(new Gem(x, y, handler, 0));
+				drop.add(new Gem(x, y, 0));
 			break;
 		case 16: // tin vein
 			if (rng.nextDouble() < 0.50)
-				drop.add(new Ore(x, y, handler, 7));
+				drop.add(new Ore(x, y, 7));
 			if (rng.nextDouble() < 0.30)
-				drop.add(new TileBlock(x, y, handler, 6));
+				drop.add(new TileBlock(x, y, 6));
 			if (rng.nextDouble() < 0.03)
-				drop.add(new Gem(x, y, handler, 0));
+				drop.add(new Gem(x, y, 0));
 			break;
 		case 17: // zinc vein
 			if (rng.nextDouble() < 0.50)
-				drop.add(new Ore(x, y, handler, 8));
+				drop.add(new Ore(x, y, 8));
 			if (rng.nextDouble() < 0.30)
-				drop.add(new TileBlock(x, y, handler, 6));
+				drop.add(new TileBlock(x, y, 6));
 			if (rng.nextDouble() < 0.03)
-				drop.add(new Gem(x, y, handler, 0));
+				drop.add(new Gem(x, y, 0));
 			break;
 		case 18: // chome vein
 			if (rng.nextDouble() < 0.50)
-				drop.add(new Ore(x, y, handler, 9));
+				drop.add(new Ore(x, y, 9));
 			if (rng.nextDouble() < 0.30)
-				drop.add(new TileBlock(x, y, handler, 6));
+				drop.add(new TileBlock(x, y, 6));
 			if (rng.nextDouble() < 0.03)
-				drop.add(new Gem(x, y, handler, 0));
+				drop.add(new Gem(x, y, 0));
 			break;
 		case 19: // titanium vein
 			if (rng.nextDouble() < 0.30)
-				drop.add(new Ore(x, y, handler, 10));
+				drop.add(new Ore(x, y, 10));
 			if (rng.nextDouble() < 0.30)
-				drop.add(new TileBlock(x, y, handler, 6));
+				drop.add(new TileBlock(x, y, 6));
 			if (rng.nextDouble() < 0.03)
-				drop.add(new Gem(x, y, handler, 0));
+				drop.add(new Gem(x, y, 0));
 			break;
 		case 20: // mercury vein
 			if (rng.nextDouble() < 0.30)
-				drop.add(new Ore(x, y, handler, 11));
+				drop.add(new Ore(x, y, 11));
 			if (rng.nextDouble() < 0.30)
-				drop.add(new TileBlock(x, y, handler, 6));
+				drop.add(new TileBlock(x, y, 6));
 			if (rng.nextDouble() < 0.03)
-				drop.add(new Gem(x, y, handler, 0));
+				drop.add(new Gem(x, y, 0));
 			break;
 		case 21: // garnet vein
 			if (rng.nextDouble() < 0.30)
-				drop.add(new Gem(x, y, handler, 3));
+				drop.add(new Gem(x, y, 3));
 			if (rng.nextDouble() < 0.30)
-				drop.add(new TileBlock(x, y, handler, 6));
+				drop.add(new TileBlock(x, y, 6));
 			if (rng.nextDouble() < 0.30)
-				drop.add(new Gem(x, y, handler, 3));
+				drop.add(new Gem(x, y, 3));
 			break;
 		case 22: // quartz vein
 			if (rng.nextDouble() < 0.30)
-				drop.add(new Gem(x, y, handler, 4));
+				drop.add(new Gem(x, y, 4));
 			if (rng.nextDouble() < 0.30)
-				drop.add(new TileBlock(x, y, handler, 6));
+				drop.add(new TileBlock(x, y, 6));
 			if (rng.nextDouble() < 0.30)
-				drop.add(new Gem(x, y, handler, 4));
+				drop.add(new Gem(x, y, 4));
 			break;
 		case 23: // iron vein
 			if (rng.nextDouble() < 0.50)
-				drop.add(new Ore(x, y, handler, 0));
+				drop.add(new Ore(x, y, 0));
 			if (rng.nextDouble() < 0.30)
-				drop.add(new TileBlock(x, y, handler, 6));
+				drop.add(new TileBlock(x, y, 6));
 			if (rng.nextDouble() < 0.03)
-				drop.add(new Gem(x, y, handler, 0));
+				drop.add(new Gem(x, y, 0));
 			break;
 		case 24: // crate
-			drop.add(new Crate(x, y, handler));
+			drop.add(new Crate(x, y));
+			break;
+		case 25: // rock floor
+			break;
+		case 26: // rock wall
+			break;
+		case 27: // sand floor
+			break;
+		case 28: // sand wall
 			break;
 		default:
 			break;
@@ -356,8 +383,8 @@ public class Tile {
 	 * @param y - y draw position in pixels
 	 * @param g - DrawGraphics component to draw with
 	 */
-	public void render(int x, int y, DrawGraphics g) {
-		tileSet.render(x, y, wall, g);
+	public void render(int x, int y, int mask, DrawGraphics g) {
+		tileSet.render(x, y, wall, mask, g);
 	}
 
 	/**
@@ -392,7 +419,7 @@ public class Tile {
 	/**
 	 * @returns if entities can collide with this tile
 	 */
-	public boolean isSolid() {
+	public boolean getCollidable() {
 		return solid;
 	}
 

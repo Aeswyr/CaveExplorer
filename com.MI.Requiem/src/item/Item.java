@@ -1,5 +1,6 @@
 package item;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import effects.Effect;
@@ -11,6 +12,7 @@ import entity.Mob;
 import geometry.Rect;
 import gfx.DrawGraphics;
 import gfx.Sprite;
+import gfx.SpriteData;
 import items.Anvil;
 import items.Bone;
 import items.Cloak;
@@ -81,8 +83,7 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 	 * @param handler
 	 * @param holder  - the mob who's inventory holds the item
 	 */
-	public Item(Handler handler, Mob holder) {
-		super(handler);
+	public Item( Mob holder) {
 		this.holder = holder;
 		setup();
 	}
@@ -94,12 +95,11 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 	 * @param y       - y position of the item
 	 * @param handler
 	 */
-	public Item(int x, int y, Handler handler) {
-		super(handler);
+	public Item(int x, int y) {
 		this.x = x;
 		this.y = y;
 		this.holder = null;
-		this.hitbox = new Hitbox(6, 6, 20, this, handler);
+		this.hitbox = new Hitbox(6, 6, 20, 20, this);
 		hitbox.updatePos(x, y);
 		setup();
 	}
@@ -112,7 +112,7 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 
 	@Override
 	public void render(DrawGraphics g) {
-		sprite.render((int) x - handler.getCamera().xOffset(), (int) y - handler.getCamera().yOffset(), g);
+		sprite.render((int) x - Handler.getCamera().xOffset(), (int) y - Handler.getCamera().yOffset(), g);
 //		if (hitbox != null) hitbox.render(g);
 	}
 
@@ -120,8 +120,7 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 	public void renderInventory(int x, int y, DrawGraphics g) {
 		invSprite.render(x, y, g);
 		if (use > 0 && use != useMax) {
-			Rect s = new Rect((int) (27.0 * use / useMax), 4, 0xFFFFFF00, Sprite.TYPE_GUI_ITEM_SHAPE);
-			s.render(x + 3, y + 24, g);
+			g.drawRect(x + 3, y + 24, (int) (27.0 * use / useMax), 4, SpriteData.TYPE_GUI_ITEM_SHAPE, 0xFFFFFF00);
 		}
 	}
 
@@ -243,12 +242,12 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 	 * adds this item to the world at the feet of the mob who was holding it
 	 */
 	public void drop() {
-		this.hitbox = new Hitbox(6, 6, 20, this, handler);
+		this.hitbox = new Hitbox(6, 6, 20, 20, this);
 		if (holder != null) {
-			x = holder.getCenteredX() + Math.random() * 32 - 16;
-			y = holder.getCenteredY() + Math.random() * 32 - 16;
+			x = (int) (holder.getCenteredX() + Math.random() * 32 - 16);
+			y = (int) (holder.getCenteredY() + Math.random() * 32 - 16);
 			holder = null;
-			handler.getWorld().getEntities().addEntity(this);
+			Handler.getEntityManager().addEntity(this);
 		}
 		hitbox.updatePos((int) x, (int) y);
 	}
@@ -273,46 +272,46 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 	 * 
 	 * @returns the new item based on the input id
 	 */
-	public static Item toItem(String id, Mob holder, Handler handler) {
+	public static Item toItem(String id, Mob holder) {
 		String[] sec = id.split(":");
 		switch (Integer.parseInt(sec[0])) {
 		case 0:
 			switch (Integer.parseInt(sec[1])) {
 			case 2:
-				return new Anvil(handler, holder);
+				return new Anvil( holder);
 			case 3:
-				return new Forge(handler, holder);
+				return new Forge(holder);
 			case 10:
-				return new Worktable(handler, holder);
+				return new Worktable(holder);
 			case 24:
-				return new Crate(handler, holder);
+				return new Crate(holder);
 			default:
-				return new TileBlock(handler, holder, Integer.parseInt(sec[1]));
+				return new TileBlock(holder, Integer.parseInt(sec[1]));
 			}
 		case 1:
-			return new Ore(handler, holder, Integer.parseInt(sec[1]));
+			return new Ore( holder, Integer.parseInt(sec[1]));
 		case 2:
-			return new Gem(handler, holder, Integer.parseInt(sec[1]));
+			return new Gem(holder, Integer.parseInt(sec[1]));
 		case 3:
-			return new Ingot(handler, holder, Integer.parseInt(sec[1])); // Ingot
+			return new Ingot( holder, Integer.parseInt(sec[1])); // Ingot
 		case 4:
-			return new Spineberry(handler, holder);
+			return new Spineberry( holder);
 		case 5:
-			return new Mold(handler, holder);
+			return new Mold( holder);
 		case 6:
-			return new Torch(handler, holder);
+			return new Torch(holder);
 		case 7:
-			return new Cloak(handler, holder);
+			return new Cloak( holder);
 		case 8:
-			return new Pickaxe(handler, holder);
+			return new Pickaxe( holder);
 		case 9:
-			return new TheOrb(handler, holder);
+			return new TheOrb( holder);
 		case 10:
-			return new Bone(handler, holder);
+			return new Bone( holder);
 		case 11:
-			return new CrystalRod(handler, holder);
+			return new CrystalRod(holder);
 		default:
-			return new TileBlock(handler, holder, 1); // default returns dirt block
+			return new TileBlock(holder, 1); // default returns dirt block
 		}
 	}
 
@@ -340,6 +339,16 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 
 	}
 
+	/**
+	 * applies the stats of all items used to craft this one. Also can do things like change the item's name.
+	 * @param items - the list of items to pull data from
+	 */
+	public void craft(ArrayList<Item> items) {
+		for (Item i : items) {
+			editStatPackage(i.statPackage);
+		}
+	}
+	
 	/**
 	 * cleanup operations for stat application when an item is first generated
 	 */
@@ -402,8 +411,7 @@ public abstract class Item extends Interactable implements Storeable, Cloneable 
 	 * 
 	 * @param m - the new holder of this item
 	 */
-	public void load(Handler h, Entity e) {
-		this.handler = h;
+	public void load( Entity e) {
 		this.setHolder(e);
 		this.setup();
 		if (equipped && e instanceof Mob) {

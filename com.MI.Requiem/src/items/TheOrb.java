@@ -4,7 +4,6 @@ import core.Assets;
 import effects.Effect;
 import entity.Mob;
 import item.Item;
-import runtime.Handler;
 import runtime.Light;
 
 public class TheOrb extends Item {
@@ -18,12 +17,12 @@ public class TheOrb extends Item {
 	boolean pendingStage;
 	int lightTimer = 0;
 
-	public TheOrb(Handler handler, Mob holder) {
-		super(handler, holder);
+	public TheOrb(Mob holder) {
+		super(holder);
 	}
 
-	public TheOrb(int x, int y, Handler handler) {
-		super(x, y, handler);
+	public TheOrb(int x, int y) {
+		super(x, y);
 	}
 	
 	@Override
@@ -37,7 +36,7 @@ public class TheOrb extends Item {
 		this.sprite = Assets.theOrb;
 		this.invSprite = Assets.theOrb_inv;
 
-		light = new Light(96, 0xff002669, handler);
+		light = new Light(96, 0xff002669);
 		
 		this.useTime = 30;
 		
@@ -59,20 +58,20 @@ public class TheOrb extends Item {
 				holder.harm(2, Effect.DAMAGE_TYPE_MENTAL);
 				light.snuff();
 				stage = 2;
-				light = new Light(160, 0xff002669, handler);
+				light = new Light(160, 0xff002669);
 				light.light();
 				break;
 			case 2:
 				holder.harm(3, Effect.DAMAGE_TYPE_MENTAL);
 				light.snuff();
 				stage = 3;
-				light = new Light(224, 0xff002669, handler);
+				light = new Light(224, 0xff002669);
 				light.light();
 				break;
 			case 3:
 				light.snuff();
 				stage = 0;
-				light = new Light(96, 0xff002669, handler);
+				light = new Light(96, 0xff002669);
 				break;
 			}
 			timer = 0;
@@ -90,7 +89,7 @@ public class TheOrb extends Item {
 		if (lightTimer <= 0) {
 			light.snuff();
 			stage = 0;
-			light = new Light(96, 0xff002669, handler);
+			light = new Light(96, 0xff002669);
 		}
 	}
 

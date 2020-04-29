@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
  * @author Pascal
  *
  */
-public class Utility {
+public class Utils {
 
 	/**
 	 * checks if two arrays contain the same value

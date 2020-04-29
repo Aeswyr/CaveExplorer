@@ -3,10 +3,10 @@ package runtime;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
-
 import core.Assets;
-import core.Driver;
+import core.Engine;
 import gfx.DrawGraphics;
+import gfx.SpriteData;
 import gui.Button;
 import gui.ClickListener;
 import gui.Frame;
@@ -18,9 +18,9 @@ import gui.UIObject;
  * @author Pascal
  *
  */
-public class Menustate extends State {
+public class Menustate extends Scene {
 
-	Gamestate game = new Gamestate(handler);
+	Gamestate game = new Gamestate();
 
 	
 	
@@ -29,13 +29,12 @@ public class Menustate extends State {
 	 * 
 	 * @param handler
 	 */
-	public Menustate(Handler handler) {
-		super(handler);
+	public Menustate() {
 		init("");
 	}
 
 	public void init(String data) {
-		Frame background = new Frame(0, 0, handler.getWidth(), handler.getHeight(), Assets.GUI_MainSplash);
+		Frame background = new Frame(0, 0, Handler.getWidth(), Handler.getHeight(), Assets.GUI_MainSplash);
 		background.display();
 
 		Assets.MUSIC_IntoDarkness.loop();
@@ -47,7 +46,7 @@ public class Menustate extends State {
 				source.close();
 				ArrayList<Button> worlds = new ArrayList<Button>();
 
-				File file = new File(Driver.saveDir + "saves/");
+				File file = new File(Engine.ROOT_DIRECTORY + "saves/");
 				String[] directories = file.list(new FilenameFilter() {
 					@Override
 					public boolean accept(File current, String name) {
@@ -66,18 +65,18 @@ public class Menustate extends State {
 						@Override
 						public void onClick(UIObject source) {
 							if (loc != directories.length) {
-								handler.getUI().flushObjects();
-								handler.setState(game);
+								Handler.getUI().flushObjects();
 								game.init(directories[loc]);
+								Handler.setScene(game);
 							} else {
-								handler.getUI().flushObjects();
-								handler.setState(game);
+								Handler.getUI().flushObjects();
 								game.init("world" + loc);
-								Assets.MUSIC_IntoDarkness.stopLoop();
+								Handler.setScene(game);
 							}
+							Assets.MUSIC_IntoDarkness.stopLoop();
 						}
 
-					}, 80 + 120 * (i / 6), 270 + 40 * (i % 6), 100, 30, 0xff00ff00, 0xff0000ff));
+					}, 80 + 120 * (i / 6), 270 + 40 * (i % 6), 100, 30, Assets.ns_grey, Assets.ns_grey_dep, SpriteData.TYPE_GUI_COMPONENT)); //TODO 1
 				}
 
 				for (int i = 0; i < worlds.size(); i++) {
@@ -86,7 +85,7 @@ public class Menustate extends State {
 
 			}
 
-		}, 80, 270, 60, 30, 0xff00ff00, 0xff0000ff);
+		}, 80, 270, 60, 30, Assets.ns_grey, Assets.ns_grey_dep, SpriteData.TYPE_GUI_COMPONENT); // TODO 1
 		world.display();
 	}
 
@@ -95,9 +94,7 @@ public class Menustate extends State {
 	 */
 	@Override
 	public void update() {
-		handler.getLights().update();
-		handler.getUI().update();
-		handler.getParticles().update();
+
 	}
 
 	/**
@@ -105,8 +102,19 @@ public class Menustate extends State {
 	 */
 	@Override
 	public void render(DrawGraphics g) {
-		handler.getUI().render(g);
-		handler.getParticles().render(g);
+
+	}
+
+	@Override
+	public void start() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void stop() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

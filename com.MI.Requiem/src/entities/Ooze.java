@@ -3,10 +3,11 @@ package entities;
 import core.Assets;
 import entity.Hitbox;
 import entity.Mob;
-import entity.Vector;
+import entity.Vector_KS;
 import item.Item;
 import items.Bone;
 import runtime.Handler;
+import world.World;
 
 public class Ooze extends Mob {
 
@@ -15,9 +16,7 @@ public class Ooze extends Mob {
 	 */
 	private static final long serialVersionUID = 8641622786017092105L;
 
-	public Ooze(Handler handler) {
-		super(handler);
-		this.activeSprite = Assets.ooze_idle;
+	public Ooze() {
 
 		this.xOff = 32;
 		this.yOff = 32;
@@ -29,13 +28,14 @@ public class Ooze extends Mob {
 		this.spirit = spiritMax;
 
 		this.speed = 2;
+		move = speed;
 
 		if (rng.nextDouble() < 0.3)
-			inventory.add(new Bone(handler, this));
+			inventory.add(new Bone(this));
 		if (rng.nextDouble() < 0.3)
-			inventory.add(new Bone(handler, this));
+			inventory.add(new Bone(this));
 		if (rng.nextDouble() < 0.3)
-			inventory.add(new Bone(handler, this));
+			inventory.add(new Bone(this));
 
 		uiSetup();
 	}
@@ -44,22 +44,17 @@ public class Ooze extends Mob {
 	protected void setup() {
 		this.w = 32;
 		this.h = 32;
-		this.hitbox = new Hitbox(0, 0, 32, 32, this, handler);
-		this.hurtbox = new Hitbox(0, 0, 32, 32, this, handler);
-		this.vector = new Vector(this, 50);
-	}
-
-	public Ooze(Handler handler, int x, int y) {
-		this(handler);
-		this.x = x;
-		this.y = y;
+		this.hitbox = new Hitbox(0, 0, 32, 32, this);
+		this.hurtbox = new Hitbox(0, 0, 32, 32, this);
+		this.vector = new Vector_KS(this, 50);
+		this.activeSprite = Assets.ooze_idle;
 	}
 
 	@Override
 	public void move() {
-		int speed = (int) (this.speed * 2);
-		int xDest = handler.getPlayer().getCenteredX();
-		int yDest = handler.getPlayer().getCenteredY();
+		int speed = (int) (move * 6);
+		int xDest = ((World) Handler.getLoadedWorld()).getPlayer().getCenteredX();
+		int yDest = ((World) Handler.getLoadedWorld()).getPlayer().getCenteredY();
 		int xCent = this.getCenteredX();
 		int yCent = this.getCenteredY();
 

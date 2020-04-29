@@ -3,7 +3,6 @@ package items;
 import core.Assets;
 import entity.Mob;
 import item.Item;
-import runtime.Handler;
 
 public class Mold extends Item{
 
@@ -12,13 +11,13 @@ public class Mold extends Item{
 	 */
 	private static final long serialVersionUID = 612274906360647466L;
 
-	public Mold(Handler handler, Mob holder) {
-		super(handler, holder);
+	public Mold( Mob holder) {
+		super(holder);
 
 	}
 
-	public Mold(int x, int y, Handler handler) {
-		super(x, y, handler);
+	public Mold(int x, int y) {
+		super(x, y);
 
 	}
 

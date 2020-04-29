@@ -3,7 +3,6 @@ package items;
 import core.Assets;
 import entity.Mob;
 import item.Item;
-import runtime.Handler;
 
 public class Cloak extends Item {
 
@@ -12,13 +11,13 @@ public class Cloak extends Item {
 	 */
 	private static final long serialVersionUID = 4076010768148886682L;
 
-	public Cloak(Handler handler, Mob holder) {
-		super(handler, holder);
+	public Cloak( Mob holder) {
+		super( holder);
 
 	}
 
-	public Cloak(int x, int y, Handler handler) {
-		super(x, y, handler);
+	public Cloak(int x, int y) {
+		super(x, y);
 
 	}
 

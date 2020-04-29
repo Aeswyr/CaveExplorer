@@ -1,6 +1,9 @@
 package runtime;
 
+import core.Engine;
 import gfx.DrawGraphics;
+import input.Controller;
+import world.World;
 
 /**
  * state which handles the game at runtime
@@ -8,11 +11,12 @@ import gfx.DrawGraphics;
  * @author Pascal
  *
  */
-public class Gamestate extends State {
+public class Gamestate extends Scene {
 
-	public Gamestate(Handler handler) {
-		super(handler);
-		// TODO Auto-generated constructor stub
+	World w;
+	
+	public Gamestate() {
+		w = new World();
 	}
 
 	/**
@@ -21,7 +25,7 @@ public class Gamestate extends State {
 	 * @param name - name of the world folder
 	 */@Override
 	public void init(String name) {
-		handler.init(name);
+		 w.init(name);
 	}
 
 	/**
@@ -29,12 +33,14 @@ public class Gamestate extends State {
 	 * 
 	 * @Override
 	 */
-	public void update() {
-		handler.getWorld().update();
-		handler.getUI().update();
-		handler.getParticles().update();
-		handler.getCamera().update();
-		handler.getLights().update();
+	public void update() {	
+		if (Controller.getKeyTyped(Controller.ALT)) {
+			Handler.devMode = !Handler.devMode;
+			System.out.println("state updated");
+		}
+		if (Controller.getKeyTyped(Controller.ESC))
+			Engine.forceClose();
+			
 	}
 
 	/**
@@ -44,25 +50,26 @@ public class Gamestate extends State {
 	 * @Override
 	 */
 	public void render(DrawGraphics g) {
-		handler.getWorld().render(g);
-		handler.getUI().render(g);
-		handler.getParticles().render(g);
-		if (handler.devMode)
-			handler.getWorld().getEntities().renderDevMode(g);
 	}
 
-	public void stop(State newState) {
-		if (handler.getPlayer().getCraftingShown())
-			handler.getPlayer().closeCraft();
-		handler.getUI().flushObjects();
-		handler.getLights().flushLights();
-		handler.getWorld().save();
-		handler.getWorld().getEntities().flushEntities();
-		handler.getWorld().unloadWorld();
+
+	@Override
+	public void start() {
+		Handler.setLoadedWorld(w);
 		
-		newState.init("");
-		handler.setState(newState);
+	}
+
+	@Override
+	public void stop() {
+		if (((World)Handler.getLoadedWorld()).getPlayer().getCraftingShown())
+			((World)Handler.getLoadedWorld()).getPlayer().closeCraft();
+		Handler.getUI().flushObjects();
+		Handler.getLightManager().flushLights();
+		((World)Handler.getLoadedWorld()).save();
+		Handler.getEntityManager().flushEntities();
+		((World)Handler.getLoadedWorld()).unloadWorld();
 		
+		Handler.setLoadedWorld(null);
 	}
 
 }

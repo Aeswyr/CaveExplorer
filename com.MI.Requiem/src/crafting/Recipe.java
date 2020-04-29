@@ -2,13 +2,11 @@ package crafting;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;
-
 import effects.Effect;
 import entities.Player;
 import item.IdCountPair;
 import item.Inventory;
 import item.Item;
-import runtime.Handler;
 
 /**
  * details a single individual crafting recipe and the process of creating it
@@ -151,18 +149,18 @@ public class Recipe {
 	 * @param h - the game handler
 	 * @returns the finished item product
 	 */
-	public Item craft(Player p, Inventory n, Handler h) { // TODO FINISH, should consume resources then return the result item
+	public Item craft(Player p, Inventory n) { // TODO FINISH, should consume resources then return the result item
 		if (hpCost > 0)
 			p.harm(hpCost, Effect.DAMAGE_TYPE_ENERGY);
 		if (spCost > 0)
-			p.harm(hpCost, Effect.DAMAGE_TYPE_MENTAL);
+			p.harm(spCost, Effect.DAMAGE_TYPE_MENTAL);
 
-		Item prod = Item.toItem(result, p, h);
+		ArrayList<Item> used = new ArrayList<Item>();
 
 		for (int i = 0; i < idReq.length; i++) {
 			if (idReq[i] != null) {
 				for (int j = 0; j < idCount[i]; j++)
-					prod.editStatPackage(n.removeItemID(idReq[i]).getStatPackage());
+					used.add(n.removeItemID(idReq[i]));
 			}
 		}
 		for (int i = 0; i < Tag.RESOURCE_MAX_ARRAY; i++) {
@@ -199,11 +197,13 @@ public class Recipe {
 
 			if (resourceReq[i] > 0) {
 				for (int j = 0; j < resourceReq[i]; j++) {
-					prod.editStatPackage(n.removeItemTag(tag).getStatPackage());
+					used.add(n.removeItemTag(tag));
 				}
 			}
 		}
 
+		Item prod = Item.toItem(result, p);
+		prod.craft(used);
 		prod.finalize();
 		return prod;
 	}
@@ -214,8 +214,8 @@ public class Recipe {
 	 * @param h
 	 * @returns the item created by this recipe
 	 */
-	public Item getResult(Player p, Handler h) {
-		return Item.toItem(result, p, h);
+	public Item getResult(Player p) {
+		return Item.toItem(result, p);
 	}
 
 }

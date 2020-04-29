@@ -7,10 +7,11 @@ import effects.OnHit;
 import entity.Entity;
 import entity.Hitbox;
 import entity.Mob;
-import entity.Vector;
+import entity.Vector_KS;
 import item.Item;
 import runtime.Handler;
 import runtime.Light;
+import world.World;
 
 public class WillowWisp extends Mob {
 
@@ -19,11 +20,9 @@ public class WillowWisp extends Mob {
 	 */
 	private static final long serialVersionUID = -2178124091912891623L;
 
-	transient Light l;
+	Light l;
 
-	public WillowWisp(Handler handler) {
-		super(handler);
-		this.activeSprite = Assets.willowWisp_idle;
+	public WillowWisp() {
 
 		this.healthMax = 3;
 		this.health = healthMax;
@@ -32,26 +31,22 @@ public class WillowWisp extends Mob {
 		this.spirit = spiritMax;
 
 		this.speed = 1.25;
+		move = speed;
 
 		uiSetup();
 	}
-	
+
 	@Override
 	protected void setup() {
 		this.w = 32;
 		this.h = 32;
-		this.hitbox = new Hitbox(0, 0, 32, 32, this, handler);
-		this.hurtbox = new Hitbox(0, 0, 32, 32, this, handler);	
-		this.vector = new Vector(this, 50);
+		this.hitbox = new Hitbox(0, 0, 32, 32, this);
+		this.hurtbox = new Hitbox(0, 0, 32, 32, this);
+		this.vector = new Vector_KS(this, 50);
 		vector.setGhost(true);
-		l = new Light(32, 0xff666633, handler);
+		l = new Light(32, 0xff666633);
 		l.light();
-	}
-
-	public WillowWisp(Handler handler, int x, int y) {
-		this(handler);
-		this.x = x;
-		this.y = y;
+		this.activeSprite = Assets.willowWisp_idle;
 	}
 
 	@Override
@@ -65,9 +60,9 @@ public class WillowWisp extends Mob {
 	@Override
 	public void move() {
 		if (!locked) {
-			int speed = (int) (this.speed * 3);
-			int xDest = handler.getPlayer().getCenteredX();
-			int yDest = handler.getPlayer().getCenteredY();
+			int speed = (int) (move * 6);
+			int xDest = ((World) Handler.getLoadedWorld()).getPlayer().getCenteredX();
+			int yDest = ((World) Handler.getLoadedWorld()).getPlayer().getCenteredY();
 			int xCent = this.getCenteredX();
 			int yCent = this.getCenteredY();
 
@@ -98,11 +93,12 @@ public class WillowWisp extends Mob {
 				vector.setVelocityY(speed * (xDest - xCent) / 128);
 
 			}
+
 		}
 		timer++;
-
+		
 		if (timer % 180 == 0) {
-			new Attack(this, handler.getPlayer(), handler, Attack.TYPE_HITSCAN, new OnHit() {
+			new Attack(this, ((World) Handler.getLoadedWorld()).getPlayer(), Attack.TYPE_HITSCAN, new OnHit() {
 
 				/**
 				 * 
@@ -145,9 +141,8 @@ public class WillowWisp extends Mob {
 	}
 
 	@Override
-	public void load(Handler h) {
-		super.load(h);
-		l.load(h);
+	public void load() {
+		super.load();
 		l.light();
 	}
 

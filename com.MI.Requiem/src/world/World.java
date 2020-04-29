@@ -2,21 +2,27 @@ package world;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.StringTokenizer;
-
-import core.Driver;
+import core.Engine;
 import entities.Ooze;
 import entities.Player;
 import entities.WillowWisp;
 import entity.Entity;
-import entity.EntityManager;
+import entity.Entity_KS;
 import gfx.DrawGraphics;
+import map.WorldMap_KS;
 import runtime.Handler;
 import utility.Loader;
+import utility.LoadingScreen;
 
 /**
  * Manages the world, chunks, and entities
@@ -24,28 +30,26 @@ import utility.Loader;
  * @author Pascal
  *
  */
-public class World {
+public class World extends WorldMap_KS {
 
 	private static Random rng = new Random();
-
-	Handler handler;
-
-	EntityManager entities;
 
 	ChunkLoader chunkLoader;
 	ArrayList<Chunk> chunks;
 	Chunk currChunk;
 	public static int maxChunks;
+	public static final int MAP_BASE = 0;
+	public static final int MAP_OVERLAY = 1;
 	int biome;
+
+	Player player;
 
 	String loadedWorld = null;
 
-	public World(Handler handler) {
-		this.handler = handler;
+	public World() {
+		super(2);
 		maxChunks = 64;
-		entities = new EntityManager();
 
-		Chunk.handler = this.handler;
 		chunkLoader = new ChunkLoader();
 		chunks = chunkLoader.getActive();
 		currChunk = new Chunk(-1, -1);
@@ -58,36 +62,38 @@ public class World {
 	 * @param name - name of the world file to load
 	 */
 	public void init(String name) {
-		File dir = new File(Driver.saveDir + "saves/" + name + "/");
+		File dir = new File(Engine.ROOT_DIRECTORY + "saves/" + name + "/");
 		loadedWorld = name;
 		boolean d = dir.mkdir();
 		try {
 			if (d)
-				MapGenerator.generateMap(handler, name);
+				MapGenerator.generateMap(name, this);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		chunkLoader.start();
-		BufferedReader info = Loader.loadTextFromFile(Driver.saveDir + "saves/" + name + "/data.dat");
-		if (d)
+		BufferedReader info = Loader.loadTextFromFile(Engine.ROOT_DIRECTORY + "saves/" + name + "/data.dat");
+		if (d) {
 			try {
-				entities.addEntity(handler.getPlayer());
+				player = new Player();
+				Handler.getEntityManager().addEntity(player);
 				String[] playerCoord = info.readLine().split(" ");
-				handler.getPlayer().setX(Integer.parseInt(playerCoord[0]) * Tile.tileSize);
-				handler.getPlayer().setY(Integer.parseInt(playerCoord[1]) * Tile.tileSize);
+				player.setX(Integer.parseInt(playerCoord[0]) * Tile.TILE_SIZE);
+				player.setY(Integer.parseInt(playerCoord[1]) * Tile.TILE_SIZE);
+				Handler.getCamera().centerOnEntity(player);
 				info.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		else {
-			entities.loadAllEntities(Driver.saveDir + "saves/" + name + "/data.dat", handler);
-			ArrayList<Entity> list = entities.getEntities();
-			for (Entity e : list) {
+		} else {
+			loadAllEntities(Engine.ROOT_DIRECTORY + "saves/" + name + "/data.dat");
+			ArrayList<Entity_KS> list = Handler.getEntityManager().getEntities();
+			for (Entity_KS e : list) {
 				if (e instanceof Player) {
-					handler.setPlayer((Player) e);
-					handler.getCamera().centerOnEntity(handler.getPlayer());
+					player = (Player) e;
+					Handler.getCamera().centerOnEntity(player);
 					System.out.println("player found");
 					break;
 				}
@@ -108,9 +114,6 @@ public class World {
 				chunks.get(i).render(g);
 			}
 		}
-		entities.render(g);
-		handler.getLights().render(g);
-		entities.renderEntityUI(g);
 	}
 
 	int[] biomeData;
@@ -137,42 +140,51 @@ public class World {
 			biome = 0;
 		}
 		updateChunks();
-		entities.update();
 
 		if (spawnTick % 600 == 0) {
 			switch (biome) {
 			case 0:
 				if (rng.nextDouble() < 0.3) {
-					int x = rng.nextInt(256) + handler.getPlayer().getX();
-					int y = rng.nextInt(256) + handler.getPlayer().getY();
+					int x = rng.nextInt(256) + player.getX();
+					int y = rng.nextInt(256) + player.getY();
 					int attempts = 0;
-					while ((getTile(x, y).isSolid() || getTile(x, y).isSolid() || getTile(x, y).isSolid()
-							|| getTile(x, y).isSolid()) && attempts < 10) {
+					while ((getTile(x, y, World.MAP_BASE).getCollidable()
+							|| getTile(x, y, World.MAP_BASE).getCollidable()
+							|| getTile(x, y, World.MAP_BASE).getCollidable()
+							|| getTile(x, y, World.MAP_BASE).getCollidable()) && attempts < 10) {
 						attempts++;
-						x = rng.nextInt(256) + handler.getPlayer().getX();
-						y = rng.nextInt(256) + handler.getPlayer().getY();
+						x = rng.nextInt(256) + player.getX();
+						y = rng.nextInt(256) + player.getY();
 					}
 
 					if (attempts != 10) {
-						entities.addEntity(new WillowWisp(handler, x, y));
+						WillowWisp u = new WillowWisp();
+						u.setX(x);
+						u.setY(y);
+						Handler.getEntityManager().addEntity(u);
 						System.out.println("wisp spawned");
 					}
 				}
 				break;
 			case 1:
 				if (rng.nextDouble() < 0.3) {
-					int x = rng.nextInt(256) + handler.getPlayer().getX();
-					int y = rng.nextInt(256) + handler.getPlayer().getY();
+					int x = rng.nextInt(256) + player.getX();
+					int y = rng.nextInt(256) + player.getY();
 					int attempts = 0;
-					while ((getTile(x, y).isSolid() || getTile(x, y).isSolid() || getTile(x, y).isSolid()
-							|| getTile(x, y).isSolid()) && attempts < 10) {
+					while ((getTile(x, y, World.MAP_BASE).getCollidable()
+							|| getTile(x, y, World.MAP_BASE).getCollidable()
+							|| getTile(x, y, World.MAP_BASE).getCollidable()
+							|| getTile(x, y, World.MAP_BASE).getCollidable()) && attempts < 10) {
 						attempts++;
-						x = rng.nextInt(256) + handler.getPlayer().getX();
-						y = rng.nextInt(256) + handler.getPlayer().getY();
+						x = rng.nextInt(256) + player.getX();
+						y = rng.nextInt(256) + player.getY();
 					}
 
 					if (attempts != 10) {
-						entities.addEntity(new Ooze(handler, x, y));
+						Ooze u = new Ooze();
+						u.setX(x);
+						u.setY(y);
+						Handler.getEntityManager().addEntity(u);
 						System.out.println("Ooze spawned");
 					}
 				}
@@ -189,8 +201,8 @@ public class World {
 	 */
 	private void updateChunks() {
 
-		int pcx = handler.getPlayer().getChunkX();
-		int pcy = handler.getPlayer().getChunkY();
+		int pcx = player.getChunkX();
+		int pcy = player.getChunkY();
 
 		if (currChunk.getX() != pcx || currChunk.getY() != pcy) {
 			currChunk = new Chunk(pcx, pcy);
@@ -228,18 +240,36 @@ public class World {
 	 * @param x - the x coordinate of the tile (pixel position)
 	 * @param y - the y coordinate of the tile (pixel position)
 	 */
-	public Tile getTile(int x, int y) {
-		int id = -1;
-		for (int i = 0; i < chunks.size(); i++) {
-			if (chunks.get(i) != null) {
-				int pos = chunks.get(i).tileAt(x / Tile.tileSize, y / Tile.tileSize);
-				if (pos != -1)
-					id = pos;
+	public Tile getTile(int x, int y, int map) {
+
+		if (map == MAP_BASE) {
+			int id = -1;
+			for (int i = 0; i < chunks.size(); i++) {
+				if (chunks.get(i) != null) {
+					int pos = chunks.get(i).tileAt(x / Tile.TILE_SIZE, y / Tile.TILE_SIZE);
+					if (pos != -1)
+						id = pos;
+				}
 			}
+			if (id == -1)
+				return Tile.toTile(1);
+			return Tile.toTile(id);
+		} else if (map == MAP_OVERLAY) {
+			int id = -1;
+			for (int i = 0; i < chunks.size(); i++) {
+				if (chunks.get(i) != null) {
+					int pos = chunks.get(i).overlayAt(x / Tile.TILE_SIZE, y / Tile.TILE_SIZE);
+					if (pos >= 0)
+						id = pos;
+					if (pos != -2)
+						break;
+				}
+			}
+			if (id == -1 || id == -2)
+				return null;
+			return Tile.toTile(id);
 		}
-		if (id == -1)
-			return Tile.toTile(1);
-		return Tile.toTile(id);
+		return null;
 	}
 
 	/**
@@ -248,18 +278,32 @@ public class World {
 	 * @param x - the x coordinate of the tile (pixel position)
 	 * @param y - the y coordinate of the tile (pixel position)
 	 */
-	public int getTileID(int x, int y) {
-		int id = -1;
-		for (int i = 0; i < chunks.size(); i++) {
-			if (chunks.get(i) != null) {
-				int pos = chunks.get(i).tileAt(x / Tile.tileSize, y / Tile.tileSize);
-				if (pos != -1)
-					id = pos;
+	public int getTileID(int x, int y, int map) {
+		if (map == MAP_BASE) {
+			int id = -1;
+			for (int i = 0; i < chunks.size(); i++) {
+				if (chunks.get(i) != null) {
+					int pos = chunks.get(i).tileAt(x / Tile.TILE_SIZE, y / Tile.TILE_SIZE);
+					if (pos != -1)
+						id = pos;
+				}
 			}
+			if (id == -1)
+				return 0;
+			return id;
+		} else if (map == MAP_OVERLAY) {
+			int id = -2;
+			for (int i = 0; i < chunks.size(); i++) {
+				if (chunks.get(i) != null) {
+					int pos = chunks.get(i).overlayAt(x / Tile.TILE_SIZE, y / Tile.TILE_SIZE);
+					if (pos > -2) {
+						id = pos;
+					}
+				}
+			}
+			return id;
 		}
-		if (id == -1)
-			return 0;
-		return id;
+		return -2;
 	}
 
 	/**
@@ -273,7 +317,8 @@ public class World {
 		int chunkx = x / Chunk.chunkDim;
 		int chunky = y / Chunk.chunkDim;
 		String line = null;
-		BufferedReader read = Loader.loadTextFromFile(Driver.saveDir + "saves/" + loadedWorld + "/world.dat", StandardCharsets.UTF_8);
+		BufferedReader read = Loader.loadTextFromFile(Engine.ROOT_DIRECTORY + "saves/" + loadedWorld + "/world.dat",
+				StandardCharsets.UTF_8);
 		int find = chunky * World.maxChunks + chunkx;
 
 		try {
@@ -285,7 +330,7 @@ public class World {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		StringTokenizer data = new StringTokenizer(line);
 		int c = (y % Chunk.chunkDim) * Chunk.chunkDim + x % Chunk.chunkDim;
 		String a;
@@ -304,69 +349,14 @@ public class World {
 	 * @param y  - tile y coordinate (in pixels)
 	 * @param id - id of the desired tile
 	 */
-	public void setTile(int x, int y, int id) {
-		for (int i = 0; i < chunks.size(); i++)
-			chunks.get(i).setTile(x / Tile.tileSize, y / Tile.tileSize, id);
-	}
-
-	/**
-	 * returns the tile at the given position
-	 * 
-	 * @param x - the x coordinate of the tile (pixel position)
-	 * @param y - the y coordinate of the tile (pixel position)
-	 */
-	public Tile getOverlay(int x, int y) {
-		int id = -1;
-		for (int i = 0; i < chunks.size(); i++) {
-			if (chunks.get(i) != null) {
-				int pos = chunks.get(i).overlayAt(x / Tile.tileSize, y / Tile.tileSize);
-				if (pos >= 0)
-					id = pos;
-				if (pos != -2)
-					break;
-			}
+	public void setTile(int x, int y, int id, int map) {
+		if (map == 0) {
+			for (int i = 0; i < chunks.size(); i++)
+				chunks.get(i).setTile(x / Tile.TILE_SIZE, y / Tile.TILE_SIZE, id);
+		} else if (map == 1) {
+			for (int i = 0; i < chunks.size(); i++)
+				chunks.get(i).setOverlay(x / Tile.TILE_SIZE, y / Tile.TILE_SIZE, id);
 		}
-		if (id == -1 || id == -2)
-			return null;
-		return Tile.toTile(id);
-	}
-
-	/**
-	 * returns the overlay tile id at the given position
-	 * 
-	 * @param x - the x coordinate of the tile (pixel position)
-	 * @param y - the y coordinate of the tile (pixel position)
-	 */
-	public int getOverlayID(int x, int y) {
-		int id = -2;
-		for (int i = 0; i < chunks.size(); i++) {
-			if (chunks.get(i) != null) {
-				int pos = chunks.get(i).overlayAt(x / Tile.tileSize, y / Tile.tileSize);
-				if (pos > -2) {
-					id = pos;
-				}
-			}
-		}
-		return id;
-	}
-
-	/**
-	 * replaces the overlay tile at the given coordinate with a specified one
-	 * 
-	 * @param x  - tile x coordinate (in pixels)
-	 * @param y  - tile y coordinate (in pixels)
-	 * @param id - id of the desired tile
-	 */
-	public void setOverlay(int x, int y, int id) {
-		for (int i = 0; i < chunks.size(); i++)
-			chunks.get(i).setOverlay(x / Tile.tileSize, y / Tile.tileSize, id);
-	}
-
-	/**
-	 * @returns the entitymanager associated with the world
-	 */
-	public EntityManager getEntities() {
-		return entities;
 	}
 
 	/**
@@ -383,7 +373,7 @@ public class World {
 	 * saves all entities within the world
 	 */
 	public void save() {
-		entities.saveAllEntities(Driver.saveDir + "saves/" + loadedWorld + "/data.dat");
+		saveAllEntities(Engine.ROOT_DIRECTORY + "saves/" + loadedWorld + "/data.dat");
 	}
 
 	/**
@@ -393,7 +383,11 @@ public class World {
 		return biome;
 	}
 
-	public static final int MAX_BIOME = 2;
+	public static final int MAX_BIOME = 3;
+	public static final int BIOME_EARTHEN = 0;
+	public static final int BIOME_LIMESTONE = 1;
+	public static final int BIOME_SEA = 2;
+
 	/**
 	 * @param biome - id of the desired biome name
 	 * @returns the name of the biome associated with the numerical id
@@ -404,9 +398,81 @@ public class World {
 			return "Earthen Caverns";
 		case 1:
 			return "Limestone Tunnels";
+		case 2:
+			return "Underground Sea";
 		default:
 			return "Hip and Fresh Land";
 		}
+	}
+
+	/**
+	 * saves all entities to a specified world file
+	 * 
+	 * @param path - the path to the specified world file
+	 */
+	public void saveAllEntities(String path) {
+		LoadingScreen ls = new LoadingScreen(1);
+		ls.displayText("Saving...");
+		try {
+			File f = new File(path);
+			f.delete();
+			f.createNewFile();
+			FileOutputStream fo = new FileOutputStream(f);
+			ObjectOutputStream stream = new ObjectOutputStream(fo);
+			stream.writeObject(Handler.getEntityManager().getEntities());
+			stream.close();
+			fo.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		ls.increment(1);
+		ls.close();
+
+	}
+
+	/**
+	 * Loads all entities into the world from the specified path
+	 * 
+	 * @param path - string path to the world data file
+	 */
+	@SuppressWarnings("unchecked")
+	public void loadAllEntities(String path) {
+		LoadingScreen ls = new LoadingScreen(2);
+		ls.displayText("Loading...");
+		ArrayList<Entity> entities = null;
+		try {
+			File f = new File(path);
+			FileInputStream fo = new FileInputStream(f);
+			ObjectInputStream stream = new ObjectInputStream(fo);
+			entities = (ArrayList<Entity>) stream.readObject();
+			stream.close();
+			fo.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		ls.increment(1);
+
+		for (Entity e : entities) {
+			e.load();
+			Handler.getEntityManager().addEntity(e);
+		}
+		ls.increment(1);
+		ls.close();
+	}
+
+	public Player getPlayer() {
+		return player;
 	}
 
 }

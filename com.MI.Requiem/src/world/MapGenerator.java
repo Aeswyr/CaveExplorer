@@ -8,13 +8,11 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
 import java.util.StringTokenizer;
-
-import core.Driver;
-import runtime.Handler;
+import core.Engine;
 import utility.Loader;
 import utility.LoadingScreen;
 import utility.NoiseGenerator;
-import utility.Utility;
+import utility.Utils;
 
 /**
  * tools for generating a map file
@@ -33,29 +31,27 @@ public class MapGenerator {
 	 * @param name - the name for the world
 	 * @throws IOException
 	 */
-	public static void generateMap(Handler h, String name) throws IOException {
+	public static void generateMap(String name, World w) throws IOException {
 
 		// LOADING SCREEN START
 		LoadingScreen load = new LoadingScreen(2 * World.maxChunks * World.maxChunks);
 		load.displayText("Shaping Caverns");
 
-		World w = h.getWorld();
-
 		Random rng = new Random();
 
-		File f1 = new File(Driver.saveDir + "saves/" + name + "/temp0.dat");
+		File f1 = new File(Engine.ROOT_DIRECTORY + "saves/" + name + "/temp0.dat");
 		f1.delete();
 		f1.createNewFile();
 		FileOutputStream file1 = new FileOutputStream(f1);
 		OutputStreamWriter write = new OutputStreamWriter(file1, StandardCharsets.UTF_8);
 
-		File f2 = new File(Driver.saveDir + "saves/" + name + "/temp1.dat");
+		File f2 = new File(Engine.ROOT_DIRECTORY + "saves/" + name + "/temp1.dat");
 		f2.delete();
 		f2.createNewFile();
 		FileOutputStream file2 = new FileOutputStream(f2);
 		OutputStreamWriter writeMap = new OutputStreamWriter(file2, StandardCharsets.UTF_8);
 
-		File f3 = new File(Driver.saveDir + "saves/" + name + "/data.dat");
+		File f3 = new File(Engine.ROOT_DIRECTORY + "saves/" + name + "/data.dat");
 		f3.delete();
 		f3.createNewFile();
 		FileOutputStream file3 = new FileOutputStream(f3);
@@ -111,27 +107,27 @@ public class MapGenerator {
 		writeMap.close();
 
 		load.displayText("Seeding Ore");
-		
-		File f4 = new File(Driver.saveDir + "saves/" + name + "/world.dat");
+
+		File f4 = new File(Engine.ROOT_DIRECTORY + "saves/" + name + "/world.dat");
 		f4.delete();
 		f4.createNewFile();
 		FileOutputStream file4 = new FileOutputStream(f4);
 		write = new OutputStreamWriter(file4, StandardCharsets.UTF_8);
-		
-		File f5 = new File(Driver.saveDir + "saves/" + name + "/map.dat");
+
+		File f5 = new File(Engine.ROOT_DIRECTORY + "saves/" + name + "/map.dat");
 		f5.delete();
 		f5.createNewFile();
 		FileOutputStream file5 = new FileOutputStream(f5);
 		writeMap = new OutputStreamWriter(file5, StandardCharsets.UTF_8);
-		
+
 		int[][] dat;
 		int[][] map;
 		int pos;
 		for (int j = 0; j < World.maxChunks; j++) {
 			for (int i = 0; i < World.maxChunks; i++) {
 				pos = j * World.maxChunks + i;
-				dat = load(pos, Driver.saveDir + "saves/" + name + "/temp0.dat");
-				map = load(pos, Driver.saveDir + "saves/" + name + "/temp1.dat");
+				dat = load(pos, Engine.ROOT_DIRECTORY + "saves/" + name + "/temp0.dat");
+				map = load(pos, Engine.ROOT_DIRECTORY + "saves/" + name + "/temp1.dat");
 
 				int o = (int) ((1 - rng.nextGaussian()) * 8);
 				int oreID = 23;
@@ -178,7 +174,7 @@ public class MapGenerator {
 
 				save(dat, write);
 				save(map, writeMap);
-				
+
 				load.increment(1);
 
 			}
@@ -189,7 +185,7 @@ public class MapGenerator {
 		writeMap.close();
 		f1.delete();
 		f2.delete();
-		
+
 		load.displayText("Placing Player");
 
 		boolean spawnFound = false;
@@ -217,6 +213,7 @@ public class MapGenerator {
 	}
 
 	private static StringBuilder b = new StringBuilder();
+
 	/**
 	 * Writes a single tile data point to the file with the format 'AB ' where A is
 	 * the character that corresponds to the integer value of the tile id + 34, and
@@ -315,9 +312,9 @@ public class MapGenerator {
 		c.append((char) (id0 + MapGenerator.OFFSET));
 		c.append((char) (c0 + MapGenerator.OFFSET));
 
-		Utility.editText(c.toString(), pos, path);
+		Utils.editText(c.toString(), pos, path);
 	}
-	
+
 	/**
 	 * saves a chunk using a specified filewriter
 	 * 
@@ -355,7 +352,7 @@ public class MapGenerator {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	/**
@@ -383,31 +380,38 @@ public class MapGenerator {
 		int mapID = -1;
 
 		if (mod > 0.50) {
-			if (biome == 0) {
+			if (biome == World.BIOME_EARTHEN) {
 				id = 1;
 				if (tex > 0.5)
 					id = 9;
-			} else {
+			} else if (biome == World.BIOME_LIMESTONE) {
 				id = 6;
+			} else if (biome == World.BIOME_SEA) {
+				id = 28;
 			}
 		} else {
 			mod = noise.fractalNoise(xf, yf, 8, 256 / (World.maxChunks), 2);
 			if (mod > 0.50) {
-				if (biome == 0) {
+				if (biome == World.BIOME_EARTHEN) {
 					id = 1;
 					if (tex > 0.5)
 						id = 9;
-				} else {
+				} else if (biome == World.BIOME_LIMESTONE) {
 					id = 6;
+				} else if (biome == World.BIOME_SEA) {
+					id = 7;
 				}
 			} else {
-				if (biome == 0)
+				if (biome == World.BIOME_EARTHEN)
 					id = 0;
-				else
+				else if (biome == World.BIOME_LIMESTONE)
 					id = 5;
+				else if (biome == World.BIOME_SEA)
+					id = 27;
 			}
 		}
-		if (liquid.fractalNoise(xf, yf, 8, 256 / (World.maxChunks * Chunk.chunkDim), 2) > 0.51)
+		if (liquid.fractalNoise(xf, yf, 8, 256 / (World.maxChunks * Chunk.chunkDim), 2) > 0.50
+				&& biome == World.BIOME_SEA)
 			id = 7;
 		int[] r = { id, mapID };
 		return r;

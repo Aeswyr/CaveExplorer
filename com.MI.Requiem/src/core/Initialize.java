@@ -1,13 +1,14 @@
 package core;
 
-import java.io.File;
-import javax.swing.JFileChooser;
-import core.Driver;
-import sfx.Sound;
+import runtime.Handler;
+import runtime.Menustate;
+import utility.Event;
 import world.Tile;
+import world.World;
 
 /**
  * starts the game and sets up any necessary filepaths
+ * 
  * @author Pascal
  *
  */
@@ -17,20 +18,26 @@ public class Initialize {
 
 	public static void main(String[] args) {
 		Assets.init();
-		Sound.initSound();
 		Tile.initTile();
-		Driver game = new Driver();
-		Driver.saveDir = new JFileChooser().getFileSystemView().getDefaultDirectory().toString() + "/" + GAMENAME + "/";
-		Driver.saveDir = Driver.saveDir.replace('\\', '/');
-		File file = new File(Driver.saveDir);
-		if (file.mkdir()) {
-			System.out.println("Created directory at: " + Driver.saveDir);
-			new File(Driver.saveDir + "saves/").mkdirs();
-		} else {
-			System.out.println("Directory at " + Driver.saveDir + " already exists");
-		}
 
-		game.start();
+		
+		
+		Engine.start(0, 0, GAMENAME, "Into Darkness", 0);
+		Engine.getGraphics().setFont(Assets.font);
+		Engine.attachCloseEvent(new Event() {
+
+			@Override
+			public void event() {
+				if (Handler.getLoadedWorld() != null) {
+					((World) Handler.getLoadedWorld()).save();
+					((World) Handler.getLoadedWorld()).unloadWorld();
+				}
+			}
+
+		});
+
+		Engine.getGraphics().setLightingEnabled(true);
+		Handler.startScene(new Menustate());
 	}
 
 }

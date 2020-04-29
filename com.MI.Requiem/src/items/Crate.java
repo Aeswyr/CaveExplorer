@@ -2,10 +2,12 @@ package items;
 
 import core.Assets;
 import entity.Mob;
+import input.Controller;
 import interactables.CrateInteractable;
 import item.Item;
 import runtime.Handler;
 import world.Tile;
+import world.World;
 
 public class Crate extends Item{
 	
@@ -15,12 +17,12 @@ public class Crate extends Item{
 	private static final long serialVersionUID = 2714434568710840602L;
 	private CrateInteractable interact;
 
-	public Crate(int x, int y, Handler handler) {
-		super(x, y, handler);
+	public Crate(int x, int y) {
+		super(x, y);
 	}
 
-	public Crate(Handler handler, Mob holder) {
-		super(handler, holder);
+	public Crate(Mob holder) {
+		super(holder);
 	}
 
 	@Override
@@ -37,7 +39,7 @@ public class Crate extends Item{
 		this.sprite = Assets.crate;
 		this.invSprite = Assets.crate_inv;
 
-		interact = new CrateInteractable(handler);
+		interact = new CrateInteractable();
 
 		stackable = false;
 	}
@@ -48,17 +50,17 @@ public class Crate extends Item{
 			int holderX = holder.getCenteredX();
 			int holderY = holder.getY() - 8;
 
-			int mouseX = handler.getCamera().xOffsetAdj() + handler.getMouse().getAdjX() - handler.getWidth() / 2;
-			int mouseY = handler.getCamera().yOffsetAdj() + handler.getMouse().getAdjY() - handler.getHeight() / 2;
+			int mouseX = Handler.getCamera().xOffsetAdj() + Controller.getAdjX() - Handler.getWidth() / 2;
+			int mouseY = Handler.getCamera().yOffsetAdj() + Controller.getAdjY() - Handler.getHeight() / 2;
 
 			int dx = mouseX - holderX;
 			int dy = mouseY - holderY;
 
-			if (dx * dx + dy * dy < 4096 && !handler.getWorld().getTile(mouseX, mouseY).isSolid()) {
-				handler.getWorld().setOverlay(mouseX, mouseY, 24);
-				interact.setX((mouseX / Tile.tileSize) * Tile.tileSize);
-				interact.setY((mouseY / Tile.tileSize) * Tile.tileSize);
-				handler.getWorld().getEntities().addEntity(interact);
+			if (dx * dx + dy * dy < 4096 && !Handler.getLoadedWorld().getTile(mouseX, mouseY, World.MAP_BASE).getCollidable()) {
+				((World) Handler.getLoadedWorld()).setTile(mouseX, mouseY, 24, World.MAP_OVERLAY);
+				interact.setX((mouseX / Tile.TILE_SIZE) * Tile.TILE_SIZE);
+				interact.setY((mouseY / Tile.TILE_SIZE) * Tile.TILE_SIZE);
+				Handler.getEntityManager().addEntity(interact);
 				timer = 0;
 				consumed = true;
 			}

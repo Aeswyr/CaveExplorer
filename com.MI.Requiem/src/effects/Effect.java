@@ -37,6 +37,11 @@ public class Effect implements Serializable {
 			symbol = Assets.spirit;
 			a = new Action() {
 
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 470785142676620025L;
+
 				@Override
 				public void tick(Mob m) {
 					m.harm(1, Effect.DAMAGE_TYPE_ENERGY);
@@ -59,6 +64,11 @@ public class Effect implements Serializable {
 		default:
 			symbol = Assets.inventory_Empty;
 			a = new Action() {
+
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = -6444157057898884106L;
 
 				@Override
 				public void tick(Mob m) {

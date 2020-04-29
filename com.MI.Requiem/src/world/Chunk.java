@@ -5,10 +5,11 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.StringTokenizer;
 import core.Driver;
+import core.Engine;
 import gfx.DrawGraphics;
 import runtime.Handler;
 import utility.Loader;
-import utility.Utility;
+import utility.Utils;
 import world.Tile;
 import world.World;
 
@@ -19,12 +20,11 @@ import world.World;
  *
  */
 public class Chunk {
-
-	public static Handler handler;
 	protected int x, y;
 	boolean loaded = false;
 	int[][] chunk;
 	int[][] map;
+	int[][] mask;
 	public static final int chunkDim = 16;
 
 	/**
@@ -45,13 +45,13 @@ public class Chunk {
 	 */
 	public void render(DrawGraphics g) {
 
-		int offx = handler.getCamera().xOffset() / Tile.tileSize;
-		int offy = handler.getCamera().yOffset() / Tile.tileSize;
+		int offx = Handler.getCamera().xOffset() / Tile.TILE_SIZE;
+		int offy = Handler.getCamera().yOffset() / Tile.TILE_SIZE;
 
 		int startX = offx + (int) (12 / Driver.xScale);
 		int startY = offy;
-		int endX = offx + handler.getWidth() / Tile.tileSize - (int) (18 / Driver.xScale);
-		int endY = offy + handler.getHeight() / Tile.tileSize + (int) (9 / Driver.yScale);
+		int endX = offx + Handler.getWidth() / Tile.TILE_SIZE - (int) (18 / Driver.xScale);
+		int endY = offy + Handler.getHeight() / Tile.TILE_SIZE + (int) (9 / Driver.yScale);
 
 		if (startX < x * chunkDim)
 			startX = x * chunkDim;
@@ -65,9 +65,11 @@ public class Chunk {
 		if (chunk != null) {
 			for (int i = startX; i < endX; i++) {
 				for (int j = startY; j < endY; j++) {
-					Tile.toTile(chunk[i - x * chunkDim][j - y * chunkDim]).render(i, j, g);
+					Tile.toTile(chunk[i - x * chunkDim][j - y * chunkDim]).render(i, j,
+							mask[i - x * chunkDim][j - y * chunkDim], g);
 					if (map[i - x * chunkDim][j - y * chunkDim] != -1)
-						Tile.toTile(map[i - x * chunkDim][j - y * chunkDim]).render(i, j, g);
+						Tile.toTile(map[i - x * chunkDim][j - y * chunkDim]).render(i, j,
+								mask[i - x * chunkDim][j - y * chunkDim], g);
 				}
 			}
 		}
@@ -78,13 +80,13 @@ public class Chunk {
 	 * updates all tiles in the chunk
 	 */
 	public void update(int[] biomeData) {
-		int offx = handler.getCamera().xOffset() / Tile.tileSize;
-		int offy = handler.getCamera().yOffset() / Tile.tileSize;
+		int offx = Handler.getCamera().xOffset() / Tile.TILE_SIZE;
+		int offy = Handler.getCamera().yOffset() / Tile.TILE_SIZE;
 
 		int startX = offx + (int) (12 / Driver.xScale);
 		int startY = offy;
-		int endX = offx + handler.getWidth() / Tile.tileSize - (int) (18 / Driver.xScale);
-		int endY = offy + handler.getHeight() / Tile.tileSize + (int) (9 / Driver.yScale);
+		int endX = offx + Handler.getWidth() / Tile.TILE_SIZE - (int) (18 / Driver.xScale);
+		int endY = offy + Handler.getHeight() / Tile.TILE_SIZE + (int) (9 / Driver.yScale);
 
 		if (startX < x * chunkDim)
 			startX = x * chunkDim;
@@ -120,9 +122,9 @@ public class Chunk {
 
 		try {
 			BufferedReader read = Loader.loadTextFromFile(
-					Driver.saveDir + "saves/" + handler.getWorld().loadedWorld + "/world.dat", StandardCharsets.UTF_8);
+					Engine.ROOT_DIRECTORY + "saves/" + ((World)Handler.getLoadedWorld()).loadedWorld + "/world.dat", StandardCharsets.UTF_8);
 			BufferedReader readMap = Loader.loadTextFromFile(
-					Driver.saveDir + "saves/" + handler.getWorld().loadedWorld + "/map.dat", StandardCharsets.UTF_8);
+					Engine.ROOT_DIRECTORY + "saves/" + ((World)Handler.getLoadedWorld()).loadedWorld + "/map.dat", StandardCharsets.UTF_8);
 			int find = y * World.maxChunks + x;
 			for (int i = 0; i < find; i++) {
 				read.readLine();
@@ -133,11 +135,12 @@ public class Chunk {
 			read.close();
 			readMap.close();
 		} catch (IOException e) {
-
+			e.printStackTrace();
 		}
 
 		chunk = new int[chunkDim][chunkDim];
 		map = new int[chunkDim][chunkDim];
+		mask = new int[chunkDim][chunkDim];
 
 		StringTokenizer data = new StringTokenizer(line);
 		StringTokenizer mapData = new StringTokenizer(mapLine);
@@ -168,6 +171,36 @@ public class Chunk {
 				c1--;
 			}
 		}
+
+		for (int y = 0; y < chunkDim; y++) {
+			for (int x = 0; x < chunkDim; x++) {
+				if (y != 0 && x != 0 && y != chunkDim - 1 && x != chunkDim - 1) {
+					if (Tile.toTile(chunk[x - 1][y]).wall)
+						mask[x][y] += 1;
+					if (Tile.toTile(chunk[x][y + 1]).wall)
+						mask[x][y] += 2;
+					if (Tile.toTile(chunk[x + 1][y]).wall)
+						mask[x][y] += 4;
+					if (Tile.toTile(chunk[x][y - 1]).wall)
+						mask[x][y] += 8;
+				} else {
+					if (this.x != 0 && this.y != 0 && this.x != World.maxChunks - 1 && this.y != World.maxChunks - 1) {
+						if (((World)Handler.getLoadedWorld()).getTile(this.x * chunkDim + x - 1, this.y * chunkDim + y, World.MAP_BASE).wall)
+							mask[x][y] += 1;
+						if (((World)Handler.getLoadedWorld()).getTile(this.x * chunkDim + x, this.y * chunkDim + y + 1, World.MAP_BASE).wall)
+							mask[x][y] += 2;
+						if (((World)Handler.getLoadedWorld()).getTile(this.x * chunkDim + x + 1, this.y * chunkDim + y, World.MAP_BASE).wall)
+							mask[x][y] += 4;
+						if (((World)Handler.getLoadedWorld()).getTile(this.x * chunkDim + x, this.y * chunkDim + y - 1, World.MAP_BASE).wall)
+							mask[x][y] += 8;
+					} else {
+						mask[x][y] = 15;
+					}
+				}
+
+			}
+		}
+
 		loaded = true;
 	}
 
@@ -212,11 +245,12 @@ public class Chunk {
 		m.append((char) (c1 + MapGenerator.OFFSET));
 
 		int find = y * World.maxChunks + x;
-		Utility.editText(c.toString(), find, Driver.saveDir + "saves/" + handler.getWorld().loadedWorld + "/world.dat");
-		Utility.editText(m.toString(), find, Driver.saveDir + "saves/" + handler.getWorld().loadedWorld + "/map.dat");
+		Utils.editText(c.toString(), find, Engine.ROOT_DIRECTORY + "saves/" + ((World)Handler.getLoadedWorld()).loadedWorld + "/world.dat");
+		Utils.editText(m.toString(), find, Engine.ROOT_DIRECTORY + "saves/" + ((World)Handler.getLoadedWorld()).loadedWorld + "/map.dat");
 
 		chunk = null;
 		map = null;
+		mask = null;
 		loaded = false;
 	}
 
@@ -252,6 +286,39 @@ public class Chunk {
 		if (x >= chunkDim || x < 0 || y >= chunkDim || y < 0)
 			return;
 		chunk[x][y] = id;
+		
+		for (int j = -1; j < 2; j++) {
+			for (int i = -1; i < 2; i++) {
+				int x0 = x + i;
+				int y0 = y + j;
+				
+				if (y0 > 0 && x0 > 0 && y0 < chunkDim - 1 && x0 < chunkDim - 1) {
+					mask[x0][y0] = 0;
+					if (Tile.toTile(chunk[x0 - 1][y0]).wall)
+						mask[x0][y0] += 1;
+					if (Tile.toTile(chunk[x0][y0 + 1]).wall)
+						mask[x0][y0] += 2;
+					if (Tile.toTile(chunk[x0 + 1][y0]).wall)
+						mask[x0][y0] += 4;
+					if (Tile.toTile(chunk[x0][y0 - 1]).wall)
+						mask[x0][y0] += 8;
+				} else if (y0 == 0 && x0 == 0 && y0 == chunkDim - 1 && x0 == chunkDim - 1){
+					if (this.x > 0 && this.y > 0 && this.x < World.maxChunks - 1 && this.y < World.maxChunks - 1) {
+						mask[x0][y0] = 0;
+						if (((World)Handler.getLoadedWorld()).getTile(this.x * chunkDim + x0 - 1, this.y * chunkDim + y0, World.MAP_BASE).wall)
+							mask[x0][y0] += 1;
+						if (((World)Handler.getLoadedWorld()).getTile(this.x * chunkDim + x0, this.y * chunkDim + y0 + 1, World.MAP_BASE).wall)
+							mask[x0][y0] += 2;
+						if (((World)Handler.getLoadedWorld()).getTile(this.x * chunkDim + x0 + 1, this.y * chunkDim + y0, World.MAP_BASE).wall)
+							mask[x0][y0] += 4;
+						if (((World)Handler.getLoadedWorld()).getTile(this.x * chunkDim + x0, this.y * chunkDim + y0 - 1, World.MAP_BASE).wall)
+							mask[x0][y0] += 8;
+					} else {
+						mask[x0][y0] = 15;
+					}
+				}
+			}
+		}
 	}
 
 	/**

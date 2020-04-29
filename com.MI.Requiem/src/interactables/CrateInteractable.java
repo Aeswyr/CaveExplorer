@@ -7,6 +7,7 @@ import gfx.DrawGraphics;
 import item.Inventory;
 import runtime.Handler;
 import world.Tile;
+import world.World;
 
 public class CrateInteractable extends Interactable{
 
@@ -18,13 +19,13 @@ public class CrateInteractable extends Interactable{
 	 */
 	private static final long serialVersionUID = 8656110588947147937L;
 
-	public CrateInteractable(Handler handler) {
-		super(handler);
-		hitbox = new Hitbox(0, 0, Tile.tileSize + 2, Tile.tileSize * 2, this, handler);
+	public CrateInteractable() {
+		super();
+		hitbox = new Hitbox(0, 0, Tile.TILE_SIZE + 2, Tile.TILE_SIZE * 2, this);
 	}
 
 	transient boolean interacted = false;
-	Inventory i = new Inventory(336, 300, 16, 4, handler, this);
+	Inventory i = new Inventory(336, 300, 16, 4, this);
 	transient Player p;
 	
 	@Override
@@ -43,15 +44,14 @@ public class CrateInteractable extends Interactable{
 
 	@Override
 	public void update() {
-		super.update();
 		i.update();
 		if (interacted) {
-			if (!this.hitbox.collidingAll().contains(p)) {
+			if (!((Hitbox) this.hitbox).collidingAll().contains(p)) {
 				interacted = false;
 			}
 		}
 
-		int t = handler.getWorld().getOverlayID(getX(), getY());
+		int t = ((World) Handler.getLoadedWorld()).getTileID(getX(), getY(), World.MAP_OVERLAY);
 		if (t != 24 && t != -2) {
 			this.die();
 		}
@@ -69,9 +69,8 @@ public class CrateInteractable extends Interactable{
 	}
 	
 	@Override
-	public void load(Handler h) {
-		super.load(h);
-		i.load(h, this);
+	public void load() {
+		i.load(this);
 	}
 	
 }

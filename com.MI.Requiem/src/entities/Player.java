@@ -5,19 +5,20 @@ import core.Assets;
 import crafting.Craft;
 import crafting.Recipe;
 import crafting.Tag;
-import effects.Effect;
 import entity.Entity;
 import entity.Hitbox;
 import entity.Interactable;
 import entity.Mob;
-import entity.Vector;
+import entity.Vector_KS;
 import geometry.Rect;
 import gfx.DrawGraphics;
 import gfx.Sprite;
+import gfx.SpriteData;
 import gui.ClickListener;
 import gui.ContainerButton;
 import gui.Frame;
 import gui.UIObject;
+import input.Controller;
 import interactables.AnvilInteractable;
 import interactables.Corpse;
 import interactables.ForgeInteractable;
@@ -31,7 +32,8 @@ import items.CrystalRod;
 import items.Pickaxe;
 import items.Torch;
 import runtime.Handler;
-import world.Tile;
+import utility.BoundStateMachine;
+import utility.StateChange;
 import world.World;
 
 public class Player extends Mob {
@@ -47,6 +49,8 @@ public class Player extends Mob {
 	int woundMax;
 	int timer;
 
+	transient BoundStateMachine<Sprite> animator;
+
 	// Inventory
 
 	ItemContainer<Item> lHand;
@@ -57,8 +61,7 @@ public class Player extends Mob {
 
 	// Effects
 
-	public Player(Handler handler) {
-		super(handler);
+	public Player() {
 		activeSprite = Assets.player_idle;
 
 		researchFlags = new boolean[Tag.RESEARCH_MAX_ARRAY];
@@ -80,50 +83,108 @@ public class Player extends Mob {
 		kno = 5;
 
 		luk = 5;
+		
+		move = speed;
 
 		// TODO y coordinate relies on width rather than height
 
-		int w = handler.getWidth();
+		int w = Handler.getWidth();
 		// int h = handler.getHeight();
 
 		lHand = new ItemContainer<Item>((int) (w / 21.8), w / 5, Assets.inventory_Empty, Assets.inventory_Mainhand,
-				"hand mainhand", handler); // previously 44 and 192
+				"hand mainhand"); // previously 44 and 192
 		rHand = new ItemContainer<Item>((int) ((w / 21.8) + 40), w / 5, Assets.inventory_Empty,
-				Assets.inventory_Offhand, "hand offhand", handler); // previously 84 and 192
+				Assets.inventory_Offhand, "hand offhand"); // previously 84 and 192
 
-		inventory = new Inventory((int) (w / 1.17), w / 60, 12, handler, this); // previously 824 and 16
+		inventory = new Inventory((int) (w / 1.17), w / 60, 12, this); // previously 824 and 16
 		inventory.appendContainer(lHand);
 		inventory.appendContainer(rHand);
 		inventory.appendContainer(new ItemContainer<Item>((int) (w / 21.8), (int) (w / 3.25), Assets.inventory_Empty,
-				Assets.inventory_Head, "head", handler)); // previously 44 and 296
+				Assets.inventory_Head, "head")); // previously 44 and 296
 		inventory.appendContainer(new ItemContainer<Item>((int) (w / 21.8) + 40, (int) (w / 3.25),
-				Assets.inventory_Empty, Assets.inventory_Body, "body", handler)); // previously 84 and 296
+				Assets.inventory_Empty, Assets.inventory_Body, "body")); // previously 84 and 296
 		inventory.appendContainer(new ItemContainer<Item>(w / 40, (int) (w / 3.75), Assets.inventory_Empty,
-				Assets.inventory_Trinket, "trinket", handler));// previously 24 and 256
+				Assets.inventory_Trinket, "trinket"));// previously 24 and 256
 		inventory.appendContainer(new ItemContainer<Item>(w / 40 + 40, (int) (w / 3.75), Assets.inventory_Empty,
-				Assets.inventory_Trinket, "trinket", handler));// previously 64 and 256
+				Assets.inventory_Trinket, "trinket"));// previously 64 and 256
 		inventory.appendContainer(new ItemContainer<Item>(w / 40 + 80, (int) (w / 3.75), Assets.inventory_Empty,
-				Assets.inventory_Trinket, "trinket", handler)); // previously 104 and 256
+				Assets.inventory_Trinket, "trinket")); // previously 104 and 256
 
-		inventory.add(new Torch(handler, this));
-		inventory.add(new Pickaxe(handler, this));
-		inventory.add(new Pickaxe(handler, this));
-		inventory.add(new Bone(handler, this));
-		inventory.add(new Bone(handler, this));
-		inventory.add(new Bone(handler, this));
-		inventory.add(new Bone(handler, this));
-		inventory.add(new Bone(handler, this));
-		inventory.add(new Crate(handler, this));
-		inventory.add(new CrystalRod(handler, this));
+		inventory.add(new Torch(this));
+		inventory.add(new Pickaxe(this));
+		inventory.add(new Pickaxe(this));
+		inventory.add(new Bone(this));
+		inventory.add(new Bone(this));
+		inventory.add(new Bone(this));
+		inventory.add(new Bone(this));
+		inventory.add(new Bone(this));
+		inventory.add(new Crate(this));
+		inventory.add(new CrystalRod(this));
+
+		if (dir)
+			flip();
 	}
-	
+
+	transient Sprite run, dive, idle;
+	// true for right, false for left
+	transient boolean dir = true;
+
 	@Override
 	protected void setup() {
 		this.w = 32;
 		this.h = 32;
-		this.hitbox = new Hitbox(10, 17, 10, 11, this, handler);
-		this.hurtbox = new Hitbox(8, 10, 16, 20, this, handler);
-		this.vector = new Vector(this, 50);
+		this.hitbox = new Hitbox(10, 17, 10, 11, this);
+		this.hurtbox = new Hitbox(8, 10, 16, 20, this);
+		this.vector = new Vector_KS(this, 50);
+
+		run = Assets.player_run.get();
+		dive = Assets.player_dive.get();
+		idle = Assets.player_idle.get();
+
+		if (!dir)
+			flip();
+
+		animator = new BoundStateMachine<Sprite>();
+		animator.addState("idle", 0, idle);
+		animator.addState("run", 0, run);
+		animator.addState("dive", 30, dive);
+
+		animator.addLink("idle", "run", new StateChange() {
+			@Override
+			public boolean check() {
+				return moving;
+			}
+
+		});
+
+		animator.addLink("run", "idle", new StateChange() {
+			@Override
+			public boolean check() {
+				return !moving;
+			}
+
+		});
+
+		animator.addLink("run", "dive", new StateChange() {
+			@Override
+			public boolean check() {
+				boolean d = dashCooldown == DASH_CD;
+				if (d)
+					dive.setFrame(0);
+				return d;
+			}
+
+		});
+
+		animator.addLink("dive", "idle", new StateChange() {
+			@Override
+			public boolean check() {
+				return true;
+			}
+
+		});
+
+		animator.forceState("idle");
 	}
 
 	@Override
@@ -131,44 +192,61 @@ public class Player extends Mob {
 		inventory.update();
 		super.update();
 		timer++;
+		animator.update();
+		this.activeSprite = animator.get();
 
-		if (timer % 180 == 0 && spirit < spiritMax)
-			spirit++;
+		if (Controller.getMouseTyped(Controller.MOUSELEFT))
+			System.out.println("mouse");
+		if (Controller.getKeyTyped('z'))
+			System.out.println("key");
 	}
 
 	@Override
 	public void render(DrawGraphics g) {
 		super.render(g);
-
 	}
 
 	boolean lastFframe = false;
 	boolean lastCframe = false;
 
+	byte dashCooldown = 0;
+	final static byte DASH_CD = 60;
+
 	@Override
 	public void move() {
-		int speed = (int) (this.speed * 3);
+		int speed = (int) (move * 6);
 		moving = false;
 		if (!locked) {
-			if (handler.getKeys().w || handler.getKeys().up) {
+
+			// movement
+
+			if (Controller.getKeyPressed('w') || Controller.getKeyPressed(Controller.UP)) {
 				if (!hitbox.tileYCollide(-speed) && Math.abs(vector.Vy()) <= speed)
 					vector.setVelocityY(-speed);
 				moving = true;
 			}
-			if (handler.getKeys().s || handler.getKeys().down) {
+			if (Controller.getKeyPressed('s') || Controller.getKeyPressed(Controller.DOWN)) {
 				if (!hitbox.tileYCollide(speed) && Math.abs(vector.Vy()) <= speed)
 					vector.setVelocityY(speed);
 				moving = true;
 			}
-			if (handler.getKeys().a || handler.getKeys().left) {
+			if (Controller.getKeyPressed('a') || Controller.getKeyPressed(Controller.LEFT)) {
 				if (!hitbox.tileXCollide(-speed) && Math.abs(vector.Vx()) <= speed)
 					vector.setVelocityX(-speed);
 				moving = true;
+				if (dir) {
+					flip();
+					dir = false;
+				}
 			}
-			if (handler.getKeys().d || handler.getKeys().right) {
+			if (Controller.getKeyPressed('d') || Controller.getKeyPressed(Controller.RIGHT)) {
 				if (!hitbox.tileXCollide(speed) && Math.abs(vector.Vx()) <= speed)
 					vector.setVelocityX(speed);
 				moving = true;
+				if (!dir) {
+					flip();
+					dir = true;
+				}
 			}
 			if (moving) {
 				activeSprite = Assets.player_run;
@@ -177,16 +255,48 @@ public class Player extends Mob {
 				activeSprite = Assets.player_idle;
 			}
 
-			if (!handler.getMouse().getDragging()) {
-				if (handler.getMouse().getLeft() && lHand.getContained() != null)
+			// end movement
+
+			// dashing
+
+			if (dashCooldown > 0) {
+				dashCooldown--;
+			} else {
+				if (Controller.getKeyTyped(Controller.SPACE)) {
+					if (Controller.getKeyPressed('w') || Controller.getKeyPressed(Controller.UP)) {
+						vector.setVelocityY(speed * -4);
+						dashCooldown = DASH_CD;
+
+					}
+					if (Controller.getKeyPressed('a') || Controller.getKeyPressed(Controller.LEFT)) {
+
+						vector.setVelocityX(speed * -4);
+						dashCooldown = DASH_CD;
+
+					}
+					if (Controller.getKeyPressed('s') || Controller.getKeyPressed(Controller.DOWN)) {
+						vector.setVelocityY(speed * 4);
+						dashCooldown = DASH_CD;
+
+					}
+					if (Controller.getKeyPressed('d') || Controller.getKeyPressed(Controller.RIGHT)) {
+						vector.setVelocityX(speed * 4);
+						dashCooldown = DASH_CD;
+
+					}
+				}
+			}
+
+			if (!inventory.carrying()) {
+				if (Controller.getMousePressed(Controller.MOUSELEFT) && lHand.getContained() != null)
 					lHand.getContained().use();
-				if (handler.getMouse().getRight() && rHand.getContained() != null)
+				if (Controller.getMousePressed(Controller.MOUSERIGHT) && rHand.getContained() != null)
 					rHand.getContained().use();
 			}
 		}
 
-		if (handler.getKeys().getCTyped()) {
-			ArrayList<Entity> col = hitbox.collidingAll();
+		if (Controller.getKeyTyped('c')) {
+			ArrayList<Entity> col = ((Hitbox) hitbox).collidingAll();
 			boolean interacted = false;
 			for (int i = 0; i < col.size(); i++) {
 				if (col.get(i) instanceof AnvilInteractable || col.get(i) instanceof ForgeInteractable
@@ -201,15 +311,15 @@ public class Player extends Mob {
 				else
 					showCraft(inventory);
 			}
-		} else if (handler.getKeys().f) {
-			ArrayList<Entity> col = hitbox.collidingAll();
+		} else if (Controller.getKeyPressed('f')) {
+			ArrayList<Entity> col = ((Hitbox) hitbox).collidingAll();
 			for (int i = 0; i < col.size(); i++) {
 				if (col.get(i) instanceof Interactable && !(col.get(i) instanceof AnvilInteractable
 						|| col.get(i) instanceof ForgeInteractable || col.get(i) instanceof WorktableInteractable)) {
 
 					if (col.get(i) instanceof Item || col.get(i) instanceof Corpse)
 						((Interactable) col.get(i)).interact(this);
-					else if (handler.getKeys().getFTyped())
+					else if (Controller.getKeyTyped('f'))
 						((Interactable) col.get(i)).interact(this);
 
 				}
@@ -217,21 +327,21 @@ public class Player extends Mob {
 
 		}
 
-		lastFframe = handler.getKeys().f;
-		lastCframe = handler.getKeys().c;
+		lastFframe = Controller.getKeyPressed('f');
+		lastCframe = Controller.getKeyPressed('c');
 
 	}
 
 	@Override
 	public void renderUI(DrawGraphics g) {
 
-		int w = handler.getWidth();
-		int h = handler.getHeight();
+		int w = Handler.getWidth();
+		int h = Handler.getHeight();
 
 		int posX = w / 60; // previously 16
 		int posY = w / 40; // previously 24
 
-		Rect s = new Rect(w / 6, h, 0xff202020, Sprite.TYPE_GUI_BACKGROUND_SHAPE);
+		Rect s = new Rect(w / 6, h, 0xff202020, SpriteData.TYPE_GUI_BACKGROUND_SHAPE);
 		s.render(0, 0, g);
 		s.render(w - w / 6, 0, g);
 		int healOff = healthMax / 12;
@@ -267,7 +377,7 @@ public class Player extends Mob {
 		}
 
 		inventory.render(g);
-		g.write(World.biomeToString(handler.getWorld().getCurrentBiome()), 4, handler.getHeight() - 20);
+		g.write(World.biomeToString(((World) Handler.getLoadedWorld()).getCurrentBiome()), 4, Handler.getHeight() - 20);
 
 		for (int i = 0; i < activeEffects.size(); i++) {
 			activeEffects.get(i).render(200 + (i % 5) * 42, 10, g);
@@ -305,10 +415,8 @@ public class Player extends Mob {
 
 	private boolean craftShowing = false;
 	transient private ArrayList<ContainerButton> crafts;
-	private static Frame frame = new Frame(192, 130, 576, 300, 0xffaaaaaa, 0xffffffff,
-			Sprite.TYPE_GUI_BACKGROUND_SHAPE);
-	private static Frame center = new Frame(336, 130, 288, 300, 0xff777777, 0xffffffff,
-			Sprite.TYPE_GUI_BACKGROUND_SHAPE);
+	private static Frame frame = new Frame(192, 130, 576, 300, Assets.ns_grey, SpriteData.TYPE_GUI_BACKGROUND_SHAPE);
+	private static Frame center = new Frame(336, 130, 288, 300, Assets.ns_grey, SpriteData.TYPE_GUI_BACKGROUND_SHAPE);
 
 	public void showCraft(Inventory n) {
 		craftShowing = true;
@@ -319,7 +427,7 @@ public class Player extends Mob {
 		center.display();
 		for (int i = 0; i < recipes.size(); i++) {
 			ContainerButton b = new ContainerButton(setAction(recipes.get(i), n), 196 + i % 4 * 40, 134 + i / 4 * 48,
-					32, 32, recipes.get(i).getResult(this, handler).strip());
+					32, 32, recipes.get(i).getResult(this).strip());
 			b.display();
 			crafts.add(b);
 		}
@@ -330,12 +438,10 @@ public class Player extends Mob {
 		craftShowing = false;
 		unlock();
 		frame.close();
-		;
 		center.close();
-		;
+
 		for (int i = 0; i < crafts.size(); i++) {
 			crafts.get(i).close();
-			;
 		}
 	}
 
@@ -347,7 +453,7 @@ public class Player extends Mob {
 		ArrayList<Recipe> recipes = Craft.getRecipes(this, n);
 		for (int i = 0; i < recipes.size(); i++) {
 			ContainerButton b = new ContainerButton(setAction(recipes.get(i), n), 196 + i % 4 * 40, 134 + i / 4 * 48,
-					32, 32, recipes.get(i).getResult(this, handler).strip());
+					32, 32, recipes.get(i).getResult(this).strip());
 			b.display();
 			crafts.add(b);
 		}
@@ -360,7 +466,7 @@ public class Player extends Mob {
 			@Override
 			public void onClick(UIObject source) {
 				if (r.qualify(p, n)) {
-					Item item = r.craft(p, n, handler);
+					Item item = r.craft(p, n);
 					if (!p.pickup(item))
 						item.drop();
 					refreshCraft(n);
@@ -393,6 +499,12 @@ public class Player extends Mob {
 
 	public boolean getCraftingShown() {
 		return craftShowing;
+	}
+
+	private void flip() {
+		run.flip();
+		idle.flip();
+		dive.flip();
 	}
 
 }

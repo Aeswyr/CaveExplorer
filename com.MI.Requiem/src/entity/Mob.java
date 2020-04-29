@@ -22,6 +22,16 @@ import runtime.Handler;
  */
 public abstract class Mob extends Entity {
 
+	protected Sprite deathSprite;
+	protected Sprite activeSprite;
+	protected double speed;
+	protected int health, healthMax, spirit, spiritMax;
+	protected int con, wil, str, agi, kno, arm, luk;
+	protected Inventory inventory;
+	protected double move = speed;
+	protected boolean locked = false;
+	
+	
 	/**
 	 * 
 	 */
@@ -29,19 +39,19 @@ public abstract class Mob extends Entity {
 	protected static Random rng = new Random();
 
 	protected ArrayList<Effect> activeEffects;
-	protected Vector vector;
 	protected Hitbox hurtbox;
 
-	public Mob(Handler handler) {
-		super(handler);
-		inventory = new Inventory(handler, this);
+	public Mob() {
+		inventory = new Inventory(this);
 		this.deathSprite = Assets.corpse;
 		activeEffects = new ArrayList<Effect>();
+		this.enableMob();
 		setup();
 	}
-	
+
 	/**
-	 * a collection of tasks to preform when the mob is created or loaded from a save
+	 * a collection of tasks to preform when the mob is created or loaded from a
+	 * save
 	 */
 	protected abstract void setup();
 
@@ -77,25 +87,32 @@ public abstract class Mob extends Entity {
 		divS = healthMax / maxS;
 	}
 
-	protected Sprite deathSprite;
-	protected Sprite activeSprite;
-	protected double speed;
-	protected int health, healthMax, spirit, spiritMax;
-	protected int con, wil, str, agi, kno, arm, luk;
-	protected Inventory inventory;
-	protected double move = speed;
-	protected boolean locked = false;
+	int hurtFrame = 0;
+	int thinkFrame = 0;
 
 	@Override
 	public void render(DrawGraphics g) {
-		activeSprite.render((int) x - handler.getCamera().xOffset(), (int) y - handler.getCamera().yOffset(), g);
+		if (thinkFrame > 0) {
+			int t = thinkFrame / 2;
+			Sprite[] s = activeSprite.getRGBSplit(0x66);
+			s[0].render(getX() - Handler.getCamera().xOffset() + t, getY() - Handler.getCamera().yOffset() + t, g);
+			s[1].render(getX() - Handler.getCamera().xOffset() - t, getY() - Handler.getCamera().yOffset(), g);
+			s[2].render(getX() - Handler.getCamera().xOffset() + t, getY() - Handler.getCamera().yOffset() - t, g);
+			thinkFrame--;
+		}
+		activeSprite.render((int) x - Handler.getCamera().xOffset(), (int) y - Handler.getCamera().yOffset(), g);
+		if (hurtFrame > 0) {
+			Sprite[] s = activeSprite.getRGBSplit();
+			s[0].render(getX() - Handler.getCamera().xOffset(), getY() - Handler.getCamera().yOffset(), g);
+			hurtFrame--;
+		}
+		renderUI(g);
 	}
 
 	@Override
 	public void update() {
-		hitbox.update();
-		if (hurtbox != null) hurtbox.update();
-		vector.update();
+		if (hurtbox != null)
+			hurtbox.update();
 		move();
 
 		for (int i = 0; i < activeEffects.size(); i++) {
@@ -118,19 +135,19 @@ public abstract class Mob extends Entity {
 	public void renderUI(DrawGraphics g) {
 
 		for (int i = 0; i < maxH; i++) {
-			Assets.bTick.render((int) x - handler.getCamera().xOffset() - xOff + i * 2 + off,
-					(int) y - handler.getCamera().yOffset() - yOff - 7, g);
+			Assets.bTick.render((int) x - Handler.getCamera().xOffset() + i * 2 + off,
+					(int) y - Handler.getCamera().yOffset() - 7, g);
 			if (i < health / divH)
-				Assets.hTick.render((int) x - handler.getCamera().xOffset() - xOff + i * 2 + off,
-						(int) y - handler.getCamera().yOffset() - yOff - 7, g);
+				Assets.hTick.render((int) x - Handler.getCamera().xOffset() + i * 2 + off,
+						(int) y - Handler.getCamera().yOffset() - 7, g);
 		}
 
 		for (int i = 0; i < maxS; i++) {
-			Assets.bTick.render((int) x - handler.getCamera().xOffset() - xOff + i * 2 + off,
-					(int) y - handler.getCamera().yOffset() - yOff - 3, g);
+			Assets.bTick.render((int) x - Handler.getCamera().xOffset() + i * 2 + off,
+					(int) y - Handler.getCamera().yOffset() - 3, g);
 			if (i < spirit / divS)
-				Assets.sTick.render((int) x - handler.getCamera().xOffset() - xOff + i * 2 + off,
-						(int) y - handler.getCamera().yOffset() - yOff - 3, g);
+				Assets.sTick.render((int) x - Handler.getCamera().xOffset() + i * 2 + off,
+						(int) y - Handler.getCamera().yOffset() - yOff - 3, g);
 		}
 	}
 
@@ -169,22 +186,24 @@ public abstract class Mob extends Entity {
 			if (health - amount < 0)
 				val = health;
 			health -= val;
+			hurtFrame = 10;
 			if (health <= 0)
 				this.die();
 			new Particle("" + val, 0xffAA0000, 1, getCenteredX(), getCenteredY() - 16, getCenteredX(),
-					getCenteredY() + 32, handler, b).start();
+					getCenteredY() + 32, b).start();
 			return val;
 		case Effect.DAMAGE_TYPE_MENTAL:
 			val = amount;
 			if (spirit - amount < 0)
 				val = spirit;
 			spirit -= val;
+			thinkFrame = 10;
 			if (spirit <= 0) {
 				spirit = spiritMax;
 				new Effect(120 * healthMax, 120, this, 0);
 			}
 			new Particle("" + val, 0xff9999FF, 1, getCenteredX(), getCenteredY() - 16, getCenteredX(),
-					getCenteredY() + 32, handler, b).start();
+					getCenteredY() + 32, b).start();
 			return val;
 		case Effect.DAMAGE_TYPE_PHYSICAL:
 			val = amount - arm;
@@ -193,10 +212,11 @@ public abstract class Mob extends Entity {
 			if (health - val < 0)
 				val = health;
 			health -= val;
+			hurtFrame = 10;
 			if (health <= 0)
 				this.die();
 			new Particle("" + val, 0xffAA0000, 1, getCenteredX(), getCenteredY() - 16, getCenteredX(),
-					getCenteredY() + 32, handler, b).start();
+					getCenteredY() + 32,  b).start();
 			return val;
 		default:
 			return 0;
@@ -223,7 +243,7 @@ public abstract class Mob extends Entity {
 
 			@Override
 			public void update(int x, int y, int x0, int y0, int[] data, int index) {
-				data[0] -= 1;
+				data[1] -= 1;
 			}
 
 		};
@@ -234,7 +254,7 @@ public abstract class Mob extends Entity {
 				val = healthMax - health;
 			health += val;
 			new Particle("" + val, 0xffFFFF00, 1, getCenteredX(), getCenteredY() - 16, getCenteredX(),
-					getCenteredY() + 32, handler, b).start();
+					getCenteredY() + 32,  b).start();
 			return val;
 		case Effect.DAMAGE_TYPE_MENTAL:
 			val = amount;
@@ -242,7 +262,7 @@ public abstract class Mob extends Entity {
 				val = spiritMax - spirit;
 			spirit += val;
 			new Particle("" + val, 0xff0000FF, 1, getCenteredX(), getCenteredY() - 16, getCenteredX(),
-					getCenteredY() + 32, handler, b).start();
+					getCenteredY() + 32,  b).start();
 			return val;
 		case Effect.DAMAGE_TYPE_PHYSICAL:
 			val = amount - arm;
@@ -252,7 +272,7 @@ public abstract class Mob extends Entity {
 				val = healthMax - health;
 			health += val;
 			new Particle("" + val, 0xffFFFF00, 1, getCenteredX(), getCenteredY() - 16, getCenteredX(),
-					getCenteredY() + 32, handler, b).start();
+					getCenteredY() + 32,  b).start();
 			return val;
 		default:
 			return 0;
@@ -377,7 +397,7 @@ public abstract class Mob extends Entity {
 	@Override
 	public void die() {
 		if (inventory.getRawHeld().size() > 0)
-			handler.getWorld().getEntities().addEntity(new Corpse(handler, deathSprite, hitbox, inventory, x, y));
+			Handler.getEntityManager().addEntity(new Corpse(deathSprite, (Hitbox) hitbox, inventory, x, y));
 		super.die();
 	}
 
@@ -389,20 +409,17 @@ public abstract class Mob extends Entity {
 		activeEffects.remove(e);
 	}
 
-	public Vector getVector() {
-		return vector;
-	}
 
 	public Hitbox getHurtbox() {
 		return hurtbox;
 	}
 
 	@Override
-	public void load(Handler h) {
-		super.load(h);
+	public void load() {
+		super.load();
 		setup();
 		if (inventory != null)
-			inventory.load(h, this);
+			inventory.load(this);
 	}
 
 }

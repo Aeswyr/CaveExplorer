@@ -2,13 +2,13 @@ package interactables;
 
 import java.util.ArrayList;
 
+
 import entities.Player;
 import entity.Interactable;
 import gfx.DrawGraphics;
 import item.IdCountPair;
 import item.Item;
-import runtime.Handler;
-import utility.Utility;
+import utility.Utils;
 
 public class CampInteractable extends Interactable {
 
@@ -17,8 +17,7 @@ public class CampInteractable extends Interactable {
 	 */
 	private static final long serialVersionUID = -7758338191948667609L;
 
-	public CampInteractable(Handler handler) {
-		super(handler);
+	public CampInteractable() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -41,9 +40,9 @@ public class CampInteractable extends Interactable {
 				for (int i = 0; i < held.size(); i++) {
 					String id = held.get(i).id;
 					all.add(id);
-					if (Utility.tagOverlaps(Item.toItem(id, null, null).getTags(), "food"))
+					if (Utils.tagOverlaps(Item.toItem(id, null).getTags(), "food"))
 						food.add(id);
-					if (Utility.tagOverlaps(Item.toItem(id, null, null).getTags(), "medicine"))
+					if (Utils.tagOverlaps(Item.toItem(id, null).getTags(), "medicine"))
 						medicine.add(id);
 				}
 			} else {
@@ -59,6 +58,12 @@ public class CampInteractable extends Interactable {
 	public void render(DrawGraphics g) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void update() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
