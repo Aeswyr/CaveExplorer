@@ -22,8 +22,6 @@ public class Menustate extends Scene {
 
 	Gamestate game = new Gamestate();
 
-	
-	
 	/**
 	 * initializes the main menu and displays it
 	 * 
@@ -34,11 +32,32 @@ public class Menustate extends Scene {
 	}
 
 	public void init(String data) {
+		start();
+	}
+
+	/**
+	 * updates the main menu and its components
+	 */
+	@Override
+	public void update() {
+
+	}
+
+	/**
+	 * draws the main menu and its components
+	 */
+	@Override
+	public void render(DrawGraphics g) {
+
+	}
+
+	@Override
+	public void start() {
 		Frame background = new Frame(0, 0, Handler.getWidth(), Handler.getHeight(), Assets.GUI_MainSplash);
 		background.display();
 
 		Assets.MUSIC_IntoDarkness.loop();
-		
+
 		Button world = new Button("Worlds", new ClickListener() {
 
 			@Override
@@ -76,7 +95,8 @@ public class Menustate extends Scene {
 							Assets.MUSIC_IntoDarkness.stopLoop();
 						}
 
-					}, 80 + 120 * (i / 6), 270 + 40 * (i % 6), 100, 30, Assets.ns_grey, Assets.ns_grey_dep, SpriteData.TYPE_GUI_COMPONENT)); //TODO 1
+					}, 80 + 120 * (i / 6), 270 + 40 * (i % 6), 96, 28, Assets.ns_grey, Assets.ns_grey_dep,
+							SpriteData.TYPE_GUI_COMPONENT)); // TODO 1
 				}
 
 				for (int i = 0; i < worlds.size(); i++) {
@@ -85,36 +105,15 @@ public class Menustate extends Scene {
 
 			}
 
-		}, 80, 270, 60, 30, Assets.ns_grey, Assets.ns_grey_dep, SpriteData.TYPE_GUI_COMPONENT); // TODO 1
+		}, 80, 270, 68, 28, Assets.ns_grey, Assets.ns_grey_dep, SpriteData.TYPE_GUI_COMPONENT); // TODO 1
 		world.display();
-	}
 
-	/**
-	 * updates the main menu and its components
-	 */
-	@Override
-	public void update() {
-
-	}
-
-	/**
-	 * draws the main menu and its components
-	 */
-	@Override
-	public void render(DrawGraphics g) {
-
-	}
-
-	@Override
-	public void start() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void stop() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

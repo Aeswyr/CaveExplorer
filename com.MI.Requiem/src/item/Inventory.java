@@ -29,6 +29,7 @@ public class Inventory implements Serializable {
 
 	private static Item mitem = null;
 	private static int mcnt = 0;
+	private static boolean drop = false;
 
 	/**
 	 * initializes an inventory with specified size and position
@@ -159,15 +160,8 @@ public class Inventory implements Serializable {
 					if (!didOp)
 						didOp = doMouseContainerInteraction(extra.get(i));
 				}
-				if (!didOp && mitem != null) {
-					for (int i = 0; i < mcnt; i++) {
-						Item u = (Item) mitem.clone();
-						u.drop();
-					}
-					mitem.strip();
-					mitem = null;
-					mcnt = 0;
-				}
+				if (didOp)
+					drop = false;
 			} catch (CloneNotSupportedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -212,6 +206,26 @@ public class Inventory implements Serializable {
 			}
 		}
 		return false;
+	}
+
+	public static void tickMouseInteraction() {
+		if (Controller.getMouseTyped(Controller.MOUSELEFT) && drop && mitem != null) {
+			for (int i = 0; i < mcnt; i++) {
+				Item u;
+				try {
+					u = (Item) mitem.clone();
+					u.drop();
+				} catch (CloneNotSupportedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+			mitem.strip();
+			mitem = null;
+			mcnt = 0;
+		}
+		drop = true;
 	}
 
 	/**
@@ -435,7 +449,7 @@ public class Inventory implements Serializable {
 				i.getContained().load();
 		}
 	}
-	
+
 	public boolean carrying() {
 		return mitem != null;
 	}

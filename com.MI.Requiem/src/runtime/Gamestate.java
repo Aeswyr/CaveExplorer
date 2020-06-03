@@ -3,6 +3,7 @@ package runtime;
 import core.Engine;
 import gfx.DrawGraphics;
 import input.Controller;
+import item.Inventory;
 import world.World;
 
 /**
@@ -40,6 +41,7 @@ public class Gamestate extends Scene {
 		}
 		if (Controller.getKeyTyped(Controller.ESC))
 			Engine.forceClose();
+		Inventory.tickMouseInteraction();
 			
 	}
 

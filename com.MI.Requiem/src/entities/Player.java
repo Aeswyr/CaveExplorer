@@ -29,6 +29,7 @@ import item.ItemContainer;
 import items.Bone;
 import items.Crate;
 import items.CrystalRod;
+import items.Forge;
 import items.Pickaxe;
 import items.Torch;
 import runtime.Handler;
@@ -118,7 +119,7 @@ public class Player extends Mob {
 		inventory.add(new Bone(this));
 		inventory.add(new Bone(this));
 		inventory.add(new Bone(this));
-		inventory.add(new Crate(this));
+		inventory.add(new Forge(this));
 		inventory.add(new CrystalRod(this));
 
 		if (dir)
@@ -194,20 +195,12 @@ public class Player extends Mob {
 		timer++;
 		animator.update();
 		this.activeSprite = animator.get();
-
-		if (Controller.getMouseTyped(Controller.MOUSELEFT))
-			System.out.println("mouse");
-		if (Controller.getKeyTyped('z'))
-			System.out.println("key");
 	}
 
 	@Override
 	public void render(DrawGraphics g) {
 		super.render(g);
 	}
-
-	boolean lastFframe = false;
-	boolean lastCframe = false;
 
 	byte dashCooldown = 0;
 	final static byte DASH_CD = 60;
@@ -305,7 +298,7 @@ public class Player extends Mob {
 					interacted = true;
 				}
 			}
-			if (!interacted && !lastCframe) {
+			if (!interacted) {
 				if (craftShowing)
 					closeCraft();
 				else
@@ -326,9 +319,6 @@ public class Player extends Mob {
 			}
 
 		}
-
-		lastFframe = Controller.getKeyPressed('f');
-		lastCframe = Controller.getKeyPressed('c');
 
 	}
 

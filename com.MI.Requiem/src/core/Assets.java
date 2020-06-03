@@ -129,10 +129,22 @@ public class Assets {
 	public static Sprite spellBook_inv;
 	public static Sprite spellScroll;
 	public static Sprite spellScroll_inv;
+	public static Sprite spear;
+	public static Sprite spear_inv;
+	public static Sprite sword;
+	public static Sprite sword_inv;
+	public static Sprite knife;
+	public static Sprite knife_inv;
 
 	public static SpriteSheet corpse_sheet;
 	public static Sprite corpse;
-
+	
+	public static SpriteSheet hit_sheet;
+	public static Sprite stab;
+	public static Sprite pierce;
+	public static Sprite slash;
+	public static Sprite hit;
+	
 	public static Sprite GUI_MainSplash;
 	
 	private static SpriteSheet nineslices;
@@ -165,6 +177,8 @@ public class Assets {
 		corpse_sheet = new SpriteSheet(WORLD + "corpse.png");
 		
 		nineslices = new SpriteSheet(UI + "slice.png");
+		
+		hit_sheet = new SpriteSheet(WORLD + "hit.png");
 	}
 
 	private static void initSprite() {
@@ -269,8 +283,20 @@ public class Assets {
 		spellScroll_inv = new Sprite(128, 128, 32, item, SpriteData.TYPE_INVENTORY_ITEM);
 		spellBook = new Sprite(96, 160, 32, item, SpriteData.TYPE_ENTITY);
 		spellBook_inv = new Sprite(96, 128, 32, item, SpriteData.TYPE_INVENTORY_ITEM);
-
+		spear = new Sprite(160, 160, 32, item, SpriteData.TYPE_ENTITY);
+		spear_inv = new Sprite(160, 128, 32, item, SpriteData.TYPE_INVENTORY_ITEM);
+		sword = new Sprite(192, 160, 32, item, SpriteData.TYPE_ENTITY);
+		sword_inv = new Sprite(192, 128, 32, item, SpriteData.TYPE_INVENTORY_ITEM);
+		knife = new Sprite(224, 160, 32, item, SpriteData.TYPE_ENTITY);
+		knife_inv = new Sprite(224, 128, 32, item, SpriteData.TYPE_INVENTORY_ITEM);
+		
+		
 		corpse = new Sprite(0, 0, 32, corpse_sheet, SpriteData.TYPE_ENTITY);
+		
+		stab = new Sprite(0, 0, 32, 32, 3, 30, hit_sheet, SpriteData.TYPE_ENTITY);
+		pierce = new Sprite(32, 0, 32, 32, 3, 30, hit_sheet, SpriteData.TYPE_ENTITY);
+		slash = new Sprite(64, 0, 32, 32, 3, 30, hit_sheet, SpriteData.TYPE_ENTITY);
+		hit = new Sprite(96, 0, 32, 32, 3, 30, hit_sheet, SpriteData.TYPE_ENTITY);
 
 	}
 
